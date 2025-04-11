@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white dark text-gray-900 dark:text-gray-100 font-sans relative">
+
+  <!-- Header -->
+  <header class="py-6 px-6 md:px-16 flex justify-between items-center border-b border-gray-300 dark:border-gray-700">
+    <nav class="fixed top-0 left-0 w-full bg-gray-900 backdrop-blur-sm shadow-sm z-50 transition-colors duration-300">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="nav-logo text-xl font-bold text-white">
+            Vinodhariharan Ravi<span class="text-gray-400">.</span>
+          </a>
+          
+          <!-- Desktop Nav -->
+          <div class="hidden md:flex space-x-4">
+            <a href="/" class="nav-link text-sm text-gray-200 hover:underline">Home</a>
+            <a href="privacy.html" class="nav-link text-sm text-gray-200 hover:underline">Privacy</a>
+            <a href="terms.html" class="nav-link text-sm text-gray-200 hover:underline">Terms</a>
+          </div>
+      
+          <!-- Mobile toggle -->
+          <div class="md:hidden">
+            <button id="menuToggle" class="text-white focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900 w-full shadow-md">
+          <div class="px-6 py-4 flex flex-col space-y-3">
+            <a href="./" class="text-sm text-gray-200 hover:underline">Home</a>
+            <a href="privacy.html" class="text-sm text-gray-200 hover:underline">Privacy</a>
+            <a href="terms.html" class="text-sm text-gray-200 hover:underline">Terms</a>
+          </div>
+        </div>
+      </nav>
+      
+      <!-- Toggle Script -->
+      <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+      
+        menuToggle.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      </script>
+      
+  </header>
+
+  <!-- Content -->
+  <main class="max-w-4xl mx-auto px-6 md:px-12 py-16 animate-on-scroll">
+    <h2 class="text-4xl font-bold mb-6 ">Privacy Policy</h2>
+    <p class="mb-4 text-lg">Your privacy is important. This page outlines the data we collect and how it is handled.</p>
+
+    <section class="mt-10">
+      <h3 class="text-2xl font-semibold  mb-2">1. Data Collection</h3>
+      <p class="mb-4">We collect basic personal data such as name, email, and browsing behavior to enhance user experience.</p>
+
+      <h3 class="text-2xl font-semibold  mt-8 mb-2">2. Usage</h3>
+      <p class="mb-4">Data is used only for analytics and improving the functionality of this portfolio website.</p>
+
+      <h3 class="text-2xl font-semibold  mt-8 mb-2">3. Third Parties</h3>
+      <p class="mb-4">We do not share your information with third parties.</p>
+
+      <h3 class="text-2xl font-semibold  mt-8 mb-2">4. Contact</h3>
+      <p class="mb-4">If you have questions about your privacy, email me at <a href="mailto:vinodhari.ravi@gmail.com" class="underline hover:text-gray-400">vinodhari.ravi@gmail.com</a>.</p>
+    </section>
+  </main>
+
+  <footer class="py-8 bg-black text-white">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <h3 class="text-2xl font-bold">Vinodhariharan Ravi<span class="text-gray-400">.</span></h3>
+                <p class="text-gray-400 mt-2">Building elegant solutions with code.</p>
+            </div>
+
+            <div class="flex space-x-6">
+                <a href="https://linkedin.com/in/vinodhariharan-ravi" target="_blank"
+                    class="text-white hover:text-gray-400 transition duration-300">
+                    <i class="fab fa-linkedin-in text-xl"></i>
+                </a>
+                <a href="https://github.com/Vinodhariharan" target="_blank"
+                    class="text-white hover:text-gray-400 transition duration-300">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+                <a href="mailto:vinodhari.ravi@gmail.com"
+                    class="text-white hover:text-gray-400 transition duration-300">
+                    <i class="fas fa-envelope text-xl"></i>
+                </a>
+                <a href="tel:+916362607290" class="text-white hover:text-gray-400 transition duration-300">
+                    <i class="fas fa-phone text-xl"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-gray-400">© 2025 R Vinod Hariharan. All rights reserved.</p>
+            <div class="mt-4 md:mt-0">
+                <a href="./privacy.html" class="text-gray-400 hover:text-white transition duration-300 mr-4">Privacy Policy</a>
+                <a href="./terms.html" class="text-gray-400 hover:text-white transition duration-300">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+  <!-- Scroll animation -->
+  <script>
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+  
+</body>
+</html>
