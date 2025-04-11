@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinodhariharan Ravi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+        body {
+            font-family: "League Spartan", sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: "Playfair Display", serif;
+        }
+
+        .progress-bar {
+            height: 8px;
+            position: relative;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #000;
+            border-radius: 5px;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 1.5s ease;
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .animate-from-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .animate-from-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .nav-logo {
+            font-family: "Playfair Display", serif;
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #000;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .timeline-item {
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: #000;
+            top: 0;
+            bottom: 0;
+            left: 24px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #000;
+            top: 24px;
+            left: 17px;
+            z-index: 1;
+        }
+
+        .project-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
+            display: none;
+            /* Hidden by default, show with JS */
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            background-color: #000;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            display: none;
+            /* Hidden by default, show with JS */
+        }
+
+        /* Add this to your existing style tag */
+        .dark {
+            color-scheme: dark;
+        }
+
+        .dark body {
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+
+        .dark .bg-white {
+            background-color: #1e1e1e;
+        }
+
+        .dark .bg-gray-50 {
+            background-color: #1a1a1a;
+        }
+
+        .dark .border-gray-200 {
+            border-color: #333;
+        }
+
+        .dark .bg-gray-100,
+        .dark .bg-gray-200,
+        .dark .progress-bar {
+            background-color: #333;
+        }
+
+        .dark .text-gray-700,
+        .dark .text-gray-600 {
+            color: #bbb;
+        }
+
+        /* Smooth transition for color changes */
+        body,
+        section,
+        div {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-900">
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <!-- Header/Navigation -->
+
+    <header class="min-h-screen flex flex-col justify-center items-center bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div class="container mx-auto px-6 py-16 flex flex-col md:flex-row items-center justify-between">
+            <div class="md:w-1/2 text-center md:text-left mb-12 md:mb-0">
+                <!-- Your header text content would go here -->
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Vinodhariharan Ravi<span class="text-gray-500 dark:text-gray-400">.</span></h1>
+                <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8">
+                    <!-- Your introduction text -->
+                    Web Developer & Designer
+                </p>
+                <!-- Call to action buttons could go here -->
+                <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                    <a href="#contact" class="px-6 py-3 bg-black dark:bg-white text-white dark:text-black font-medium rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">Get in Touch</a>
+                    <a href="#projects" class="px-6 py-3 border-2 border-black dark:border-white text-black dark:text-white font-medium rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">View Work</a>
+                </div>
+            </div>
+            
+            <div class="md:w-1/2 flex justify-center">
+                <div class="relative w-64 h-64 md:w-80 md:h-80">
+                    <div class="absolute inset-0 border-4 border-black dark:border-white rounded-full"></div>
+                    <div class="absolute inset-4 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center overflow-hidden">
+                        <img src="../../../../Pictures/Black and White DP.png" alt="Vinodhariharan Ravi" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation can be placed at the top of the header -->
+        <nav class="fixed top-0 left-0 w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-sm z-50 transition-colors duration-300">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#hero" class="nav-logo text-xl font-bold dark:text-white">Vinodhariharan Ravi<span class="text-gray-500 dark:text-gray-400">.</span></a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#about" class="nav-link dark:text-gray-200">About</a>
+                    <a href="#education" class="nav-link dark:text-gray-200">Education</a>
+                    <a href="#experience" class="nav-link dark:text-gray-200">Experience</a>
+                    <a href="#projects" class="nav-link dark:text-gray-200">Projects</a>
+                    <a href="#skills" class="nav-link dark:text-gray-200">Skills</a>
+                    <a href="#contact" class="nav-link dark:text-gray-200">Contact</a>
+                    <button id="darkModeToggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <!-- Sun icon (shown in dark mode) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <!-- Moon icon (shown in light mode) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="md:hidden flex items-center space-x-4">
+                    <button id="darkModeToggleMobile" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <!-- Sun icon (shown in dark mode) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <!-- Moon icon (shown in light mode) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                    <button id="menuToggle" class="md:hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-900 shadow-lg w-full transition-colors duration-300">
+                <div class="container mx-auto px-6 py-4 flex flex-col space-y-4">
+                    <a href="#about" class="py-2 dark:text-gray-200">About</a>
+                    <a href="#education" class="py-2 dark:text-gray-200">Education</a>
+                    <a href="#experience" class="py-2 dark:text-gray-200">Experience</a>
+                    <a href="#projects" class="py-2 dark:text-gray-200">Projects</a>
+                    <a href="#skills" class="py-2 dark:text-gray-200">Skills</a>
+                    <a href="#contact" class="py-2 dark:text-gray-200">Contact</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12 text-center animate-on-scroll">About Me</h2>
+            <div class="flex flex-col md:flex-row gap-12">
+                <div class="md:w-1/2 animate-on-scroll">
+                    <p class="text-lg mb-6">I'm a Computer Science Engineering student specializing in Internet of
+                        Things at Sri Krishna College of Technology. My passion lies in building robust full-stack
+                        applications and exploring emerging technologies like AI and cloud computing.</p>
+                    <p class="text-lg mb-6">With strong foundations in multiple programming languages and frameworks, I
+                        strive to create impactful digital solutions that solve real-world problems.</p>
+                    <div class="flex space-x-4 mb-6">
+                        <a href="https://linkedin.com/in/vinodhariharan-ravi" target="_blank"
+                            class="text-black hover:text-gray-600 transition duration-300">
+                            <i class="fab fa-linkedin text-2xl"></i>
+                        </a>
+                        <a href="https://github.com/Vinodhariharan" target="_blank"
+                            class="text-black hover:text-gray-600 transition duration-300">
+                            <i class="fab fa-github text-2xl"></i>
+                        </a>
+                        <a href="mailto:vinodhari.ravi@gmail.com"
+                            class="text-black hover:text-gray-600 transition duration-300">
+                            <i class="fas fa-envelope text-2xl"></i>
+                        </a>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span>Bengaluru, Karnataka, India</span>
+                    </div>
+                </div>
+                <div class="md:w-1/2 animate-on-scroll">
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4">What I Do</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-6 border border-gray-200 rounded-lg hover:shadow-md transition duration-300">
+                                <i class="fas fa-code text-3xl mb-4"></i>
+                                <h4 class="text-lg font-semibold mb-2">Web Development</h4>
+                                <p>Building responsive and interactive web applications using modern frameworks.</p>
+                            </div>
+                            <div class="p-6 border border-gray-200 rounded-lg hover:shadow-md transition duration-300">
+                                <i class="fas fa-server text-3xl mb-4"></i>
+                                <h4 class="text-lg font-semibold mb-2">Backend Development</h4>
+                                <p>Creating robust APIs and server-side applications with Spring Boot.</p>
+                            </div>
+                            <div class="p-6 border border-gray-200 rounded-lg hover:shadow-md transition duration-300">
+                                <i class="fas fa-database text-3xl mb-4"></i>
+                                <h4 class="text-lg font-semibold mb-2">Database Design</h4>
+                                <p>Designing and implementing efficient database schemas with MySQL and MongoDB.</p>
+                            </div>
+                            <div class="p-6 border border-gray-200 rounded-lg hover:shadow-md transition duration-300">
+                                <i class="fas fa-cloud text-3xl mb-4"></i>
+                                <h4 class="text-lg font-semibold mb-2">Cloud Services</h4>
+                                <p>Working with AWS and Azure to deploy and manage scalable applications.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12 text-center animate-on-scroll">Education</h2>
+            <div class="max-w-3xl mx-auto">
+                <div class="timeline-item pl-12 pb-12 animate-on-scroll">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                            <h3 class="text-xl font-semibold">Sri Krishna College of Technology</h3>
+                            <span class="text-gray-600">Expected Graduation, May 2026</span>
+                        </div>
+                        <p class="text-gray-700 mb-2">Bachelor of Technology in Computer Science Engineering (Internet
+                            of Things)</p>
+                        <p class="text-gray-600 italic">Coimbatore, Tamil Nadu</p>
+                        <div class="mt-4">
+                            <h4 class="font-medium mb-2">Related Coursework:</h4>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li>Computing in C++, Java and Python</li>
+                                <li>Object-Oriented Programming</li>
+                                <li>UI design with React.js</li>
+                                <li>Restful API Development with SpringBoot</li>
+                                <li>AWS Fundamentals</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item pl-12 animate-on-scroll">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                            <h3 class="text-xl font-semibold">Ekya Schools</h3>
+                            <span class="text-gray-600">Percentage: 89.4%</span>
+                        </div>
+                        <p class="text-gray-700 mb-2">Higher Secondary Education (CBSE)</p>
+                        <p class="text-gray-600 italic">Bengaluru, Karnataka</p>
+                        <div class="mt-4">
+                            <h4 class="font-medium mb-2">Related Coursework:</h4>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li>Computing in Python</li>
+                                <li>Relational Database Management with MySQL</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12 text-center animate-on-scroll">Work Experience</h2>
+            <div class="max-w-3xl mx-auto">
+                <div class="relative border-l-2 border-gray-300 pl-8 pb-12 animate-on-scroll">
+                    <div class="absolute w-4 h-4 bg-white border-2 border-black rounded-full -left-2 top-2"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                            <h3 class="text-xl font-semibold">Wipro Limited</h3>
+                            <span class="text-gray-600">June 2024 – July 2024</span>
+                        </div>
+                        <p class="text-gray-700 mb-4">Project Intern</p>
+                        <p class="text-gray-600 italic mb-4">Bengaluru, Karnataka</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2">
+                            <li>Used JUnit to build basic API test cases for the FSC Cloud Studio platform to ensure
+                                functionality, reliability, and integration.</li>
+                            <li>Learned about the FSC Cloud Studio platform through hands-on experience, gaining
+                                expertise in its operational framework.</li>
+                            <li>Collaborated with team members to understand testing requirements and implement
+                                effective test strategies.</li>
+                            <li>Documented testing processes and results for future reference and continuous
+                                improvement.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12 text-center animate-on-scroll">Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md animate-on-scroll">
+                    <div class="h-48 bg-gray-800 flex items-center justify-center">
+                        <i class="fas fa-camera text-5xl text-white"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">SocioGraphy</h3>
+                            <span class="text-sm text-gray-500">July 2024-Sept 2024</span>
+                        </div>
+                        <p class="text-gray-600 mb-3">Social Media Platform for Photographers</p>
+                        <p class="text-gray-700 mb-4">Built a full-stack social media platform for photographers with a
+                            robust REST API backend using Spring Boot, ensuring efficient data management with MySQL.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">Spring Boot</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">React.js</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">MySQL</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">REST API</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm font-medium">Role: Team Lead</span>
+                            <a href="#" class="text-black hover:underline">View Project <i
+                                    class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md animate-on-scroll">
+                    <div class="h-48 bg-gray-800 flex items-center justify-center">
+                        <i class="fas fa-robot text-5xl text-white"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">RagBot with Gemini-API</h3>
+                            <span class="text-sm text-gray-500">Sept 2024</span>
+                        </div>
+                        <p class="text-gray-600 mb-3">AI-Powered Chat Bot</p>
+                        <p class="text-gray-700 mb-4">Developed a Gemini-powered RagBot using MyScale Vector DB and
+                            StreamLit UI to enhance real-time data processing and user interaction.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">Python</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">Gemini API</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">StreamLit</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">Vector DB</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm font-medium">Role: Solo Developer</span>
+                            <a href="#" class="text-black hover:underline">View Project <i
+                                    class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md animate-on-scroll">
+                    <div class="h-48 bg-gray-800 flex items-center justify-center">
+                        <i class="fas fa-shopping-cart text-5xl text-white"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">E-Commerce Analytics Dashboard</h3>
+                            <span class="text-sm text-gray-500">May 2024</span>
+                        </div>
+                        <p class="text-gray-600 mb-3">Data Visualization Tool</p>
+                        <p class="text-gray-700 mb-4">Created an interactive dashboard for e-commerce data analysis
+                            using React and D3.js, with a Node.js backend and MongoDB database.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">React</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">D3.js</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">Node.js</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">MongoDB</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm font-medium">Role: Frontend Developer</span>
+                            <a href="#" class="text-black hover:underline">View Project <i
+                                    class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md animate-on-scroll">
+                    <div class="h-48 bg-gray-800 flex items-center justify-center">
+                        <i class="fas fa-microchip text-5xl text-white"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-xl font-semibold">Smart Home IoT System</h3>
+                            <span class="text-sm text-gray-500">Feb 2024</span>
+                        </div>
+                        <p class="text-gray-600 mb-3">IoT Device Management</p>
+                        <p class="text-gray-700 mb-4">Developed an IoT system for smart home automation using ESP32
+                            microcontrollers, MQTT protocol, and a web dashboard for monitoring and control.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">IoT</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">ESP32</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">MQTT</span>
+                            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">JavaScript</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm font-medium">Role: Full-stack Developer</span>
+                            <a href="#" class="text-black hover:underline">View Project <i
+                                    class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section id="certifications" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12 text-center animate-on-scroll">Certifications</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div
+                    class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:shadow-md transition duration-300 animate-on-scroll">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center bg-black rounded-full mr-4">
+                            <img
+                            src="https://cdn.worldvectorlogo.com/logos/oracle-6.svg"
+                            alt="Oracle"
+                            class="h-6 w-auto p-2 filter invert brightness-0"
+                          />                                                      </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">OCI Generative AI Professional</h3>
+                            <p class="text-gray-600">Oracle Cloud Infrastructure</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-3">Expertise in designing, deploying, and managing Generative AI
+                        solutions on Oracle Cloud Infrastructure.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">Valid until July 2026</span>
+                        <a href="#" class="text-black hover:underline text-sm">Verify <i
+                                class="fas fa-external-link-alt ml-1"></i></a>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:shadow-md transition duration-300 animate-on-scroll">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center bg-black rounded-full mr-4">
+                            <i class="fab fa-microsoft text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">Azure AI Fundamentals</h3>
+                            <p class="text-gray-600">Microsoft</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-3">Foundational knowledge of AI concepts, Azure AI services, and their
+                        applications in cloud computing.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">No end of validity</span>
+                        <a href="#" class="text-black hover:underline text-sm">Verify <i
+                                class="fas fa-external-link-alt ml-1"></i></a>
+                    </div>
+                </div>
+
+                <!-- <div
+                    class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:shadow-md transition duration-300 animate-on-scroll">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center bg-black rounded-full mr-4">
+                            <i class="fab fa-aws text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">AWS Cloud Practitioner</h3>
+                            <p class="text-gray-600">Amazon Web Services</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-3">Understanding of AWS Cloud concepts, services, security, architecture,
+                        pricing, and support.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">Valid until March 2026</span>
+                        <a href="#" class="text-black hover:underline text-sm">Verify <i
+                                class="fas fa-external-link-alt ml-1"></i></a>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-gray-50 p-6 rounded-lg border border-gray-200 hover:shadow-md transition duration-300 animate-on-scroll">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center bg-black rounded-full mr-4">
+                            <i class="fab fa-react text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">React Developer</h3>
+                            <p class="text-gray-600">Meta</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-3">Comprehensive understanding of React.js, including hooks, context API,
+                        and state management solutions.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">Valid until January 2026</span>
+                        <a href="#" class="text-black hover:underline text-sm">Verify <i
+                                class="fas fa-external-link-alt ml-1"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12 text-center animate-on-scroll">Technical Skills</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+                <div class="animate-on-scroll">
+                    <h3 class="text-xl font-semibold mb-6">Programming Languages</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Java</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="85"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Python</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="80"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>C++</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="75"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>JavaScript</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="80"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animate-on-scroll">
+                    <h3 class="text-xl font-semibold mb-6">Web Development</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>React.js</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="85"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>HTML/CSS</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="90"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Spring Boot</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="80"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>RESTful API</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="85"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animate-on-scroll">
+                    <h3 class="text-xl font-semibold mb-6">Database & Cloud</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>MySQL</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="85"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>MongoDB</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="75"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>AWS</span>
+                                <span>70%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="70"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Azure</span>
+                                <span>65%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="65"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animate-on-scroll">
+                    <h3 class="text-xl font-semibold mb-6">Others</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Data Structures & Algorithms</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="80"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Git & GitHub</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="85"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Problem Solving</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="90"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Agile Methodology</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="75"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md animate-on-scroll">
+                <h3 class="text-xl font-semibold mb-6">Additional Skills</h3>
+                <div class="flex flex-wrap gap-3">
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">LeetCode (200+ problems)</span>
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">UI/UX Design</span>
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">IoT Development</span>
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">Generative AI</span>
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">Vector Databases</span>
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">Microservices</span>
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">Docker</span>
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">Team Leadership</span>
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">Project Management</span>
+                    <span class="px-4 py-2 bg-gray-800 text-white rounded-full">Technical Writing</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold mb-12 text-center animate-on-scroll">Get In Touch</h2>
+
+            <div class="flex flex-col md:flex-row gap-12 max-w-5xl mx-auto">
+                <div class="md:w-2/5 animate-on-scroll">
+                    <h3 class="text-xl font-semibold mb-6">Contact Information</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-envelope text-black"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Email</p>
+                                <a href="mailto:vinodhari.ravi@gmail.com"
+                                    class="hover:underline">vinodhari.ravi@gmail.com</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-phone text-black"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Phone</p>
+                                <a href="tel:+916362607290" class="hover:underline">+91 63626 07290</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-map-marker-alt text-black"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Location</p>
+                                <p>Bengaluru, Karnataka, India</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fab fa-linkedin-in text-black"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">LinkedIn</p>
+                                <a href="https://linkedin.com/in/vinodhariharan-ravi" target="_blank"
+                                    class="hover:underline">vinodhariharan-ravi</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fab fa-github text-black"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">GitHub</p>
+                                <a href="https://github.com/Vinodhariharan" target="_blank"
+                                    class="hover:underline">Vinodhariharan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:w-3/5 animate-on-scroll">
+                    <h3 class="text-xl font-semibold mb-6">Send Me a Message</h3>
+                    <form id="contactForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                <input type="text" id="name" name="name"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" id="email" name="email"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                            <input type="text" id="subject" name="subject"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea id="message" name="message" rows="5"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"></textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition duration-300">Send
+                            Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-black text-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-2xl font-bold">Vinodhariharan Ravi<span class="text-gray-400">.</span></h3>
+                    <p class="text-gray-400 mt-2">Building elegant solutions with code.</p>
+                </div>
+
+                <div class="flex space-x-6">
+                    <a href="https://linkedin.com/in/vinodhariharan-ravi" target="_blank"
+                        class="text-white hover:text-gray-400 transition duration-300">
+                        <i class="fab fa-linkedin-in text-xl"></i>
+                    </a>
+                    <a href="https://github.com/Vinodhariharan" target="_blank"
+                        class="text-white hover:text-gray-400 transition duration-300">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="mailto:vinodhari.ravi@gmail.com"
+                        class="text-white hover:text-gray-400 transition duration-300">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </a>
+                    <a href="tel:+916362607290" class="text-white hover:text-gray-400 transition duration-300">
+                        <i class="fas fa-phone text-xl"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400">© 2025 R Vinod Hariharan. All rights reserved.</p>
+                <div class="mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 mr-4">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop"
+        class="fixed bottom-8 right-8 bg-black text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md hidden hover:bg-gray-800 transition duration-300 z-50">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        // Add this script to the head section, before any other scripts
+        // This should go right after the line
+
+        // 1. First, add the Tailwind dark mode configuration
+        const tailwindScript = document.createElement('script');
+        tailwindScript.textContent = `
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        backgroundColor: {
+          'dark-bg': '#121212',
+          'dark-card': '#1e1e1e'
+        }
+      }
+    }
+  }
+`;
+        document.head.appendChild(tailwindScript);
+
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Back to Top Button
+        const backToTopButton = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Animate elements when they come into view
+        const animateElements = elements => {
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+
+                    // Animate progress bars if they are in view
+                    const progressBars = element.querySelectorAll('.progress-fill');
+                    progressBars.forEach(bar => {
+                        const width = bar.getAttribute('data-width');
+                        bar.style.transform = `scaleX(${width / 100})`;
+                    });
+                }
+            });
+        };
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollElements = document.querySelectorAll('.animate-on-scroll, .animate-from-left, .animate-from-right');
+            animateElements(scrollElements);
+
+            // Form submission event
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // In a real implementation, you would send the form data to a server
+                    alert('Thank you for your message! I will get back to you soon.');
+                    contactForm.reset();
+                });
+            }
+
+            // Custom cursor effect
+            const customCursor = document.querySelector('.custom-cursor');
+            const cursorDot = document.querySelector('.cursor-dot');
+
+            if (window.innerWidth > 768) { // Only on desktop
+                document.addEventListener('mousemove', (e) => {
+                    customCursor.style.display = 'block';
+                    cursorDot.style.display = 'block';
+
+                    customCursor.style.left = `${e.clientX}px`;
+                    customCursor.style.top = `${e.clientY}px`;
+
+                    cursorDot.style.left = `${e.clientX}px`;
+                    cursorDot.style.top = `${e.clientY}px`;
+                });
+
+                // Cursor effects on links and buttons
+                const interactiveElements = document.querySelectorAll('a, button, input, textarea');
+                interactiveElements.forEach(element => {
+                    element.addEventListener('mouseenter', () => {
+                        customCursor.style.width = '40px';
+                        customCursor.style.height = '40px';
+                        customCursor.style.borderColor = '#000';
+                    });
+
+                    element.addEventListener('mouseleave', () => {
+                        customCursor.style.width = '20px';
+                        customCursor.style.height = '20px';
+                        customCursor.style.borderColor = '#000';
+                    });
+                });
+            }
+        });
+
+        // Run on scroll
+        window.addEventListener('scroll', () => {
+            const scrollElements = document.querySelectorAll('.animate-on-scroll:not(.visible), .animate-from-left:not(.visible), .animate-from-right:not(.visible)');
+            animateElements(scrollElements);
+        });
+        // 2. Replace the existing dark mode toggle script with this updated one
+        document.addEventListener('DOMContentLoaded', function () {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+
+            // Function to toggle dark mode
+            function toggleDarkMode() {
+                document.documentElement.classList.toggle('dark');
+
+                // Update UI elements that need specific dark mode changes
+                if (document.documentElement.classList.contains('dark')) {
+                    localStorage.setItem('darkMode', 'enabled');
+                    document.body.classList.add('bg-gray-900', 'text-white');
+                    document.body.classList.remove('bg-white', 'text-gray-900');
+                } else {
+                    localStorage.setItem('darkMode', 'disabled');
+                    document.body.classList.add('bg-white', 'text-gray-900');
+                    document.body.classList.remove('bg-gray-900', 'text-white');
+                }
+            }
+
+            // Add event listeners to both toggle buttons
+            if (darkModeToggle) darkModeToggle.addEventListener('click', toggleDarkMode);
+            if (darkModeToggleMobile) darkModeToggleMobile.addEventListener('click', toggleDarkMode);
+
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.documentElement.classList.add('dark');
+                document.body.classList.add('bg-gray-900', 'text-white');
+                document.body.classList.remove('bg-white', 'text-gray-900');
+            }
+
+            // Also apply initial dark mode class if needed
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches &&
+                localStorage.getItem('darkMode') !== 'disabled') {
+                document.documentElement.classList.add('dark');
+                document.body.classList.add('bg-gray-900', 'text-white');
+                document.body.classList.remove('bg-white', 'text-gray-900');
+            }
+        });
+    </script>
+</body>
+
+</html>
