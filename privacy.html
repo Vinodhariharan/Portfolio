@@ -3,102 +3,126 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacy Policy</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Privacy Policy | Vinodhariharan Ravi</title>
+  <style>@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+  </style>
+  <!-- <link rel="stylesheet" href="styles.css" /> -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="./assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
-<body class="bg-white dark text-gray-900 dark:text-gray-100 font-sans relative">
+<body class="bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:to-black text-gray-900 dark:text-gray-100 font-sans min-h-screen flex flex-col">
 
   <!-- Header -->
-  <header class="py-6 px-6 md:px-16 flex justify-between items-center border-b border-gray-300 dark:border-gray-700">
-    <nav class="fixed top-0 left-0 w-full bg-gray-900 backdrop-blur-sm shadow-sm z-50 transition-colors duration-300">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-          <a href="/" class="nav-logo text-xl font-bold text-white">
-            Vinodhariharan Ravi<span class="text-gray-400">.</span>
-          </a>
-          
-          <!-- Desktop Nav -->
-          <div class="hidden md:flex space-x-4">
-            <a href="/" class="nav-link text-sm text-gray-200 hover:underline">Home</a>
-            <a href="privacy.html" class="nav-link text-sm text-gray-200 hover:underline">Privacy</a>
-            <a href="terms.html" class="nav-link text-sm text-gray-200 hover:underline">Terms</a>
-          </div>
+  <header class="fixed top-0 left-0 w-full bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-sm z-50 transition-colors duration-300">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="text-xl font-bold dark:text-white">
+        Vinodhariharan <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">Ravi</span>
+      </a>
       
-          <!-- Mobile toggle -->
-          <div class="md:hidden">
-            <button id="menuToggle" class="text-white focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      
-        <!-- Mobile Menu -->
-        <div id="mobileMenu" class="hidden md:hidden bg-gray-900 w-full shadow-md">
-          <div class="px-6 py-4 flex flex-col space-y-3">
-            <a href="./" class="text-sm text-gray-200 hover:underline">Home</a>
-            <a href="privacy.html" class="text-sm text-gray-200 hover:underline">Privacy</a>
-            <a href="terms.html" class="text-sm text-gray-200 hover:underline">Terms</a>
-          </div>
-        </div>
-      </nav>
-      
-      <!-- Toggle Script -->
-      <script>
-        const menuToggle = document.getElementById('menuToggle');
-        const mobileMenu = document.getElementById('mobileMenu');
-      
-        menuToggle.addEventListener('click', () => {
-          mobileMenu.classList.toggle('hidden');
-        });
-      </script>
-      
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex space-x-6">
+        <a href="/" class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Home</a>
+        <a href="privacy.html" class="text-sm text-blue-600 dark:text-blue-400 transition-colors">Privacy</a>
+        <a href="terms.html" class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms</a>
+      </div>
+  
+      <!-- Mobile toggle -->
+      <div class="md:hidden">
+        <button id="menuToggle" class="text-gray-700 dark:text-white focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white/95 dark:bg-black/95 w-full shadow-md">
+      <div class="container mx-auto px-6 py-4 flex flex-col space-y-4">
+        <a href="./" class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Home</a>
+        <a href="privacy.html" class="text-sm text-blue-600 dark:text-blue-400 transition-colors">Privacy</a>
+        <a href="terms.html" class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms</a>
+      </div>
+    </div>
   </header>
 
   <!-- Content -->
-  <main class="max-w-4xl mx-auto px-6 md:px-12 py-16 animate-on-scroll">
-    <h2 class="text-4xl font-bold mb-6 ">Privacy Policy</h2>
-    <p class="mb-4 text-lg">Your privacy is important. This page outlines the data we collect and how it is handled.</p>
+  <main class="container mx-auto px-6 pt-32 pb-16 flex-grow">
+    <div class="max-w-3xl mx-auto">
+      <div class="mb-8 text-center">
+        <span class="px-4 py-1 bg-black/5 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">Legal</span>
+        <h1 class="text-4xl font-bold mt-4 mb-6 dark:text-white tracking-tight">Privacy Policy</h1>
+        <p class="text-lg text-gray-700 dark:text-gray-300">Your privacy is important. This page outlines the data we collect and how it is handled.</p>
+      </div>
 
-    <section class="mt-10">
-      <h3 class="text-2xl font-semibold  mb-2">1. Data Collection</h3>
-      <p class="mb-4">We collect basic personal data such as name, email, and browsing behavior to enhance user experience.</p>
+      <div class="space-y-12 mt-16">
+        <section class="transform transition-all duration-500 hover:-translate-y-1">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white mr-4">
+              <i class="fas fa-database"></i>
+            </div>
+            <h3 class="text-xl font-semibold dark:text-white">Data Collection</h3>
+          </div>
+          <p class="text-gray-700 dark:text-gray-300 ml-14">We collect basic personal data such as name, email, and browsing behavior to enhance user experience.</p>
+        </section>
 
-      <h3 class="text-2xl font-semibold  mt-8 mb-2">2. Usage</h3>
-      <p class="mb-4">Data is used only for analytics and improving the functionality of this portfolio website.</p>
+        <section class="transform transition-all duration-500 hover:-translate-y-1">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white mr-4">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="text-xl font-semibold dark:text-white">Usage</h3>
+          </div>
+          <p class="text-gray-700 dark:text-gray-300 ml-14">Data is used only for analytics and improving the functionality of this portfolio website.</p>
+        </section>
 
-      <h3 class="text-2xl font-semibold  mt-8 mb-2">3. Third Parties</h3>
-      <p class="mb-4">We do not share your information with third parties.</p>
+        <section class="transform transition-all duration-500 hover:-translate-y-1">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white mr-4">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <h3 class="text-xl font-semibold dark:text-white">Third Parties</h3>
+          </div>
+          <p class="text-gray-700 dark:text-gray-300 ml-14">We do not share your information with third parties.</p>
+        </section>
 
-      <h3 class="text-2xl font-semibold  mt-8 mb-2">4. Contact</h3>
-      <p class="mb-4">If you have questions about your privacy, email me at <a href="mailto:vinodhari.ravi@gmail.com" class="underline hover:text-gray-400">vinodhari.ravi@gmail.com</a>.</p>
-    </section>
+        <section class="transform transition-all duration-500 hover:-translate-y-1">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white mr-4">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <h3 class="text-xl font-semibold dark:text-white">Contact</h3>
+          </div>
+          <p class="text-gray-700 dark:text-gray-300 ml-14">If you have questions about your privacy, email me at <a href="mailto:vinodhari.ravi@gmail.com" class="text-blue-600 dark:text-blue-400 hover:underline">vinodhari.ravi@gmail.com</a>.</p>
+        </section>
+      </div>
+    </div>
   </main>
 
-  <footer class="py-8 bg-black text-white">
+  <!-- Footer -->
+  <footer class="py-8 bg-gradient-to-br from-gray-900 to-black text-white">
     <div class="container mx-auto px-6">
         <div class="flex flex-col md:flex-row justify-between items-center">
             <div class="mb-4 md:mb-0">
-                <h3 class="text-2xl font-bold">Vinodhariharan Ravi<span class="text-gray-400">.</span></h3>
+                <h3 class="text-2xl font-bold">Vinodhariharan <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">Ravi</span></h3>
                 <p class="text-gray-400 mt-2">Building elegant solutions with code.</p>
             </div>
 
             <div class="flex space-x-6">
                 <a href="https://linkedin.com/in/vinodhariharan-ravi" target="_blank"
-                    class="text-white hover:text-gray-400 transition duration-300">
+                    class="text-gray-300 hover:text-blue-400 transition-colors">
                     <i class="fab fa-linkedin-in text-xl"></i>
                 </a>
                 <a href="https://github.com/Vinodhariharan" target="_blank"
-                    class="text-white hover:text-gray-400 transition duration-300">
+                    class="text-gray-300 hover:text-blue-400 transition-colors">
                     <i class="fab fa-github text-xl"></i>
                 </a>
                 <a href="mailto:vinodhari.ravi@gmail.com"
-                    class="text-white hover:text-gray-400 transition duration-300">
+                    class="text-gray-300 hover:text-blue-400 transition-colors">
                     <i class="fas fa-envelope text-xl"></i>
                 </a>
-                <a href="tel:+916362607290" class="text-white hover:text-gray-400 transition duration-300">
+                <a href="tel:+916362607290" class="text-gray-300 hover:text-blue-400 transition-colors">
                     <i class="fas fa-phone text-xl"></i>
                 </a>
             </div>
@@ -107,27 +131,21 @@
         <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p class="text-gray-400">© 2025 R Vinod Hariharan. All rights reserved.</p>
             <div class="mt-4 md:mt-0">
-                <a href="./privacy.html" class="text-gray-400 hover:text-white transition duration-300 mr-4">Privacy Policy</a>
-                <a href="./terms.html" class="text-gray-400 hover:text-white transition duration-300">Terms of Service</a>
+                <a href="./privacy.html" class="text-blue-400 hover:text-white transition-colors mr-4">Privacy Policy</a>
+                <a href="./terms.html" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
             </div>
         </div>
     </div>
-</footer>
+  </footer>
 
-  <!-- Scroll animation -->
+  <!-- Toggle Script -->
   <script>
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    });
-
-    document.querySelectorAll('.animate-on-scroll').forEach(el => {
-      observer.observe(el);
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+  
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
     });
   </script>
-  
 </body>
 </html>

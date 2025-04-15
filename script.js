@@ -165,3 +165,4 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.classList.remove('bg-white', 'text-gray-900');
     }
 });
+
