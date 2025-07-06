@@ -180,13 +180,23 @@ div {
 }
 
 @keyframes spin-slow {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes spin-slow-reverse {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(-360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(-360deg);
+    }
 }
 
 .animate-spin-slow {
@@ -196,3 +206,229 @@ div {
 .animate-spin-slow-reverse {
     animation: spin-slow-reverse 15s linear infinite;
 }
+
+/* Prevent scrolling when modal is open */
+.modal-open {
+    overflow: hidden;
+}
+
+/* Ensure modal is above everything */
+.modal-overlay {
+    z-index: 9999;
+}
+
+/* Smooth animations */
+.modal-content {
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+/* Image carousel styles */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.carousel-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.carousel-dot.active {
+    background: white;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.carousel-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.carousel-nav.prev {
+    left: 10px;
+}
+
+.carousel-nav.next {
+    right: 10px;
+}
+
+/* Add this to your existing style tag */
+
+ .modal-backdrop {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+        }
+        
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            transition: all 0.3s ease-out;
+        }
+        
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease-out;
+        }
+        
+        .certificate-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .skill-tag {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .achievement-item {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-left: 4px solid #667eea;
+        }
+
+        /* Prevent scrolling when modal is open */
+        .modal-open {
+            overflow: hidden;
+        }
+
+        /* Ensure modal is above everything */
+        .modal-overlay {
+            z-index: 9999;
+        }
+
+        /* Smooth animations */
+        .modal-content {
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        /* Image carousel styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: white;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .carousel-nav.prev {
+            left: 10px;
+        }
+
+        .carousel-nav.next {
+            right: 10px;
+        }
