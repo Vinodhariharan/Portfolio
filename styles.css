@@ -1,434 +1,290 @@
 @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
+/* ── Design Tokens ── */
+:root {
+  --bg:         #ffffff;
+  --surface:    #f5f5f5;
+  --border:     #e5e5e5;
+  --text:       #0a0a0a;
+  --muted:      #737373;
+  --accent:     #2563eb;
+  --accent-dk:  #1d4ed8;
+}
+
+.dark {
+  --bg:        #0a0a0a;
+  --surface:   #111111;
+  --border:    #222222;
+  --text:      #fafafa;
+  --muted:     #a3a3a3;
+}
+
+/* ── Base ── */
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+
 body {
-    font-family: "League Spartan", sans-serif;
+  font-family: "League Spartan", sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: "Playfair Display", serif;
+h1, h2 { font-family: "Playfair Display", serif; }
+h3, h4, h5, h6 { font-family: "League Spartan", sans-serif; }
+
+/* ── Section label ── */
+.section-label {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
 }
 
-.progress-bar {
-    height: 8px;
-    position: relative;
-    background: #e0e0e0;
-    border-radius: 5px;
-    overflow: hidden;
+/* ── Nav links ── */
+.nav-link {
+  position: relative;
+  font-size: 0.875rem;
+  color: var(--muted);
+  transition: color 0.2s ease;
+  text-decoration: none;
 }
 
-.progress-fill {
-    height: 100%;
-    background: #000;
-    border-radius: 5px;
-    transform-origin: left;
-    transform: scaleX(0);
-    transition: transform 1.5s ease;
+.nav-link:hover { color: var(--text); }
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background-color: var(--accent);
+  transition: width 0.2s ease;
 }
 
+.nav-link:hover::after { width: 100%; }
+
+/* ── Cards ── */
+.card {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  background-color: var(--surface);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover { box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
+
+/* ── Buttons ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  background-color: var(--accent);
+  color: #fff;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover { background-color: var(--accent-dk); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Tags ── */
+.tag {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  transition: border-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+.tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── Timeline ── */
+.timeline {
+  border-left: 2px solid var(--border);
+  padding-left: 1.75rem;
+}
+
+.timeline-entry {
+  position: relative;
+  padding-bottom: 2.5rem;
+}
+
+.timeline-entry:last-child { padding-bottom: 0; }
+
+.timeline-entry::before {
+  content: '';
+  position: absolute;
+  left: -1.875rem;
+  top: 0.35rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  border: 2px solid var(--bg);
+}
+
+/* ── Scroll animations ── */
 .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
 }
 
-.visible {
-    opacity: 1;
-    transform: translateY(0);
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .animate-from-left {
-    opacity: 0;
-    transform: translateX(-50px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+  opacity: 0;
+  transform: translateX(-24px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.animate-from-left.visible {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .animate-from-right {
-    opacity: 0;
-    transform: translateX(50px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
 }
 
-.nav-logo {
-    font-family: "Playfair Display", serif;
+.animate-from-right.visible {
+  opacity: 1;
+  transform: translateX(0);
 }
 
-.nav-link {
-    position: relative;
-}
+/* ── Modal ── */
+.modal-open { overflow: hidden; }
+.modal-overlay { z-index: 9999; }
 
-.nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -2px;
-    left: 0;
-    background-color: #000;
-    transition: width 0.3s ease;
-}
-
-.nav-link:hover::after {
-    width: 100%;
-}
-
-.timeline-item {
-    position: relative;
-}
-
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    width: 2px;
-    background-color: #000;
-    top: 0;
-    bottom: 0;
-    left: 24px;
-}
-
-.timeline-dot {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #fff;
-    border: 2px solid #000;
-    top: 24px;
-    left: 17px;
-    z-index: 1;
-}
-
-.project-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Custom cursor */
-.custom-cursor {
-    position: fixed;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #000;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: width 0.3s, height 0.3s, border-color 0.3s;
-    display: none;
-    /* Hidden by default, show with JS */
-}
-
-.cursor-dot {
-    position: fixed;
-    width: 5px;
-    height: 5px;
-    background-color: #000;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 10000;
-    transform: translate(-50%, -50%);
-    display: none;
-    /* Hidden by default, show with JS */
-}
-
-/* Add this to your existing style tag */
-.dark {
-    color-scheme: dark;
-}
-
-.dark body {
-    background-color: #121212;
-    color: #f0f0f0;
-}
-
-.dark .bg-white {
-    background-color: #1e1e1e;
-}
-
-.dark .bg-gray-50 {
-    background-color: #1a1a1a;
-}
-
-.dark .border-gray-200 {
-    border-color: #333;
-}
-
-.dark .bg-gray-100,
-.dark .bg-gray-200,
-.dark .progress-bar {
-    background-color: #333;
-}
-
-.dark .text-gray-700,
-.dark .text-gray-600 {
-    color: #bbb;
-}
-
-/* Smooth transition for color changes */
-body,
-section,
-div {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-@keyframes spin-slow {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes spin-slow-reverse {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(-360deg);
-    }
-}
-
-.animate-spin-slow {
-    animation: spin-slow 20s linear infinite;
-}
-
-.animate-spin-slow-reverse {
-    animation: spin-slow-reverse 15s linear infinite;
-}
-
-/* Prevent scrolling when modal is open */
-.modal-open {
-    overflow: hidden;
-}
-
-/* Ensure modal is above everything */
-.modal-overlay {
-    z-index: 9999;
-}
-
-/* Smooth animations */
 .modal-content {
-    max-height: calc(100vh - 80px);
-    overflow-y: auto;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
 }
 
-/* Image carousel styles */
+/* ── Carousel ── */
 .carousel-container {
-    position: relative;
-    width: 100%;
-    height: 300px;
-    overflow: hidden;
-    border-radius: 12px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0.5rem;
 }
 
 .carousel-slide {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
-.carousel-slide.active {
-    opacity: 1;
-}
+.carousel-slide.active { opacity: 1; }
 
 .carousel-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .carousel-controls {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
 }
 
 .carousel-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: background-color 0.3s;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.45);
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.carousel-dot.active {
-    background: white;
-}
+.carousel-dot.active { background: #fff; }
 
 .carousel-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.35);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 2;
 }
 
-.carousel-nav:hover {
-    background: rgba(0, 0, 0, 0.8);
+.carousel-nav:hover { background: rgba(0,0,0,0.65); }
+.carousel-nav.prev { left: 8px; }
+.carousel-nav.next { right: 8px; }
+
+/* ── Progress bars (kept for compatibility) ── */
+.progress-bar {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
 }
 
-.carousel-nav.prev {
-    left: 10px;
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1.5s ease;
 }
-
-.carousel-nav.next {
-    right: 10px;
-}
-
-/* Add this to your existing style tag */
-
- .modal-backdrop {
-            backdrop-filter: blur(10px);
-            background: rgba(0, 0, 0, 0.5);
-        }
-        
-        .modal-enter {
-            opacity: 0;
-            transform: scale(0.9) translateY(20px);
-        }
-        
-        .modal-enter-active {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-            transition: all 0.3s ease-out;
-        }
-        
-        .modal-exit {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-        
-        .modal-exit-active {
-            opacity: 0;
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.3s ease-out;
-        }
-        
-        .certificate-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-        }
-        
-        .skill-tag {
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-        }
-        
-        .achievement-item {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            border-left: 4px solid #667eea;
-        }
-
-        /* Prevent scrolling when modal is open */
-        .modal-open {
-            overflow: hidden;
-        }
-
-        /* Ensure modal is above everything */
-        .modal-overlay {
-            z-index: 9999;
-        }
-
-        /* Smooth animations */
-        .modal-content {
-            max-height: calc(100vh - 80px);
-            overflow-y: auto;
-        }
-
-        /* Image carousel styles */
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            overflow: hidden;
-            border-radius: 12px;
-        }
-
-        .carousel-slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        .carousel-slide.active {
-            opacity: 1;
-        }
-
-        .carousel-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .carousel-controls {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-        }
-
-        .carousel-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .carousel-dot.active {
-            background: white;
-        }
-
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .carousel-nav:hover {
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        .carousel-nav.prev {
-            left: 10px;
-        }
-
-        .carousel-nav.next {
-            right: 10px;
-        }
