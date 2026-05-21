@@ -3,20 +3,22 @@
 /* ── Design Tokens ── */
 :root {
   --bg:         #ffffff;
-  --surface:    #f5f5f5;
-  --border:     #e5e5e5;
-  --text:       #0a0a0a;
-  --muted:      #737373;
-  --accent:     #2563eb;
-  --accent-dk:  #1d4ed8;
+  --surface:    #f7f4ff;
+  --border:     #e8e2f5;
+  --text:       #0d0a14;
+  --muted:      #6b6880;
+  --accent:     #7c3aed;
+  --accent-dk:  #6d28d9;
 }
 
 .dark {
-  --bg:        #0a0a0a;
-  --surface:   #111111;
-  --border:    #222222;
-  --text:      #fafafa;
-  --muted:     #a3a3a3;
+  --bg:        #08050f;
+  --surface:   #0f0b1a;
+  --border:    #1e1535;
+  --text:      #f5f0ff;
+  --muted:     #9d94b8;
+  --accent:    #a78bfa;
+  --accent-dk: #8b5cf6;
 }
 
 /* ── Base ── */
@@ -136,6 +138,41 @@ h3, h4, h5, h6 { font-family: "League Spartan", sans-serif; }
   border-color: var(--accent);
   color: var(--accent);
 }
+
+/* ── Hero grain + gradient ── */
+.hero-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(124,58,237,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 0% 100%, rgba(139,92,246,0.07) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dark .hero-section::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(124,58,237,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 0% 100%, rgba(167,139,250,0.12) 0%, transparent 50%);
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-section > * { position: relative; z-index: 1; }
 
 /* ── Timeline ── */
 .timeline {
