@@ -1,0 +1,18 @@
+# Claude Code session data
+.claude/
+
+# Supabase config is generated at build time from env vars — never commit the real file
+supabase-config.js
+
+# Environment / secrets (never commit these)
+.env
+.env.local
+.env*.local
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp

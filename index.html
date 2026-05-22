@@ -4,15 +4,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vinodhariharan Ravi</title>
+  <title>Vinodhariharan Ravi — Full-Stack &amp; AI Engineer</title>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="./assets/favicon.png" type="image/png" />
   <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="supabase-config.js"></script>
   <script>
     tailwind.config = { darkMode: 'class' };
+  </script>
+
+  <!-- Primary SEO -->
+  <meta name="description" content="Vinodhariharan Ravi — Full-Stack Engineer &amp; AI Developer specialising in Spring Boot microservices, LangChain RAG pipelines, and cloud-native deployments." />
+  <meta name="keywords" content="Vinodhariharan Ravi, Full Stack Developer, AI Engineer, Spring Boot, LangChain, RAG, Java, Python, React, Cloud, Portfolio" />
+  <meta name="author" content="Vinodhariharan Ravi" />
+  <link rel="canonical" href="https://vinodhariharan.vercel.app/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://vinodhariharan.vercel.app/" />
+  <meta property="og:title"        content="Vinodhariharan Ravi — Full-Stack &amp; AI Engineer" />
+  <meta property="og:description"  content="Building full-stack applications and agentic AI systems — Spring Boot microservices, LangChain RAG pipelines, cloud-native deployments." />
+  <meta property="og:image"        content="https://vinodhariharan.vercel.app/assets/og-cover.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name"    content="Vinodhariharan Ravi" />
+  <meta property="og:locale"       content="en_IN" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Vinodhariharan Ravi — Full-Stack &amp; AI Engineer" />
+  <meta name="twitter:description" content="Building full-stack applications and agentic AI systems — Spring Boot microservices, LangChain RAG pipelines, cloud-native deployments." />
+  <meta name="twitter:image"       content="https://vinodhariharan.vercel.app/assets/og-cover.png" />
+
+  <!-- JSON-LD Person schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Vinodhariharan Ravi",
+    "url": "https://vinodhariharan.vercel.app",
+    "sameAs": [
+      "https://linkedin.com/in/vinodhariharan-ravi",
+      "https://github.com/Vinodhariharan"
+    ],
+    "jobTitle": "Full-Stack Engineer & AI Developer",
+    "description": "Building full-stack applications and agentic AI systems — Spring Boot microservices, LangChain RAG pipelines, and cloud-native deployments.",
+    "address": { "@type": "PostalAddress", "addressLocality": "Bengaluru", "addressCountry": "IN" }
+  }
   </script>
 </head>
 
@@ -32,6 +74,7 @@
         <a href="#projects" class="nav-link">Projects</a>
         <a href="#skills" class="nav-link">Skills</a>
         <a href="#contact" class="nav-link">Contact</a>
+        <a href="blog.html" class="nav-link">Blog</a>
         <button id="darkModeToggle" class="p-2 rounded-full text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Toggle dark mode">
           <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
           <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
@@ -59,12 +102,13 @@
         <a href="#projects" class="py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Projects</a>
         <a href="#skills" class="py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Skills</a>
         <a href="#contact" class="py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Contact</a>
+        <a href="blog.html" class="py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Blog</a>
       </div>
     </div>
   </nav>
 
   <!-- ── Hero ── -->
-  <section id="hero" class="min-h-screen flex items-center pt-16 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+  <section id="hero" class="hero-bg min-h-screen flex items-center pt-16 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6 py-24 flex flex-col md:flex-row items-center gap-16">
 
       <!-- Text -->
@@ -92,7 +136,7 @@
       <!-- Photo -->
       <div class="shrink-0 animate-from-right">
         <div class="w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden border-2 border-[#e5e5e5] dark:border-[#222222]">
-          <img src="./assets/Black and White DP.png" alt="Vinodhariharan Ravi" class="w-full h-full object-cover" />
+          <img src="./assets/new_profile.png" alt="Vinodhariharan Ravi" class="w-full h-full object-cover" />
         </div>
       </div>
 
@@ -683,7 +727,7 @@
   </section>
 
   <!-- ── Skills ── -->
-  <section id="skills" class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+  <section id="skills"  class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
       <div class="mb-12 animate-on-scroll">
         <p class="section-label">What I Work With</p>
@@ -881,6 +925,33 @@
     </div>
   </section>
 
+  <!-- ── Blog Highlights ── -->
+  <section id="blog-highlights" class="hidden py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+    <div class="max-w-5xl mx-auto px-6">
+
+      <div class="flex items-end justify-between mb-10 animate-on-scroll">
+        <div>
+          <p class="section-label mb-2">Writing</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Latest from the Blog</h2>
+        </div>
+        <a href="blog.html" class="hidden md:inline-flex items-center gap-1.5 text-sm font-medium text-[#2563eb] hover:text-[#1d4ed8] transition-colors shrink-0">
+          View all posts
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div id="blog-highlights-grid" class="grid grid-cols-1 md:grid-cols-3 gap-5 animate-on-scroll"></div>
+
+      <div class="mt-8 text-center md:hidden animate-on-scroll">
+        <a href="blog.html" class="btn-ghost inline-flex items-center gap-2">
+          View all posts
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
   <!-- ── Contact ── -->
   <section id="contact" class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
@@ -947,7 +1018,7 @@
   </section>
 
   <!-- ── Footer ── -->
-  <footer class="border-t border-[#e5e5e5] dark:border-[#222222] py-10 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+  <footer class="footer-bg border-t border-[#e5e5e5] dark:border-[#222222] py-10 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
       <p class="text-sm text-[#737373]">© 2026 Vinodhariharan Ravi</p>
       <div class="flex gap-5">
@@ -966,6 +1037,51 @@
   </button>
 
   <script src="./script.js"></script>
+
+  <!-- ── Blog Highlights (loads 3 latest posts) ── -->
+  <script>
+    (async () => {
+      try {
+        const { data: posts } = await supabaseClient
+          .from('posts')
+          .select('title, slug, excerpt, content, created_at')
+          .eq('is_published', true)
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        if (!posts || posts.length === 0) return;
+
+        const formatDate = iso => new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        const readTime   = c  => Math.max(1, Math.ceil(c.trim().split(/\s+/).length / 200)) + ' min read';
+
+        const grid = document.getElementById('blog-highlights-grid');
+        grid.innerHTML = posts.map(p => `
+          <a href="blog.html#${p.slug}"
+             class="card flex flex-col gap-3 hover:border-[#2563eb] transition-all duration-200 hover:-translate-y-1 hover:shadow-md cursor-pointer no-underline group">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-[#737373]">${formatDate(p.created_at)}</span>
+              <span class="text-xs text-[#737373]">${readTime(p.content)}</span>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa] leading-snug mb-2 group-hover:text-[#2563eb] transition-colors">
+                ${p.title}
+              </h3>
+              ${p.excerpt ? `<p class="text-sm text-[#737373] line-clamp-3 leading-relaxed">${p.excerpt}</p>` : ''}
+            </div>
+            <span class="flex items-center gap-1 text-xs font-medium text-[#2563eb] mt-1">
+              Read more
+              <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </span>
+          </a>
+        `).join('');
+
+        document.getElementById('blog-highlights').classList.remove('hidden');
+      } catch (e) {
+        // Silently hide section if fetch fails
+        console.warn('Blog highlights unavailable:', e);
+      }
+    })();
+  </script>
 </body>
 
 </html>
