@@ -272,21 +272,8 @@ h3, h4, h5, h6 { font-family: "League Spartan", sans-serif; }
 .carousel-nav.prev { left: 8px; }
 .carousel-nav.next { right: 8px; }
 
-/* ── Hero — magic pattern full background ── */
-.hero-bg {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.80), rgba(255,255,255,0.80)),
-    url('./assets/magicpattern-8h_tctpq4h0-unsplash.jpg');
-  background-size: cover;
-  background-position: center;
-}
-.dark .hero-bg {
-  background-image:
-    linear-gradient(rgba(10,10,10,0.80), rgba(10,10,10,0.80)),
-    url('./assets/magicpattern-8h_tctpq4h0-unsplash.jpg');
-  background-size: cover;
-  background-position: center;
-}
+/* ── Hero — plain background (image removed) ── */
+.hero-bg {}
 
 /* ── Footer — magic pattern subtle hint ── */
 .footer-bg {
