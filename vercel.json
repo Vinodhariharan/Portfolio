@@ -1,10 +1,14 @@
 {
-  "buildCommand": "node build-config.js",
+  "buildCommand": "npm install && node build-config.js",
   "outputDirectory": ".",
-  "installCommand": "",
+  "installCommand": "npm install",
+  "rewrites": [
+    { "source": "/post/:slug", "destination": "/api/post/[slug]" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
+  ],
   "headers": [
     {
-      "source": "/sitemap.xml",
+      "source": "/api/sitemap",
       "headers": [
         { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
       ]

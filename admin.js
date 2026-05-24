@@ -114,6 +114,14 @@ async function openEditor(postId = null) {
       $('slug-preview').textContent = post.slug;
       $('post-excerpt-input').value = post.excerpt || '';
       $('post-content-input').value = post.content;
+      // Cover image
+      $('cover-image-url').value = post.cover_image || '';
+      if (post.cover_image) {
+        $('cover-preview').src = post.cover_image;
+        show('cover-preview-wrap');
+      } else {
+        hide('cover-preview-wrap');
+      }
     }
   } else {
     $('post-title-input').value   = '';
@@ -121,6 +129,10 @@ async function openEditor(postId = null) {
     $('slug-preview').textContent = '…';
     $('post-excerpt-input').value = '';
     $('post-content-input').value = '';
+    // Cover image reset
+    $('cover-image-url').value = '';
+    $('cover-preview').src     = '';
+    hide('cover-preview-wrap');
   }
   showSection('editor-section');
 }
@@ -142,7 +154,8 @@ async function savePost(isPublished) {
     return;
   }
 
-  const payload = { title, slug, excerpt, content, is_published: isPublished };
+  const cover_image = $('cover-image-url').value || null;
+  const payload = { title, slug, excerpt, content, cover_image, is_published: isPublished };
 
   const { error } = editingPostId
     ? await supabaseClient.from('posts').update(payload).eq('id', editingPostId)
@@ -174,6 +187,33 @@ async function confirmDelete() {
   await supabaseClient.from('posts').delete().eq('id', deleteTargetId);
   closeDeleteModal();
   loadDashboard();
+}
+
+// ── Cover image upload ────────────────────────────────────────────────────────
+async function handleCoverUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const status = $('cover-upload-status');
+  status.textContent = 'Uploading…';
+
+  const filename = `covers/${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
+  const { error } = await supabaseClient.storage
+    .from('blog-images')
+    .upload(filename, file, { cacheControl: '3600', upsert: false });
+
+  if (error) { status.textContent = '✗ ' + error.message; return; }
+
+  const { data: { publicUrl } } = supabaseClient.storage
+    .from('blog-images')
+    .getPublicUrl(filename);
+
+  $('cover-image-url').value = publicUrl;
+  $('cover-preview').src     = publicUrl;
+  show('cover-preview-wrap');
+  status.textContent = '✓ Cover set';
+  setTimeout(() => { status.textContent = ''; }, 2000);
+  e.target.value = '';
 }
 
 // ── Image upload ──────────────────────────────────────────────────────────────
@@ -236,6 +276,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('image-upload-input').addEventListener('change', handleImageUpload);
+
+  $('cover-upload-input').addEventListener('change', handleCoverUpload);
+  $('cover-remove-btn').addEventListener('click', () => {
+    $('cover-image-url').value = '';
+    $('cover-preview').src     = '';
+    hide('cover-preview-wrap');
+  });
 
   $('cancel-delete-btn').addEventListener('click', closeDeleteModal);
   $('confirm-delete-btn').addEventListener('click', confirmDelete);

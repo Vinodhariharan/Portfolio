@@ -17,8 +17,13 @@ function estimateReadTime(content) {
 
 function renderCard(post) {
   return `
-    <a href="blog.html#${post.slug}"
-       class="card post-card flex flex-col gap-3 cursor-pointer no-underline">
+    <a href="/post/${post.slug}"
+       class="card post-card flex flex-col gap-3 cursor-pointer no-underline group">
+      ${post.cover_image
+        ? `<div class="w-full h-36 rounded-lg overflow-hidden bg-[#f5f5f5] dark:bg-[#111111] -mx-0">
+             <img src="${post.cover_image}" alt="${post.title}" class="w-full h-full object-cover" loading="lazy" />
+           </div>`
+        : ''}
       <div class="flex items-center justify-between">
         <span class="text-xs text-[#737373]">${formatDate(post.created_at)}</span>
         <span class="text-xs text-[#737373]">${estimateReadTime(post.content)}</span>
@@ -41,8 +46,8 @@ function renderCard(post) {
 
 function renderFeatured(post) {
   return `
-    <a href="blog.html#${post.slug}"
-       class="card featured-card post-card flex flex-col md:flex-row gap-6 md:gap-10 cursor-pointer no-underline group">
+    <a href="/post/${post.slug}"
+       class="card featured-card post-card flex flex-col md:flex-row gap-6 md:gap-8 cursor-pointer no-underline group">
       <div class="flex-1 flex flex-col justify-between gap-4">
         <div>
           <span class="inline-block text-[0.65rem] font-semibold tracking-widest uppercase text-[#2563eb] mb-3">Featured</span>
@@ -54,7 +59,7 @@ function renderFeatured(post) {
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
             <div class="w-6 h-6 rounded-full overflow-hidden bg-[#e5e5e5] dark:bg-[#222222] shrink-0">
-              <img src="./assets/new_profile.png" alt="Vinodhariharan Ravi" class="w-full h-full object-cover" />
+              <img src="/assets/new_profile.png" alt="Vinodhariharan Ravi" class="w-full h-full object-cover" />
             </div>
             <span class="text-sm text-[#737373]">${formatDate(post.created_at)}</span>
             <span class="text-sm text-[#737373]">·</span>
@@ -66,6 +71,11 @@ function renderFeatured(post) {
           </span>
         </div>
       </div>
+      ${post.cover_image
+        ? `<div class="w-full md:w-64 h-48 rounded-xl overflow-hidden shrink-0 bg-[#f5f5f5] dark:bg-[#111111]">
+             <img src="${post.cover_image}" alt="${post.title}" class="w-full h-full object-cover" loading="lazy" />
+           </div>`
+        : ''}
     </a>
   `;
 }
@@ -158,7 +168,7 @@ async function loadPostList() {
   try {
     const { data: posts, error } = await supabaseClient
       .from('posts')
-      .select('id, title, slug, excerpt, content, created_at')
+      .select('id, title, slug, excerpt, content, cover_image, created_at')
       .eq('is_published', true)
       .order('created_at', { ascending: false });
 
@@ -204,7 +214,7 @@ async function loadSinglePost(slug) {
   try {
     const { data: post, error } = await supabaseClient
       .from('posts')
-      .select('title, slug, excerpt, content, created_at')
+      .select('title, slug, excerpt, content, cover_image, created_at')
       .eq('slug', slug)
       .eq('is_published', true)
       .single();

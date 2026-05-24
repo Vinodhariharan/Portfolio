@@ -1069,7 +1069,7 @@
 
         const grid = document.getElementById('blog-highlights-grid');
         grid.innerHTML = posts.map(p => `
-          <a href="blog.html#${p.slug}"
+          <a href="/post/${p.slug}"
              class="card flex flex-col gap-3 hover:border-[#2563eb] transition-all duration-200 hover:-translate-y-1 hover:shadow-md cursor-pointer no-underline group">
             <div class="flex items-center justify-between">
               <span class="text-xs text-[#737373]">${formatDate(p.created_at)}</span>
