@@ -46,7 +46,21 @@ export default async function handler(req) {
     });
   }
 
-  const contentHtml = marked.parse(post.content || '');
+  const rawContentHtml = marked.parse(post.content || '');
+
+  // Inject mid-article ad after 3rd </p>
+  const adHtml = `
+    <div style="margin:2rem 0;">
+      <p style="font-size:0.6rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#c4c4c4;text-align:center;margin-bottom:0.5rem;">Advertisement</p>
+      <div style="border:1px dashed #e5e5e5;border-radius:0.75rem;display:flex;align-items:center;justify-content:center;height:90px;background:#fafafa;">
+        <span style="font-size:0.75rem;color:#d4d4d4;">728 &times; 90</span>
+      </div>
+    </div>`;
+  let pCount = 0;
+  const contentHtml = rawContentHtml.replace(/<\/p>/gi, m => {
+    pCount++;
+    return pCount === 3 ? m + adHtml : m;
+  });
   const ogImage     = post.cover_image || `${SITE}/assets/og-cover.png`;
   const date        = new Date(post.created_at).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric'
@@ -68,11 +82,11 @@ export default async function handler(req) {
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6E52VLX2ZZ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6E52VLX2ZZ');</script>
   <!-- Styles -->
+  <script>tailwind.config={darkMode:'class'};</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/styles.css"/>
   <link rel="icon" href="/assets/favicon.png" type="image/png"/>
   <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet"/>
-  <script>tailwind.config={darkMode:'class'};</script>
   <!-- SEO -->
   <meta name="description" content="${escAttr(post.excerpt || post.title)}"/>
   <link rel="canonical" href="${SITE}/post/${post.slug}"/>
