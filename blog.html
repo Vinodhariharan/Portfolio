@@ -160,7 +160,22 @@
             <span class="section-label">All Posts</span>
             <div class="flex-1 h-px bg-[#e5e5e5] dark:bg-[#222222]"></div>
           </div>
-          <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+          <!-- Grid + right sidebar ad -->
+          <div class="flex items-start gap-6">
+
+            <!-- Post cards -->
+            <div id="posts-grid" class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+
+            <!-- Right-side inline ad (desktop only, not sticky) -->
+            <div class="hidden lg:flex flex-col items-center gap-1 w-44 shrink-0">
+              <p class="text-[0.6rem] font-medium tracking-widest uppercase text-[#c4c4c4] dark:text-[#444]">Advertisement</p>
+              <div class="border border-dashed border-[#e5e5e5] dark:border-[#2a2a2a] bg-[#fafafa] dark:bg-[#0f0f0f] rounded-xl flex items-center justify-center w-full" style="height:300px;">
+                <span class="text-xs text-[#d4d4d4] dark:text-[#2a2a2a] rotate-90 whitespace-nowrap">160 × 300</span>
+              </div>
+            </div>
+
+          </div>
         </div>
 
       </div>
