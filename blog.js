@@ -189,6 +189,7 @@ async function loadPostList() {
     if (rest.length > 0) {
       grid.innerHTML = rest.map(renderCard).join('');
       postsSection.classList.remove('hidden');
+      document.getElementById('list-ad-slot')?.classList.remove('hidden');
     }
 
   } catch (err) {
@@ -241,6 +242,20 @@ async function loadSinglePost(slug) {
     }
 
     document.getElementById('post-content').innerHTML = marked.parse(post.content);
+
+    // Inject mid-article ad after 3rd paragraph (if enough content)
+    const contentEl  = document.getElementById('post-content');
+    const paragraphs = contentEl.querySelectorAll('p');
+    if (paragraphs.length >= 3) {
+      const adHtml = `
+        <div class="my-8">
+          <p style="font-size:0.6rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#c4c4c4;text-align:center;margin-bottom:0.5rem;">Advertisement</p>
+          <div style="border:1px dashed #e5e5e5;border-radius:0.75rem;display:flex;align-items:center;justify-content:center;height:90px;background:#fafafa;">
+            <span style="font-size:0.75rem;color:#d4d4d4;">728 × 90</span>
+          </div>
+        </div>`;
+      paragraphs[2].insertAdjacentHTML('afterend', adHtml);
+    }
 
     if (readtimeBar) readtimeBar.textContent = estimateReadTime(post.content);
 
