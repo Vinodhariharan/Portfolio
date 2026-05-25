@@ -303,6 +303,58 @@ h3, h4, h5, h6 { font-family: "League Spartan", sans-serif; }
   background: linear-gradient(to bottom, rgba(10,10,10,0), #111111);
 }
 
+/* ── Footer grid layout (plain CSS — no Tailwind dependency) ── */
+.footer-grid {
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2.5rem 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+@media (min-width: 768px) {
+  .footer-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.footer-col-nav,
+.footer-col-connect {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.footer-connect-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  color: #737373;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-connect-link:hover { color: #2563eb; }
+
+.footer-col-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #737373;
+  margin-bottom: 1rem;
+}
+
+.footer-page-link {
+  font-size: 0.875rem;
+  color: #737373;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-page-link:hover { color: #2563eb; }
+.dark .footer-fade {
+  background: linear-gradient(to bottom, rgba(10,10,10,0), #111111);
+}
+
 /* ── Progress bars (kept for compatibility) ── */
 .progress-bar {
   height: 6px;
