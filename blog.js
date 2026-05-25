@@ -249,10 +249,9 @@ async function loadSinglePost(slug) {
     if (paragraphs.length >= 3) {
       const adHtml = `
         <div class="my-8">
-          <p style="font-size:0.6rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#c4c4c4;text-align:center;margin-bottom:0.5rem;">Advertisement</p>
-          <div style="border:1px dashed #e5e5e5;border-radius:0.75rem;display:flex;align-items:center;justify-content:center;height:90px;background:#fafafa;">
-            <span style="font-size:0.75rem;color:#d4d4d4;">728 × 90</span>
-          </div>
+          <a href="https://www.youtube.com/@tech_rovers" target="_blank" rel="noopener" style="display:block;border-radius:0.75rem;overflow:hidden;">
+            <img src="/assets/Subscribe_ad.png" alt="Subscribe to Tech Rovers on YouTube" style="display:block;width:100%;height:90px;object-fit:cover;object-position:center;"/>
+          </a>
         </div>`;
       paragraphs[2].insertAdjacentHTML('afterend', adHtml);
     }

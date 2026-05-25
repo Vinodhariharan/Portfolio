@@ -14,6 +14,18 @@
     gtag('config', 'G-6E52VLX2ZZ');
   </script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- Dark mode: runs before first paint to avoid FOUC -->
+  <script>
+    (function(){
+      var s = localStorage.getItem('darkMode');
+      var p = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (s === 'enabled' || (s === null && p)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
   <script>tailwind.config = { darkMode: 'class' };</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="styles.css" />
@@ -158,13 +170,6 @@
     };
     document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
     document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
-    const saved = localStorage.getItem('darkMode');
-    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-    if (saved === 'enabled' || (saved === null && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
   </script>
 </body>
 

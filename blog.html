@@ -14,6 +14,18 @@
     gtag('config', 'G-6E52VLX2ZZ');
   </script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- Dark mode: runs before first paint to avoid FOUC -->
+  <script>
+    (function(){
+      var s = localStorage.getItem('darkMode');
+      var p = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (s === 'enabled' || (s === null && p)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
   <script>tailwind.config = { darkMode: 'class' };</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="styles.css" />
@@ -148,10 +160,9 @@
 
         <!-- Ad slot: between featured and post grid -->
         <div id="list-ad-slot" class="hidden mb-10">
-          <p class="text-[0.6rem] font-medium tracking-widest uppercase text-[#c4c4c4] dark:text-[#444] text-center mb-2">Advertisement</p>
-          <div class="border border-dashed border-[#e5e5e5] dark:border-[#2a2a2a] bg-[#fafafa] dark:bg-[#0f0f0f] rounded-xl flex items-center justify-center h-[90px]">
-            <span class="text-xs text-[#d4d4d4] dark:text-[#2a2a2a]">728 × 90</span>
-          </div>
+          <a href="https://www.youtube.com/@tech_rovers" target="_blank" rel="noopener" class="block rounded-xl overflow-hidden">
+            <img src="/assets/Subscribe_ad.png" alt="Subscribe to Tech Rovers on YouTube" class="w-full h-[90px] object-cover object-center" style="display:block;"/>
+          </a>
         </div>
 
         <!-- Divider + remaining posts -->
@@ -310,13 +321,6 @@
     document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
     document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
 
-    const saved = localStorage.getItem('darkMode');
-    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-    if (saved === 'enabled' || (saved === null && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
   </script>
 </body>
 </html>
