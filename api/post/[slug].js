@@ -136,49 +136,62 @@ export default async function handler(req) {
   </nav>
 
   <main class="flex-grow pt-24 pb-24">
-    <div class="max-w-2xl mx-auto px-6">
+    <div class="max-w-5xl mx-auto px-6 flex gap-10 items-start">
 
-      <!-- Back -->
-      <a href="/blog.html" class="inline-flex items-center gap-2 text-sm text-[#737373] hover:text-[#2563eb] transition-colors mb-10">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-        All posts
-      </a>
+      <!-- Post content -->
+      <div class="flex-1 min-w-0 max-w-2xl">
 
-      <!-- Cover image -->
-      ${post.cover_image
-        ? `<img src="${post.cover_image}" alt="${escAttr(post.title)}" class="w-full rounded-xl mb-8 border border-[#e5e5e5] dark:border-[#222222] object-cover max-h-80"/>`
-        : ''}
-
-      <!-- Header -->
-      <header class="mb-10 pb-8 border-b border-[#e5e5e5] dark:border-[#222222]">
-        <h1 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa] leading-tight mb-5">${esc(post.title)}</h1>
-        <div class="flex flex-wrap items-center gap-3">
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full overflow-hidden bg-[#e5e5e5] dark:bg-[#222222] shrink-0">
-              <img src="/assets/new_profile.png" alt="Vinodhariharan Ravi" class="w-full h-full object-cover"/>
-            </div>
-            <span class="text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">Vinodhariharan Ravi</span>
-          </div>
-          <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
-          <span class="text-sm text-[#737373]">${date}</span>
-          <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
-          <span class="text-sm text-[#737373]">${readTime}</span>
-        </div>
-        ${post.excerpt
-          ? `<p class="mt-5 text-[#737373] text-base leading-relaxed">${esc(post.excerpt)}</p>`
-          : ''}
-      </header>
-
-      <!-- Content -->
-      <div class="prose-blog">${contentHtml}</div>
-
-      <!-- Post footer -->
-      <footer class="mt-14 pt-8 border-t border-[#e5e5e5] dark:border-[#222222]">
-        <a href="/blog.html" class="inline-flex items-center gap-2 text-sm text-[#737373] hover:text-[#2563eb] transition-colors">
+        <!-- Back -->
+        <a href="/blog.html" class="inline-flex items-center gap-2 text-sm text-[#737373] hover:text-[#2563eb] transition-colors mb-10">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-          Back to all posts
+          All posts
         </a>
-      </footer>
+
+        <!-- Cover image -->
+        ${post.cover_image
+          ? `<img src="${post.cover_image}" alt="${escAttr(post.title)}" class="w-full rounded-xl mb-8 border border-[#e5e5e5] dark:border-[#222222] object-cover max-h-80"/>`
+          : ''}
+
+        <!-- Header -->
+        <header class="mb-10 pb-8 border-b border-[#e5e5e5] dark:border-[#222222]">
+          <h1 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa] leading-tight mb-5">${esc(post.title)}</h1>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full overflow-hidden bg-[#e5e5e5] dark:bg-[#222222] shrink-0">
+                <img src="/assets/new_profile.png" alt="Vinodhariharan Ravi" class="w-full h-full object-cover"/>
+              </div>
+              <span class="text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">Vinodhariharan Ravi</span>
+            </div>
+            <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
+            <span class="text-sm text-[#737373]">${date}</span>
+            <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
+            <span class="text-sm text-[#737373]">${readTime}</span>
+          </div>
+          ${post.excerpt
+            ? `<p class="mt-5 text-[#737373] text-base leading-relaxed">${esc(post.excerpt)}</p>`
+            : ''}
+        </header>
+
+        <!-- Content -->
+        <div class="prose-blog">${contentHtml}</div>
+
+        <!-- Post footer -->
+        <footer class="mt-14 pt-8 border-t border-[#e5e5e5] dark:border-[#222222]">
+          <a href="/blog.html" class="inline-flex items-center gap-2 text-sm text-[#737373] hover:text-[#2563eb] transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            Back to all posts
+          </a>
+        </footer>
+
+      </div>
+
+      <!-- Right-side ad (desktop only, scrolls with page) -->
+      <aside class="hidden lg:flex flex-col items-center gap-1 w-40 shrink-0 pt-16">
+        <p style="font-size:0.6rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#c4c4c4;margin-bottom:0.5rem;">Advertisement</p>
+        <div style="border:1px dashed #e5e5e5;border-radius:0.75rem;display:flex;align-items:center;justify-content:center;width:160px;height:300px;background:#fafafa;">
+          <span style="font-size:0.75rem;color:#d4d4d4;writing-mode:vertical-rl;">160 &times; 300</span>
+        </div>
+      </aside>
 
     </div>
   </main>
