@@ -150,14 +150,16 @@ export default async function handler(req) {
       </div>`;
   };
 
-  // Related-posts card grid (with "Back to all posts" link above)
+  // Related-posts card grid ("Read next" heading + "Back to all posts" link on the same row)
   const relatedHtml = (relatedPosts && relatedPosts.length > 0) ? `
     <section class="mt-16 pt-10 border-t border-[#e5e5e5] dark:border-[#222222]">
-      <a href="/blog.html" class="inline-flex items-center gap-2 text-sm text-[#737373] hover:text-[#2563eb] transition-colors mb-4">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-        Back to all posts
-      </a>
-      <h2 class="text-lg font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-6">Read next</h2>
+      <div class="flex items-center justify-between mb-6 gap-4">
+        <h2 class="text-lg font-semibold text-[#0a0a0a] dark:text-[#fafafa]">Read next</h2>
+        <a href="/blog.html" class="inline-flex items-center gap-2 text-sm text-[#737373] hover:text-[#2563eb] transition-colors shrink-0">
+          Back to all posts
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         ${relatedPosts.map(rp => {
           const rpDate = new Date(rp.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
