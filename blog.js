@@ -13,17 +13,49 @@ function estimateReadTime(content) {
   return Math.max(1, Math.ceil(words / 200)) + ' min read';
 }
 
-function viewBadge(count, size = 'sm') {
+// View tracking went live on this date — posts created earlier have
+// incomplete counts.
+const VIEW_TRACKING_START = '2026-06-15';
+
+function isPreTracking(createdAt) {
+  if (!createdAt) return false;
+  return new Date(createdAt) < new Date(VIEW_TRACKING_START);
+}
+
+function viewBadge(count, size = 'sm', createdAt = null) {
   const n = count || 0;
   const iconSize = size === 'lg' ? 'w-4 h-4' : 'w-3 h-3';
   const textSize = size === 'lg' ? 'text-sm' : 'text-xs';
+  const partial  = isPreTracking(createdAt);
+
+  // Card wraps everything in an <a>, so we can't nest a real <a> here.
+  // Use a span + JS navigation, and stop the click from triggering the
+  // parent card link.
+  const tooltip = partial ? `
+    <span class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-56 px-3 py-2 rounded-lg
+                 bg-[#0a0a0a] dark:bg-[#222222] text-white text-[11px] leading-snug font-normal shadow-lg
+                 after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2
+                 after:border-4 after:border-transparent after:border-t-[#0a0a0a] dark:after:border-t-[#222222]">
+      Views before tracking was added aren't included.
+      <span role="link" tabindex="0" class="block mt-1 text-[#60a5fa] hover:underline cursor-pointer"
+            onclick="event.preventDefault();event.stopPropagation();window.location.href='/privacy.html#view-tracking';">Learn more →</span>
+    </span>` : '';
+
+  const infoIcon = partial ? `
+    <svg class="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4M12 8h.01"/>
+    </svg>` : '';
+
   return `
-    <span class="inline-flex items-center gap-1 ${textSize} text-[#737373]">
+    <span class="relative ${partial ? 'group' : ''} inline-flex items-center gap-1 ${textSize} text-[#737373]">
       <svg class="${iconSize}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
         <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      ${n.toLocaleString()}
+      <span>${n.toLocaleString()}</span>
+      ${infoIcon ? `<span class="inline-flex" onclick="event.stopPropagation();">${infoIcon}</span>` : ''}
+      ${tooltip}
     </span>`;
 }
 
@@ -41,7 +73,7 @@ function renderCard(post) {
       <div class="flex items-center justify-between">
         <span class="text-xs text-[#737373]">${formatDate(post.created_at)}</span>
         <div class="flex items-center gap-2">
-          ${viewBadge(post.view_count, 'sm')}
+          ${viewBadge(post.view_count, 'sm', post.created_at)}
           <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
           <span class="text-xs text-[#737373]">${estimateReadTime(post.content)}</span>
         </div>
@@ -83,7 +115,7 @@ function renderFeatured(post) {
             <span class="text-sm text-[#737373]">·</span>
             <span class="text-sm text-[#737373]">${estimateReadTime(post.content)}</span>
             <span class="text-sm text-[#737373]">·</span>
-            ${viewBadge(post.view_count, 'lg')}
+            ${viewBadge(post.view_count, 'lg', post.created_at)}
           </div>
           <span class="flex items-center gap-1 text-sm font-medium text-[#2563eb]">
             Read

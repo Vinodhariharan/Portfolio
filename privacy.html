@@ -89,7 +89,7 @@
           <p>This site uses <strong class="text-[#0a0a0a] dark:text-[#fafafa] font-medium">Google Analytics 4</strong> to understand how visitors use the site. Google Analytics collects anonymised data including pages visited, time spent, device type, browser, and approximate geographic region. This data is processed by Google and is not personally identifiable. You can opt out by using the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" class="text-[#2563eb] hover:underline">Google Analytics Opt-out Browser Add-on</a> or by enabling "Do Not Track" in your browser.</p>
         </div>
 
-        <div>
+        <div id="view-tracking" class="scroll-mt-24">
           <h2 class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-2">Blog</h2>
           <p class="mb-3">The blog section is powered by <strong class="text-[#0a0a0a] dark:text-[#fafafa] font-medium">Supabase</strong> (hosted PostgreSQL). Visitors can read published posts without signing in.</p>
           <p class="mb-3"><strong class="text-[#0a0a0a] dark:text-[#fafafa] font-medium">View counts.</strong> When you open a blog post, the server records that the post received a view. To prevent duplicate counting from page refreshes, your IP address is irreversibly hashed using <strong class="text-[#0a0a0a] dark:text-[#fafafa] font-medium">SHA-256</strong> before being stored. The original IP address is never written to the database and cannot be recovered from the hash. The hash is used only to determine whether your view today has already been counted for that post — it is not linked to your identity, not shared with any third party, and not used for advertising or profiling.</p>

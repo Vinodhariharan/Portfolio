@@ -90,6 +90,10 @@ export default async function handler(req) {
   const words    = (post.content || '').trim().split(/\s+/).length;
   const readTime = Math.max(1, Math.ceil(words / 200)) + ' min read';
 
+  // View tracking went live on this date — earlier posts have incomplete counts.
+  const VIEW_TRACKING_START = '2026-06-15';
+  const partial = post.created_at && new Date(post.created_at) < new Date(VIEW_TRACKING_START);
+
   // Escape helpers
   const esc    = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const escAttr = s => (s || '').replace(/"/g, '&quot;');
@@ -201,9 +205,22 @@ export default async function handler(req) {
             <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
             <span class="text-sm text-[#737373]">${readTime}</span>
             <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
-            <span class="inline-flex items-center gap-1 text-sm text-[#737373]">
+            <span class="relative ${partial ? 'group' : ''} inline-flex items-center gap-1 text-sm text-[#737373]">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
               ${(post.view_count || 0).toLocaleString()} ${(post.view_count === 1) ? 'view' : 'views'}
+              ${partial ? `
+                <svg class="w-3.5 h-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4M12 8h.01"/>
+                </svg>
+                <span class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-60 px-3 py-2 rounded-lg
+                             bg-[#0a0a0a] dark:bg-[#222222] text-white text-[11px] leading-snug font-normal shadow-lg
+                             after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2
+                             after:border-4 after:border-transparent after:border-t-[#0a0a0a] dark:after:border-t-[#222222]">
+                  Views before tracking was added aren't included.
+                  <a href="/privacy.html#view-tracking" class="block mt-1 text-[#60a5fa] hover:underline">Learn more →</a>
+                </span>
+              ` : ''}
             </span>
           </div>
           ${post.excerpt
