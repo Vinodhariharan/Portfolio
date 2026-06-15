@@ -71,6 +71,28 @@ export default async function handler(req) {
 
   const rawContentHtml = marked.parse(post.content || '');
 
+  // Build a table of contents: find <h2>/<h3>, slugify, inject id="…"
+  const slugify = s => s.toLowerCase()
+    .replace(/<[^>]+>/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+  const tocItems = [];
+  const usedSlugs = new Set();
+  const withIds = rawContentHtml.replace(/<h([23])(\s[^>]*)?>([\s\S]*?)<\/h\1>/gi, (_, level, attrs, inner) => {
+    const text = inner.replace(/<[^>]+>/g, '').trim();
+    if (!text) return _;
+    let slug = slugify(text);
+    if (!slug) slug = `section-${tocItems.length + 1}`;
+    let unique = slug, i = 2;
+    while (usedSlugs.has(unique)) unique = `${slug}-${i++}`;
+    usedSlugs.add(unique);
+    tocItems.push({ level: Number(level), text, slug: unique });
+    return `<h${level} id="${unique}"${attrs || ''}>${inner}</h${level}>`;
+  });
+
   // Inject mid-article ad after 3rd </p>
   const adHtml = `
     <div style="margin:2rem 0;">
@@ -79,7 +101,7 @@ export default async function handler(req) {
       </a>
     </div>`;
   let pCount = 0;
-  const contentHtml = rawContentHtml.replace(/<\/p>/gi, m => {
+  const contentHtml = withIds.replace(/<\/p>/gi, m => {
     pCount++;
     return pCount === 3 ? m + adHtml : m;
   });
@@ -153,6 +175,8 @@ export default async function handler(req) {
   </script>
   <style>
     #reading-progress{position:fixed;top:0;left:0;height:2px;width:0%;background:#2563eb;z-index:100;transition:width 0.1s linear}
+    .prose-blog h2, .prose-blog h3 { scroll-margin-top: 6rem; }
+    .toc-link.active { color: #2563eb; font-weight: 500; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -241,13 +265,21 @@ export default async function handler(req) {
 
       </div>
 
-      <!-- Right-side ad (desktop only, scrolls with page) -->
-      <aside class="hidden lg:flex flex-col items-center gap-1 w-40 shrink-0 pt-16">
-        <p style="font-size:0.6rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#c4c4c4;margin-bottom:0.5rem;">Advertisement</p>
-        <div style="border:1px dashed #e5e5e5;border-radius:0.75rem;display:flex;align-items:center;justify-content:center;width:160px;height:300px;background:#fafafa;">
-          <span style="font-size:0.75rem;color:#d4d4d4;writing-mode:vertical-rl;">160 &times; 300</span>
-        </div>
-      </aside>
+      <!-- Right-side sticky table of contents (desktop only) -->
+      ${tocItems.length > 0 ? `
+        <aside class="hidden lg:block w-56 shrink-0">
+          <div class="sticky top-24">
+            <p class="text-[0.65rem] font-semibold tracking-widest uppercase text-[#737373] mb-3">On this page</p>
+            <nav class="flex flex-col gap-2 border-l border-[#e5e5e5] dark:border-[#222222] pl-3 max-h-[70vh] overflow-y-auto">
+              ${tocItems.map(item => `
+                <a href="#${item.slug}"
+                   class="${item.level === 3 ? 'pl-3' : ''} text-xs leading-snug text-[#737373] hover:text-[#2563eb] transition-colors toc-link"
+                   data-toc="${item.slug}">${esc(item.text)}</a>
+              `).join('')}
+            </nav>
+          </div>
+        </aside>
+      ` : ''}
 
     </div>
   </main>
@@ -315,6 +347,42 @@ export default async function handler(req) {
       const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
       document.getElementById('reading-progress').style.width = Math.min(100, pct) + '%';
     }, { passive: true });
+
+    // TOC scroll-spy — highlight the currently visible heading
+    (function(){
+      const links = document.querySelectorAll('.toc-link');
+      if (links.length === 0) return;
+      const map = new Map();
+      links.forEach(a => {
+        const id = a.dataset.toc;
+        const target = document.getElementById(id);
+        if (target) map.set(target, a);
+      });
+      if (map.size === 0) return;
+
+      let lastActive = null;
+      const setActive = el => {
+        if (lastActive === el) return;
+        if (lastActive) lastActive.classList.remove('active');
+        if (el) el.classList.add('active');
+        lastActive = el;
+      };
+
+      const observer = new IntersectionObserver(entries => {
+        // Track which headings are currently in the viewport's upper half
+        entries.forEach(e => { e.target.__visible = e.isIntersecting; });
+        // Pick the topmost visible heading
+        let top = null;
+        map.forEach((_, heading) => {
+          if (heading.__visible) {
+            if (!top || heading.getBoundingClientRect().top < top.getBoundingClientRect().top) top = heading;
+          }
+        });
+        setActive(top ? map.get(top) : null);
+      }, { rootMargin: '-80px 0px -65% 0px' });
+
+      map.forEach((_, heading) => observer.observe(heading));
+    })();
   </script>
 </body>
 </html>`;
