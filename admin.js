@@ -65,7 +65,7 @@ async function loadDashboard() {
 
   const { data: posts, error } = await supabaseClient
     .from('posts')
-    .select('id, title, slug, is_published, created_at')
+    .select('id, title, slug, is_published, created_at, view_count')
     .order('created_at', { ascending: false });
 
   hide('dashboard-loading');
@@ -85,12 +85,147 @@ async function loadDashboard() {
       <td class="px-5 py-4 text-xs text-[#737373]">
         ${new Date(p.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' })}
       </td>
+      <td class="px-5 py-4 text-right text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">
+        ${(p.view_count || 0).toLocaleString()}
+      </td>
       <td class="px-5 py-4 text-right space-x-4">
         <button onclick="openEditor('${p.id}')" class="text-sm text-[#2563eb] hover:underline">Edit</button>
         <button onclick="openDeleteModal('${p.id}')" class="text-sm text-red-500 hover:underline">Delete</button>
       </td>
     </tr>
   `).join('');
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+let statsLoaded = false;
+
+function switchTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(btn => {
+    const active = btn.dataset.tab === tab;
+    btn.classList.toggle('border-[#2563eb]', active);
+    btn.classList.toggle('text-[#0a0a0a]', active);
+    btn.classList.toggle('dark:text-[#fafafa]', active);
+    btn.classList.toggle('border-transparent', !active);
+    btn.classList.toggle('text-[#737373]', !active);
+  });
+  $('tab-posts').classList.toggle('hidden', tab !== 'posts');
+  $('tab-stats').classList.toggle('hidden', tab !== 'stats');
+
+  if (tab === 'stats' && !statsLoaded) {
+    statsLoaded = true;
+    loadStats();
+  }
+}
+
+function todayUTC() {
+  const d = new Date();
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+}
+
+function daysAgoUTC(n) {
+  const d = todayUTC();
+  d.setUTCDate(d.getUTCDate() - n);
+  return d;
+}
+
+function ymd(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+// Tiny inline-SVG sparkline for the last 30 days
+function sparkline(daysMap) {
+  const points = [];
+  const today  = todayUTC();
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today);
+    d.setUTCDate(d.getUTCDate() - i);
+    points.push(daysMap[ymd(d)] || 0);
+  }
+  const w = 120, h = 28, max = Math.max(1, ...points);
+  const step = w / (points.length - 1);
+  const path = points.map((v, i) => {
+    const x = i * step;
+    const y = h - (v / max) * (h - 2) - 1;
+    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  return `
+    <svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="none" class="block">
+      <path d="${path}" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>`;
+}
+
+async function loadStats() {
+  show('stats-loading');
+  hide('stats-empty');
+  hide('stats-table-wrapper');
+
+  // Pull posts and the daily breakdown view together
+  const [postsResult, dailyResult] = await Promise.all([
+    supabaseClient
+      .from('posts')
+      .select('id, title, slug, view_count')
+      .order('view_count', { ascending: false }),
+    supabaseClient
+      .from('post_views_daily')
+      .select('slug, viewed_date, views')
+  ]);
+
+  hide('stats-loading');
+
+  const posts = postsResult.data || [];
+  const daily = dailyResult.data || [];
+
+  if (postsResult.error || posts.length === 0) {
+    show('stats-empty');
+    return;
+  }
+
+  // Index daily counts by slug → { 'YYYY-MM-DD': count }
+  const bySlug = {};
+  daily.forEach(row => {
+    (bySlug[row.slug] ||= {})[row.viewed_date] = row.views;
+  });
+
+  const today    = ymd(todayUTC());
+  const since7   = ymd(daysAgoUTC(6));   // inclusive of today => last 7 days
+  const since30  = ymd(daysAgoUTC(29));
+
+  let sumToday = 0, sumWeek = 0, sumMonth = 0, sumTotal = 0;
+
+  const rows = posts.map(p => {
+    const days = bySlug[p.slug] || {};
+    let dayCount = 0, weekCount = 0, monthCount = 0;
+    Object.entries(days).forEach(([date, count]) => {
+      if (date === today)    dayCount   += count;
+      if (date >= since7)    weekCount  += count;
+      if (date >= since30)   monthCount += count;
+    });
+    sumToday += dayCount;
+    sumWeek  += weekCount;
+    sumMonth += monthCount;
+    sumTotal += (p.view_count || 0);
+
+    return `
+      <tr class="hover:bg-[#f5f5f5] dark:hover:bg-[#111111] transition-colors">
+        <td class="px-5 py-4 font-medium text-[#0a0a0a] dark:text-[#fafafa]">
+          <a href="/post/${p.slug}" target="_blank" class="hover:text-[#2563eb] transition-colors">${escapeHtml(p.title)}</a>
+        </td>
+        <td class="px-5 py-4 text-right text-sm text-[#0a0a0a] dark:text-[#fafafa]">${dayCount.toLocaleString()}</td>
+        <td class="px-5 py-4 text-right text-sm text-[#0a0a0a] dark:text-[#fafafa]">${weekCount.toLocaleString()}</td>
+        <td class="px-5 py-4 text-right text-sm text-[#0a0a0a] dark:text-[#fafafa]">${monthCount.toLocaleString()}</td>
+        <td class="px-5 py-4 text-right text-sm font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${(p.view_count || 0).toLocaleString()}</td>
+        <td class="px-5 py-4">${sparkline(days)}</td>
+      </tr>
+    `;
+  });
+
+  $('stat-total').textContent = sumTotal.toLocaleString();
+  $('stat-today').textContent = sumToday.toLocaleString();
+  $('stat-week').textContent  = sumWeek.toLocaleString();
+  $('stat-month').textContent = sumMonth.toLocaleString();
+
+  $('stats-table-body').innerHTML = rows.join('');
+  show('stats-table-wrapper');
 }
 
 function escapeHtml(str) {
@@ -288,5 +423,10 @@ document.addEventListener('DOMContentLoaded', () => {
   $('confirm-delete-btn').addEventListener('click', confirmDelete);
   $('delete-modal').addEventListener('click', e => {
     if (e.target === $('delete-modal')) closeDeleteModal();
+  });
+
+  // Tab switching
+  document.querySelectorAll('.admin-tab').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
 });

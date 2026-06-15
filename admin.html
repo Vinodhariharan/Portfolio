@@ -77,30 +77,92 @@
       </div>
     </header>
 
+    <!-- Tab bar -->
+    <div class="border-b border-[#e5e5e5] dark:border-[#222222] bg-[#ffffff] dark:bg-[#111111]">
+      <div class="max-w-5xl mx-auto px-6 flex gap-6">
+        <button data-tab="posts" class="admin-tab py-3 text-sm font-medium border-b-2 border-[#2563eb] text-[#0a0a0a] dark:text-[#fafafa]">Posts</button>
+        <button data-tab="stats" class="admin-tab py-3 text-sm font-medium border-b-2 border-transparent text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Stats</button>
+      </div>
+    </div>
+
     <main class="max-w-5xl mx-auto px-6 py-10">
-      <div id="dashboard-loading" class="flex justify-center py-16">
-        <div class="w-6 h-6 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin"></div>
+
+      <!-- POSTS TAB -->
+      <div id="tab-posts">
+        <div id="dashboard-loading" class="flex justify-center py-16">
+          <div class="w-6 h-6 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <div id="dashboard-empty" class="hidden text-center py-20 text-[#737373]">
+          <p class="mb-4">No posts yet.</p>
+          <button onclick="openEditor(null)" class="btn-primary">Write your first post</button>
+        </div>
+
+        <div id="posts-table-wrapper" class="hidden overflow-hidden rounded-xl border border-[#e5e5e5] dark:border-[#222222]">
+          <table class="w-full text-sm">
+            <thead class="bg-[#f5f5f5] dark:bg-[#111111] text-[#737373] text-xs uppercase">
+              <tr>
+                <th class="px-5 py-3 text-left">Title</th>
+                <th class="px-5 py-3 text-left">Status</th>
+                <th class="px-5 py-3 text-left">Date</th>
+                <th class="px-5 py-3 text-right">Views</th>
+                <th class="px-5 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="posts-table-body" class="divide-y divide-[#e5e5e5] dark:divide-[#222222] bg-[#ffffff] dark:bg-[#0a0a0a]">
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div id="dashboard-empty" class="hidden text-center py-20 text-[#737373]">
-        <p class="mb-4">No posts yet.</p>
-        <button onclick="openEditor(null)" class="btn-primary">Write your first post</button>
+      <!-- STATS TAB -->
+      <div id="tab-stats" class="hidden">
+        <!-- Summary cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="card">
+            <p class="text-xs uppercase tracking-wider text-[#737373] mb-1">Total views</p>
+            <p id="stat-total" class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">—</p>
+          </div>
+          <div class="card">
+            <p class="text-xs uppercase tracking-wider text-[#737373] mb-1">Today</p>
+            <p id="stat-today" class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">—</p>
+          </div>
+          <div class="card">
+            <p class="text-xs uppercase tracking-wider text-[#737373] mb-1">Last 7 days</p>
+            <p id="stat-week" class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">—</p>
+          </div>
+          <div class="card">
+            <p class="text-xs uppercase tracking-wider text-[#737373] mb-1">Last 30 days</p>
+            <p id="stat-month" class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">—</p>
+          </div>
+        </div>
+
+        <div id="stats-loading" class="flex justify-center py-16">
+          <div class="w-6 h-6 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <div id="stats-empty" class="hidden text-center py-20 text-[#737373]">
+          <p>No view data yet. Counts will appear here as readers visit your posts.</p>
+        </div>
+
+        <div id="stats-table-wrapper" class="hidden overflow-hidden rounded-xl border border-[#e5e5e5] dark:border-[#222222]">
+          <table class="w-full text-sm">
+            <thead class="bg-[#f5f5f5] dark:bg-[#111111] text-[#737373] text-xs uppercase">
+              <tr>
+                <th class="px-5 py-3 text-left">Post</th>
+                <th class="px-5 py-3 text-right">Today</th>
+                <th class="px-5 py-3 text-right">7d</th>
+                <th class="px-5 py-3 text-right">30d</th>
+                <th class="px-5 py-3 text-right">Total</th>
+                <th class="px-5 py-3">Last 30 days</th>
+              </tr>
+            </thead>
+            <tbody id="stats-table-body" class="divide-y divide-[#e5e5e5] dark:divide-[#222222] bg-[#ffffff] dark:bg-[#0a0a0a]">
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div id="posts-table-wrapper" class="hidden overflow-hidden rounded-xl border border-[#e5e5e5] dark:border-[#222222]">
-        <table class="w-full text-sm">
-          <thead class="bg-[#f5f5f5] dark:bg-[#111111] text-[#737373] text-xs uppercase">
-            <tr>
-              <th class="px-5 py-3 text-left">Title</th>
-              <th class="px-5 py-3 text-left">Status</th>
-              <th class="px-5 py-3 text-left">Date</th>
-              <th class="px-5 py-3 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="posts-table-body" class="divide-y divide-[#e5e5e5] dark:divide-[#222222] bg-[#ffffff] dark:bg-[#0a0a0a]">
-          </tbody>
-        </table>
-      </div>
     </main>
   </div>
 

@@ -13,6 +13,20 @@ function estimateReadTime(content) {
   return Math.max(1, Math.ceil(words / 200)) + ' min read';
 }
 
+function viewBadge(count, size = 'sm') {
+  const n = count || 0;
+  const iconSize = size === 'lg' ? 'w-4 h-4' : 'w-3 h-3';
+  const textSize = size === 'lg' ? 'text-sm' : 'text-xs';
+  return `
+    <span class="inline-flex items-center gap-1 ${textSize} text-[#737373]">
+      <svg class="${iconSize}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+        <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      ${n.toLocaleString()}
+    </span>`;
+}
+
 // ── Post card renderer ────────────────────────────────────────────────────────
 
 function renderCard(post) {
@@ -26,7 +40,11 @@ function renderCard(post) {
         : ''}
       <div class="flex items-center justify-between">
         <span class="text-xs text-[#737373]">${formatDate(post.created_at)}</span>
-        <span class="text-xs text-[#737373]">${estimateReadTime(post.content)}</span>
+        <div class="flex items-center gap-2">
+          ${viewBadge(post.view_count, 'sm')}
+          <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
+          <span class="text-xs text-[#737373]">${estimateReadTime(post.content)}</span>
+        </div>
       </div>
       <div class="flex-1">
         <h3 class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa] leading-snug mb-2 group-hover:text-[#2563eb] transition-colors">
@@ -64,6 +82,8 @@ function renderFeatured(post) {
             <span class="text-sm text-[#737373]">${formatDate(post.created_at)}</span>
             <span class="text-sm text-[#737373]">·</span>
             <span class="text-sm text-[#737373]">${estimateReadTime(post.content)}</span>
+            <span class="text-sm text-[#737373]">·</span>
+            ${viewBadge(post.view_count, 'lg')}
           </div>
           <span class="flex items-center gap-1 text-sm font-medium text-[#2563eb]">
             Read
@@ -168,7 +188,7 @@ async function loadPostList() {
   try {
     const { data: posts, error } = await supabaseClient
       .from('posts')
-      .select('id, title, slug, excerpt, content, cover_image, created_at')
+      .select('id, title, slug, excerpt, content, cover_image, created_at, view_count')
       .eq('is_published', true)
       .order('created_at', { ascending: false });
 
@@ -215,7 +235,7 @@ async function loadSinglePost(slug) {
   try {
     const { data: post, error } = await supabaseClient
       .from('posts')
-      .select('title, slug, excerpt, content, cover_image, created_at')
+      .select('title, slug, excerpt, content, cover_image, created_at, view_count')
       .eq('slug', slug)
       .eq('is_published', true)
       .single();

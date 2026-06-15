@@ -28,6 +28,29 @@ export default async function handler(req) {
   const posts = await res.json();
   const post  = posts?.[0];
 
+  // Record view (fire-and-forget; deduped per IP per UTC day by the RPC)
+  if (post) {
+    try {
+      const fwd = req.headers.get('x-forwarded-for') || '';
+      const ip  = fwd.split(',')[0].trim() || req.headers.get('x-real-ip') || 'unknown';
+      // SHA-256 the IP so we never store it raw
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip));
+      const ipHash = Array.from(new Uint8Array(buf))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // Don't await — let the response stream while this writes
+      fetch(`${SUPABASE_URL}/rest/v1/rpc/record_post_view`, {
+        method: 'POST',
+        headers: {
+          apikey:        SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify({ p_slug: slug, p_ip_hash: ipHash })
+      }).catch(() => {});
+    } catch { /* tracking failures must never break the page */ }
+  }
+
   if (!post) {
     return new Response(`<!DOCTYPE html>
 <html lang="en"><head>
@@ -177,6 +200,11 @@ export default async function handler(req) {
             <span class="text-sm text-[#737373]">${date}</span>
             <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
             <span class="text-sm text-[#737373]">${readTime}</span>
+            <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
+            <span class="inline-flex items-center gap-1 text-sm text-[#737373]">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              ${(post.view_count || 0).toLocaleString()} ${(post.view_count === 1) ? 'view' : 'views'}
+            </span>
           </div>
           ${post.excerpt
             ? `<p class="mt-5 text-[#737373] text-base leading-relaxed">${esc(post.excerpt)}</p>`
