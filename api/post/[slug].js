@@ -198,7 +198,7 @@ export default async function handler(req) {
   </nav>
 
   <main class="flex-grow pt-24 pb-24">
-    <div class="max-w-5xl mx-auto px-6 flex gap-10 items-start">
+    <div class="max-w-5xl mx-auto px-6 flex gap-10 items-stretch">
 
       <!-- Post content -->
       <div class="flex-1 min-w-0 max-w-2xl">
