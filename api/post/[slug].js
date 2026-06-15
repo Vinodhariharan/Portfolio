@@ -57,8 +57,8 @@ export default async function handler(req) {
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Post not found | Vinodhariharan Ravi</title>
-  <script>window.tailwind={config:{darkMode:'class'}};</script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class'};</script>
 </head>
 <body class="bg-white dark:bg-[#0a0a0a] text-[#0a0a0a] dark:text-[#fafafa] min-h-screen flex flex-col items-center justify-center gap-6">
   <h1 class="text-2xl font-bold">Post not found</h1>
@@ -142,8 +142,8 @@ export default async function handler(req) {
     })();
   </script>
   <!-- Styles -->
-  <script>window.tailwind={config:{darkMode:'class'}};</script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class'};</script>
   <link rel="stylesheet" href="/styles.css"/>
   <link rel="icon" href="/assets/favicon.png" type="image/png"/>
   <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet"/>
