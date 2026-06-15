@@ -237,12 +237,13 @@ export default async function handler(req) {
                   <circle cx="12" cy="12" r="10"/>
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4M12 8h.01"/>
                 </svg>
-                <span class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-60 px-3 py-2 rounded-lg
-                             bg-[#0a0a0a] dark:bg-[#222222] text-white text-[11px] leading-snug font-normal shadow-lg
-                             after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2
-                             after:border-4 after:border-transparent after:border-t-[#0a0a0a] dark:after:border-t-[#222222]">
-                  Views before tracking was added aren't included.
-                  <a href="/privacy.html#view-tracking" class="block mt-1 text-[#60a5fa] hover:underline">Learn more →</a>
+                <span class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 pb-2 z-50">
+                  <span class="block w-60 px-3 py-2 rounded-lg bg-[#0a0a0a] dark:bg-[#222222] text-white text-[11px] leading-snug font-normal shadow-lg
+                               after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2
+                               after:border-4 after:border-transparent after:border-t-[#0a0a0a] dark:after:border-t-[#222222]">
+                    Views before tracking was added aren't included.
+                    <a href="/privacy.html#view-tracking" class="block mt-1 text-[#60a5fa] hover:underline">Learn more →</a>
+                  </span>
                 </span>
               ` : ''}
             </span>

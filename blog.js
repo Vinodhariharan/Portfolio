@@ -30,15 +30,17 @@ function viewBadge(count, size = 'sm', createdAt = null) {
 
   // Card wraps everything in an <a>, so we can't nest a real <a> here.
   // Use a span + JS navigation, and stop the click from triggering the
-  // parent card link.
+  // parent card link. Outer wrapper has pb-2 so its hover area extends
+  // down to the badge — no dead gap that loses :hover mid-move.
   const tooltip = partial ? `
-    <span class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-56 px-3 py-2 rounded-lg
-                 bg-[#0a0a0a] dark:bg-[#222222] text-white text-[11px] leading-snug font-normal shadow-lg
-                 after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2
-                 after:border-4 after:border-transparent after:border-t-[#0a0a0a] dark:after:border-t-[#222222]">
-      Views before tracking was added aren't included.
-      <span role="link" tabindex="0" class="block mt-1 text-[#60a5fa] hover:underline cursor-pointer"
-            onclick="event.preventDefault();event.stopPropagation();window.location.href='/privacy.html#view-tracking';">Learn more →</span>
+    <span class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 pb-2 z-50">
+      <span class="block w-56 px-3 py-2 rounded-lg bg-[#0a0a0a] dark:bg-[#222222] text-white text-[11px] leading-snug font-normal shadow-lg
+                   after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2
+                   after:border-4 after:border-transparent after:border-t-[#0a0a0a] dark:after:border-t-[#222222]">
+        Views before tracking was added aren't included.
+        <span role="link" tabindex="0" class="block mt-1 text-[#60a5fa] hover:underline cursor-pointer"
+              onclick="event.preventDefault();event.stopPropagation();window.location.href='/privacy.html#view-tracking';">Learn more →</span>
+      </span>
     </span>` : '';
 
   const infoIcon = partial ? `
