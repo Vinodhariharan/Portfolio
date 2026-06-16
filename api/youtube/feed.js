@@ -7,19 +7,41 @@ export const config = { runtime: 'edge' };
 const HANDLE   = '@tech_rovers';
 const HANDLE_URL = `https://www.youtube.com/${HANDLE}`;
 
+// Optional override — set YOUTUBE_CHANNEL_ID in Vercel env vars to skip
+// the auto-resolution entirely.
+const ENV_CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
+
 let cachedChannelId = null;
 
 async function resolveChannelId() {
-  if (cachedChannelId) return cachedChannelId;
+  if (ENV_CHANNEL_ID)   return ENV_CHANNEL_ID;
+  if (cachedChannelId)  return cachedChannelId;
+
   const res = await fetch(HANDLE_URL, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PortfolioBot/1.0)' }
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept-Language': 'en-US,en;q=0.9'
+    }
   });
   const html = await res.text();
-  const m = html.match(/"channelId":"(UC[\w-]+)"/) ||
-            html.match(/<meta itemprop="(?:channelId|identifier)" content="(UC[\w-]+)"/) ||
-            html.match(/"externalId":"(UC[\w-]+)"/);
-  if (m) cachedChannelId = m[1];
-  return cachedChannelId;
+
+  // 1. Most reliable: the canonical link of THIS page points to the actual channel.
+  let m = html.match(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/channel\/(UC[\w-]+)"/);
+  if (m) { cachedChannelId = m[1]; return cachedChannelId; }
+
+  // 2. og:url meta tag — also unique to the current page.
+  m = html.match(/<meta property="og:url" content="https:\/\/www\.youtube\.com\/channel\/(UC[\w-]+)"/);
+  if (m) { cachedChannelId = m[1]; return cachedChannelId; }
+
+  // 3. The page's "browseId" appears in the C4 channel browse data — the current channel's id.
+  m = html.match(/"c4TabbedHeaderRenderer":\{"channelId":"(UC[\w-]+)"/);
+  if (m) { cachedChannelId = m[1]; return cachedChannelId; }
+
+  // 4. Last resort: externalId, which is in the channel metadata block (not the sidebar).
+  m = html.match(/"externalId":"(UC[\w-]+)"/);
+  if (m) { cachedChannelId = m[1]; return cachedChannelId; }
+
+  return null;
 }
 
 function parseFeed(xml) {
