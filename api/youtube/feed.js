@@ -44,6 +44,25 @@ async function resolveChannelId() {
   return null;
 }
 
+// Classify a video as Short vs long-form by probing the /shorts/<id> URL.
+// YouTube redirects to /watch?v=<id> for non-Shorts.
+async function isShort(videoId) {
+  try {
+    const res = await fetch(`https://www.youtube.com/shorts/${videoId}`, {
+      method: 'GET',
+      redirect: 'manual',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9'
+      }
+    });
+    // 200 = Shorts player served; 3xx = redirect to /watch (regular video)
+    return res.status === 200;
+  } catch {
+    return false; // err on the side of "regular video"
+  }
+}
+
 function parseFeed(xml) {
   const videos = [];
   const entryRegex = /<entry>([\s\S]*?)<\/entry>/g;
@@ -92,7 +111,23 @@ export default async function handler() {
     const xml = await rss.text();
     const videos = parseFeed(xml);
 
-    return new Response(JSON.stringify({ channelId, handle: HANDLE, videos }), {
+    // Classify each video as 'short' or 'long' in parallel.
+    const flags = await Promise.all(videos.map(v => isShort(v.videoId)));
+    videos.forEach((v, i) => {
+      v.type      = flags[i] ? 'short' : 'long';
+      v.shortLink = flags[i] ? `https://www.youtube.com/shorts/${v.videoId}` : v.link;
+    });
+
+    const shorts   = videos.filter(v => v.type === 'short');
+    const longform = videos.filter(v => v.type === 'long');
+
+    return new Response(JSON.stringify({
+      channelId,
+      handle: HANDLE,
+      videos,
+      shorts,
+      longform
+    }), {
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=3600'

@@ -1109,7 +1109,9 @@
         const res = await fetch('/api/youtube/feed');
         if (!res.ok) return;
         const data = await res.json();
-        const videos = (data.videos || []).slice(0, 3);
+        // Long-form only on the homepage strip — Shorts get their own showcase
+        // on the dedicated /tech-rovers page.
+        const videos = (data.longform || data.videos || []).slice(0, 3);
         if (videos.length === 0) return;
 
         const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
