@@ -96,8 +96,9 @@ async function loadDashboard() {
   `).join('');
 }
 
-// ── Stats ─────────────────────────────────────────────────────────────────────
-let statsLoaded = false;
+// ── Stats / Channel tab state ─────────────────────────────────────────────────
+let statsLoaded   = false;
+let channelLoaded = false;
 
 function switchTab(tab) {
   document.querySelectorAll('.admin-tab').forEach(btn => {
@@ -108,12 +109,17 @@ function switchTab(tab) {
     btn.classList.toggle('border-transparent', !active);
     btn.classList.toggle('text-[#737373]', !active);
   });
-  $('tab-posts').classList.toggle('hidden', tab !== 'posts');
-  $('tab-stats').classList.toggle('hidden', tab !== 'stats');
+  $('tab-posts').classList.toggle('hidden',   tab !== 'posts');
+  $('tab-stats').classList.toggle('hidden',   tab !== 'stats');
+  $('tab-channel').classList.toggle('hidden', tab !== 'channel');
 
   if (tab === 'stats' && !statsLoaded) {
     statsLoaded = true;
     loadStats();
+  }
+  if (tab === 'channel' && !channelLoaded) {
+    channelLoaded = true;
+    loadChannelConfig();
   }
 }
 
@@ -380,6 +386,72 @@ async function handleImageUpload(e) {
   e.target.value = '';
 }
 
+// ── Channel config ────────────────────────────────────────────────────────────
+function updateThumbPreview(inputId, imgId) {
+  const input = $(inputId);
+  const img   = $(imgId);
+  const id    = (input.value || '').trim();
+  if (id && /^[a-zA-Z0-9_-]{6,}$/.test(id)) {
+    img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+    img.classList.remove('hidden');
+  } else {
+    img.src = '';
+    img.classList.add('hidden');
+  }
+}
+
+function setChannelStatus(msg, ok = true) {
+  const el = $('channel-save-status');
+  el.textContent = msg;
+  el.classList.remove('text-green-600', 'text-red-500');
+  el.classList.add(ok ? 'text-green-600' : 'text-red-500');
+  el.style.opacity = '1';
+  if (ok) setTimeout(() => { el.style.opacity = '0'; }, 2000);
+}
+
+async function loadChannelConfig() {
+  show('channel-loading');
+  hide('channel-form');
+
+  const { data, error } = await supabaseClient
+    .from('channel_config')
+    .select('featured_video_id, trailer_video_id')
+    .eq('id', 1)
+    .single();
+
+  hide('channel-loading');
+  show('channel-form');
+
+  if (error) {
+    setChannelStatus('Could not load config: ' + error.message, false);
+    return;
+  }
+  $('channel-featured-id').value = data?.featured_video_id || '';
+  $('channel-trailer-id').value  = data?.trailer_video_id  || '';
+  updateThumbPreview('channel-featured-id', 'channel-featured-thumb');
+  updateThumbPreview('channel-trailer-id',  'channel-trailer-thumb');
+}
+
+async function saveChannelConfig() {
+  const featured = $('channel-featured-id').value.trim() || null;
+  const trailer  = $('channel-trailer-id').value.trim()  || null;
+
+  const { error } = await supabaseClient
+    .from('channel_config')
+    .update({
+      featured_video_id: featured,
+      trailer_video_id:  trailer,
+      updated_at:        new Date().toISOString()
+    })
+    .eq('id', 1);
+
+  if (error) {
+    setChannelStatus('Save failed: ' + error.message, false);
+    return;
+  }
+  setChannelStatus('Saved ✓', true);
+}
+
 // ── Event listeners ───────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   checkSession();
@@ -429,4 +501,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.admin-tab').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
+
+  // Channel tab — save button + live thumbnail previews
+  $('channel-save-btn')?.addEventListener('click', saveChannelConfig);
+  $('channel-featured-id')?.addEventListener('input', () => updateThumbPreview('channel-featured-id', 'channel-featured-thumb'));
+  $('channel-trailer-id') ?.addEventListener('input', () => updateThumbPreview('channel-trailer-id',  'channel-trailer-thumb'));
 });

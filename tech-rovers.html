@@ -115,6 +115,44 @@
     .tr-nav-visible { transform: translateY(0);    opacity: 1; pointer-events: auto; }
     nav.tr-nav { transition: transform .35s cubic-bezier(.2,.7,.2,1), opacity .25s ease; }
 
+    /* ── Channel trailer as full-bleed muted background video ── */
+    .tr-trailer-wrap {
+      position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+    }
+    .tr-trailer-iframe {
+      position: absolute; top: 50%; left: 50%;
+      width: max(100vw, 177.78vh);
+      height: max(56.25vw, 100vh);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      border: 0;
+    }
+
+    /* ── Stats counter cards ── */
+    .tr-stat-card {
+      position: relative;
+      padding: 1.75rem 1rem;
+      border-radius: 1rem;
+      background: linear-gradient(135deg, #0a0a0a 0%, #18080d 100%);
+      color: white;
+      text-align: center;
+      overflow: hidden;
+      transition: transform .2s ease;
+    }
+    .tr-stat-card:hover { transform: translateY(-2px); }
+    .tr-stat-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(255,0,64,0.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .tr-stat-card.cyan::before {
+      background: radial-gradient(circle at 50% 0%, rgba(0,229,255,0.18) 0%, transparent 60%);
+    }
+    .tr-stat-num { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+    .tr-stat-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-top: 0.5rem; }
+    .tr-stat-card.red .tr-stat-num  { color: #ff0040; }
+    .tr-stat-card.cyan .tr-stat-num { color: #00e5ff; }
+
     /* ── Red glow CTA ── */
     .btn-yt-red {
       background: #ff0040;
@@ -246,6 +284,24 @@
 
     <div class="max-w-5xl mx-auto px-6 pb-24">
 
+      <!-- ── Channel stats counters ── -->
+      <section id="stats-section" class="hidden mb-20">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div id="stat-subs"   class="tr-stat-card red hidden">
+            <div class="tr-stat-num" data-target="" data-suffix="">—</div>
+            <div class="tr-stat-label">Subscribers</div>
+          </div>
+          <div id="stat-videos" class="tr-stat-card cyan hidden">
+            <div class="tr-stat-num" data-target="" data-suffix="">—</div>
+            <div class="tr-stat-label">Videos</div>
+          </div>
+          <div id="stat-views"  class="tr-stat-card red hidden">
+            <div class="tr-stat-num" data-target="" data-suffix="">—</div>
+            <div class="tr-stat-label">Total views</div>
+          </div>
+        </div>
+      </section>
+
       <!-- ── What we cover ── -->
       <section class="mb-20 text-center">
         <p class="section-label">What we cover</p>
@@ -274,6 +330,28 @@
 
       <!-- ── Long-form videos grid ── -->
       <section id="longform-section" class="hidden mb-20">
+
+        <!-- Featured video (admin-configurable, defaults to latest long-form) -->
+        <div id="featured-video-wrap" class="hidden mb-10">
+          <div class="flex items-end justify-between mb-4">
+            <div>
+              <span class="inline-block w-8 h-0.5 bg-[#ff0040] mb-3"></span>
+              <h2 class="text-2xl md:text-3xl font-bold text-[#0a0a0a] dark:text-[#fafafa] inline-flex items-center gap-2">
+                Featured
+                <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-[#ff0040] text-white text-[10px] font-bold tracking-wider">▶ WATCH</span>
+              </h2>
+            </div>
+          </div>
+          <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-[#0a0a0a] shadow-2xl" style="box-shadow: 0 20px 60px -10px rgba(255,0,64,0.25), 0 10px 30px rgba(0,0,0,0.3);">
+            <iframe id="featured-video-iframe" src="" title="Featured video"
+                    class="absolute inset-0 w-full h-full"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen></iframe>
+          </div>
+        </div>
+
         <div class="flex items-end justify-between mb-6">
           <div>
             <span class="inline-block w-8 h-0.5 bg-[#ff0040] mb-3"></span>
@@ -474,6 +552,111 @@
         </a>`;
     }
 
+    // ── Trailer hero background ──
+    function mountTrailer(videoId) {
+      if (!videoId) return;
+      const heroBg = document.getElementById('trHeroBg');
+      if (!heroBg) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'tr-trailer-wrap';
+      wrap.innerHTML = `
+        <iframe class="tr-trailer-iframe"
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&disablekb=1&modestbranding=1&playsinline=1&rel=0&start=0"
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                referrerpolicy="strict-origin-when-cross-origin"
+                aria-hidden="true"></iframe>`;
+      // The static channel-art layer stays behind as a fallback for autoplay-blocked browsers.
+      heroBg.appendChild(wrap);
+    }
+
+    // ── Featured video iframe ──
+    function mountFeatured(videoId) {
+      if (!videoId) return;
+      const wrap = document.getElementById('featured-video-wrap');
+      const iframe = document.getElementById('featured-video-iframe');
+      if (!wrap || !iframe) return;
+      iframe.src = `https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0`;
+      wrap.classList.remove('hidden');
+    }
+
+    // ── Stats: format + animated count-up via IntersectionObserver ──
+    function formatStat(value) {
+      // value may be a string (e.g. "1.2K") or a number; return { num, suffix }
+      if (value == null) return null;
+      if (typeof value === 'number') {
+        if (value >= 1_000_000) return { num: value / 1_000_000, suffix: 'M', decimals: 1 };
+        if (value >= 1_000)     return { num: value / 1_000,     suffix: 'K', decimals: 1 };
+        return { num: value, suffix: '', decimals: 0 };
+      }
+      // String like "1.2K subscribers" → already a string. Try to split numeric prefix + suffix.
+      const m = String(value).match(/^([\d.,]+)\s*([KMB]?)/i);
+      if (!m) return null;
+      const num = parseFloat(m[1].replace(/,/g, ''));
+      const suffix = (m[2] || '').toUpperCase();
+      if (!Number.isFinite(num)) return null;
+      return { num, suffix, decimals: m[1].includes('.') ? 1 : 0 };
+    }
+
+    function animateNumber(el, target, suffix, decimals) {
+      const duration = 900;
+      const startT = performance.now();
+      const easeOut = t => 1 - Math.pow(1 - t, 3);
+      function tick(now) {
+        const t = Math.min(1, (now - startT) / duration);
+        const v = target * easeOut(t);
+        const display = (decimals > 0 && target < 100)
+          ? v.toFixed(decimals)
+          : Math.round(v).toLocaleString();
+        el.textContent = display + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function mountStats(stats) {
+      if (!stats) return;
+      const section = document.getElementById('stats-section');
+
+      const entries = [
+        { wrapId: 'stat-subs',   value: stats.subscribers },
+        { wrapId: 'stat-videos', value: stats.videos },
+        { wrapId: 'stat-views',  value: stats.views }
+      ];
+
+      let anyShown = false;
+      entries.forEach(({ wrapId, value }) => {
+        const formatted = formatStat(value);
+        const wrap = document.getElementById(wrapId);
+        if (!wrap || !formatted) return;
+        const numEl = wrap.querySelector('.tr-stat-num');
+        numEl.dataset.target   = String(formatted.num);
+        numEl.dataset.suffix   = formatted.suffix;
+        numEl.dataset.decimals = String(formatted.decimals);
+        numEl.textContent = '0' + formatted.suffix;
+        wrap.classList.remove('hidden');
+        anyShown = true;
+      });
+
+      if (!anyShown) return;
+      section.classList.remove('hidden');
+
+      // One-shot count-up when the section enters the viewport.
+      const observer = new IntersectionObserver((items, obs) => {
+        items.forEach(item => {
+          if (!item.isIntersecting) return;
+          section.querySelectorAll('.tr-stat-num').forEach(el => {
+            const target   = parseFloat(el.dataset.target);
+            const suffix   = el.dataset.suffix || '';
+            const decimals = parseInt(el.dataset.decimals || '0', 10);
+            if (Number.isFinite(target)) animateNumber(el, target, suffix, decimals);
+          });
+          obs.disconnect();
+        });
+      }, { threshold: 0.3 });
+      observer.observe(section);
+    }
+
     (async () => {
       const loading       = document.getElementById('videos-loading');
       const error         = document.getElementById('videos-error');
@@ -489,10 +672,24 @@
 
         const longform = (data.longform || []).slice(0, 9);
         const shorts   = (data.shorts   || []).slice(0, 10);
+        const config   = data.config || {};
 
         loading.classList.add('hidden');
 
-        if (longform.length === 0 && shorts.length === 0) {
+        // Trailer in hero (falls back to static art if not set or autoplay blocked)
+        mountTrailer(config.trailer_video_id);
+
+        // Stats counters
+        mountStats(data.stats);
+
+        // Featured video: admin pick OR latest long-form fallback
+        const featuredId = config.featured_video_id || (longform[0] && longform[0].videoId);
+        if (featuredId) {
+          mountFeatured(featuredId);
+          longSection.classList.remove('hidden'); // reveal the section so featured shows even if grid is empty
+        }
+
+        if (longform.length === 0 && shorts.length === 0 && !featuredId) {
           error.classList.remove('hidden');
           return;
         }

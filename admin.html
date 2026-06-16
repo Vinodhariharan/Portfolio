@@ -80,8 +80,9 @@
     <!-- Tab bar -->
     <div class="border-b border-[#e5e5e5] dark:border-[#222222] bg-[#ffffff] dark:bg-[#111111]">
       <div class="max-w-5xl mx-auto px-6 flex gap-6">
-        <button data-tab="posts" class="admin-tab py-3 text-sm font-medium border-b-2 border-[#2563eb] text-[#0a0a0a] dark:text-[#fafafa]">Posts</button>
-        <button data-tab="stats" class="admin-tab py-3 text-sm font-medium border-b-2 border-transparent text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Stats</button>
+        <button data-tab="posts"   class="admin-tab py-3 text-sm font-medium border-b-2 border-[#2563eb] text-[#0a0a0a] dark:text-[#fafafa]">Posts</button>
+        <button data-tab="stats"   class="admin-tab py-3 text-sm font-medium border-b-2 border-transparent text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Stats</button>
+        <button data-tab="channel" class="admin-tab py-3 text-sm font-medium border-b-2 border-transparent text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Channel</button>
       </div>
     </div>
 
@@ -160,6 +161,49 @@
             <tbody id="stats-table-body" class="divide-y divide-[#e5e5e5] dark:divide-[#222222] bg-[#ffffff] dark:bg-[#0a0a0a]">
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- CHANNEL TAB -->
+      <div id="tab-channel" class="hidden">
+        <div class="max-w-2xl">
+          <h2 class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Channel configuration</h2>
+          <p class="text-sm text-[#737373] mb-8">Pick a featured video to highlight at the top of the Latest videos section, and a trailer to play muted in the hero. Leave either blank to fall back (featured → latest long-form, trailer → static channel art).</p>
+
+          <div id="channel-loading" class="flex justify-center py-16">
+            <div class="w-6 h-6 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+
+          <div id="channel-form" class="hidden space-y-8">
+
+            <!-- Featured video -->
+            <div>
+              <label class="block text-xs font-medium text-[#737373] mb-1.5">Featured video ID</label>
+              <div class="flex gap-3 items-start">
+                <input id="channel-featured-id" type="text" placeholder="e.g. dQw4w9WgXcQ" class="field font-mono flex-1" />
+                <img id="channel-featured-thumb" src="" alt="" class="hidden w-32 aspect-video object-cover rounded-lg border border-[#e5e5e5] dark:border-[#222222]" />
+              </div>
+              <p class="text-xs text-[#737373] mt-1.5">Paste just the ID portion of a YouTube URL — e.g. for <code class="text-xs bg-[#f5f5f5] dark:bg-[#111111] px-1 py-0.5 rounded">youtube.com/watch?v=dQw4w9WgXcQ</code> use <code class="text-xs bg-[#f5f5f5] dark:bg-[#111111] px-1 py-0.5 rounded">dQw4w9WgXcQ</code>.</p>
+            </div>
+
+            <!-- Trailer video -->
+            <div>
+              <label class="block text-xs font-medium text-[#737373] mb-1.5">Trailer video ID</label>
+              <div class="flex gap-3 items-start">
+                <input id="channel-trailer-id" type="text" placeholder="e.g. dQw4w9WgXcQ" class="field font-mono flex-1" />
+                <img id="channel-trailer-thumb" src="" alt="" class="hidden w-32 aspect-video object-cover rounded-lg border border-[#e5e5e5] dark:border-[#222222]" />
+              </div>
+              <p class="text-xs text-[#737373] mt-1.5">Plays muted, looped, in the Tech Rovers hero. Pick a short, visually-engaging clip. Browsers that block autoplay will show the static channel art instead.</p>
+            </div>
+
+            <!-- Save -->
+            <div class="flex items-center gap-4 pt-2">
+              <button id="channel-save-btn" class="btn-primary">Save</button>
+              <p id="channel-save-status" class="text-sm transition-opacity duration-300 opacity-0"></p>
+            </div>
+
+            <p class="text-xs text-[#737373] pt-4 border-t border-[#e5e5e5] dark:border-[#222222]">Changes propagate within ~30 minutes (the public page caches the channel feed). To see updates immediately, redeploy on Vercel or hard-refresh.</p>
+          </div>
         </div>
       </div>
 
