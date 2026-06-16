@@ -92,13 +92,28 @@
     .drift-2 { animation: drift 10s ease-in-out infinite reverse; }
     .drift-3 { animation: drift 12s ease-in-out infinite; }
 
-    /* ── Hero banner: full-bleed black with optional bg image ── */
+    /* ── Hero banner: black base; bg image lives in a parallax layer ── */
     .tr-hero {
-      background: #000000 url('/assets/tech-rovers-banner.png') center / cover no-repeat;
+      background: #000000;
     }
+    .tr-hero-bg {
+      position: absolute;
+      inset: -15% 0;
+      background: url('/assets/tech-rovers-banner.png') center / cover no-repeat;
+      will-change: transform;
+      backface-visibility: hidden;
+    }
+    /* Edge-only vignette — leaves the center of the art clear and crisp */
     .tr-hero-overlay {
-      background: radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.85) 75%, #000 100%);
+      background:
+        radial-gradient(ellipse at center, transparent 0%, transparent 45%, rgba(0,0,0,0.45) 80%, rgba(0,0,0,0.95) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 18%, transparent 70%, rgba(0,0,0,0.85) 100%);
     }
+
+    /* ── Nav: hidden over the hero, slides in once the user has scrolled past ── */
+    .tr-nav-hidden  { transform: translateY(-110%); opacity: 0; pointer-events: none; }
+    .tr-nav-visible { transform: translateY(0);    opacity: 1; pointer-events: auto; }
+    nav.tr-nav { transition: transform .35s cubic-bezier(.2,.7,.2,1), opacity .25s ease; }
 
     /* ── Red glow CTA ── */
     .btn-yt-red {
@@ -163,8 +178,8 @@
 
 <body class="min-h-screen flex flex-col">
 
-  <!-- ── Navigation ── -->
-  <nav class="fixed top-0 w-full z-50 nav-bg backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
+  <!-- ── Navigation (hidden over the hero, slides in on scroll past it) ── -->
+  <nav id="trNav" class="tr-nav tr-nav-hidden fixed top-0 w-full z-50 nav-bg backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
       <a href="/" class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] tracking-tight" style="font-family:'Glacial Indifference',sans-serif;">vh</a>
       <div class="hidden md:flex items-center gap-8">
@@ -198,7 +213,9 @@
   <main class="flex-grow">
 
     <!-- ── Full-bleed hero with channel art ── -->
-    <section class="tr-hero relative -mt-16 mb-20 overflow-hidden">
+    <section id="trHero" class="tr-hero relative -mt-16 mb-20 overflow-hidden">
+      <!-- Parallax background layer (moves slower than page scroll) -->
+      <div id="trHeroBg" class="tr-hero-bg"></div>
       <div class="absolute inset-0 tr-hero-overlay"></div>
 
       <div class="relative max-w-5xl mx-auto px-6 pt-40 pb-32 md:pt-48 md:pb-40 text-center">
@@ -348,6 +365,41 @@
 
   <script>
     lucide.createIcons();
+
+    // ── Parallax hero + scroll-reveal nav ──
+    (function(){
+      const nav    = document.getElementById('trNav');
+      const hero   = document.getElementById('trHero');
+      const heroBg = document.getElementById('trHeroBg');
+      if (!nav || !hero || !heroBg) return;
+
+      let ticking = false;
+      const update = () => {
+        const scrolled = window.scrollY;
+        const heroH    = hero.offsetHeight || 1;
+
+        // Parallax: bg layer drifts at ~40% of scroll speed while hero is on screen
+        if (scrolled < heroH * 1.3) {
+          heroBg.style.transform = `translate3d(0, ${scrolled * 0.4}px, 0)`;
+        }
+
+        // Reveal nav after we've scrolled past ~60% of the hero
+        const showNav = scrolled > heroH * 0.6;
+        nav.classList.toggle('tr-nav-visible', showNav);
+        nav.classList.toggle('tr-nav-hidden',  !showNav);
+
+        ticking = false;
+      };
+      const onScroll = () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      update(); // initial run in case the page loads pre-scrolled (back-nav, anchor)
+    })();
+
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
     if (menuToggle) menuToggle.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
