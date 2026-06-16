@@ -33,20 +33,54 @@
   <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet" />
 
   <style>
+    /* ── Local Playlist font (Artimasa) — used for the chromatic channel name ── */
+    @font-face {
+      font-family: 'Playlist Script';
+      src: url('/assets/fonts/Playlist%20Script.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Playlist Caps';
+      src: url('/assets/fonts/Playlist%20Caps.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Playlist Ornament';
+      src: url('/assets/fonts/Playlist%20Ornament.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
     /* ── Chromatic aberration text effect — matches channel art ── */
     .chromatic {
       position: relative;
       display: inline-block;
       color: #ffffff;
+      font-family: 'Playlist Script', 'Brush Script MT', cursive;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1;
+      /* Layered red+cyan shadows for the chromatic aberration look */
       text-shadow:
-        -3px 0 0 rgba(255, 0, 64, 0.85),
-         3px 0 0 rgba(0, 229, 255, 0.85);
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      letter-spacing: -0.02em;
+        -4px 0 0 rgba(255, 0, 64, 0.92),
+         4px 0 0 rgba(0, 229, 255, 0.92),
+        -4px 0 16px rgba(255, 0, 64, 0.3),
+         4px 0 16px rgba(0, 229, 255, 0.3);
+      /* Script font reads larger optically — bump the size */
+      font-size: clamp(4.5rem, 14vw, 9rem);
     }
     @media (min-width: 768px) {
-      .chromatic { text-shadow: -5px 0 0 rgba(255,0,64,0.85), 5px 0 0 rgba(0,229,255,0.85); }
+      .chromatic {
+        text-shadow:
+          -6px 0 0 rgba(255, 0, 64, 0.92),
+           6px 0 0 rgba(0, 229, 255, 0.92),
+          -6px 0 24px rgba(255, 0, 64, 0.3),
+           6px 0 24px rgba(0, 229, 255, 0.3);
+      }
     }
 
     /* ── Subtle drift animation for floating sparkles ── */
