@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog | Vinodhariharan Ravi</title>
+  <title>Tech Rovers — YouTube Channel | Vinodhariharan Ravi</title>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6E52VLX2ZZ"></script>
   <script>
@@ -31,85 +31,31 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="./assets/favicon.png" type="image/png" />
   <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="supabase-config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-  <!-- Primary SEO -->
-  <meta name="description" content="Blog by Vinodhariharan Ravi â€" thoughts on AI, full-stack engineering, and building things." />
-  <meta name="author" content="Vinodhariharan Ravi" />
-  <link rel="canonical" href="https://vinodhariharan.vercel.app/blog.html" />
-
-  <!-- Open Graph -->
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://vinodhariharan.vercel.app/blog.html" />
-  <meta property="og:title"        content="Blog â€" Vinodhariharan Ravi" />
-  <meta property="og:description"  content="Thoughts on AI, full-stack engineering, and building things." />
-  <meta property="og:image"        content="https://vinodhariharan.vercel.app/assets/og-cover.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:site_name"    content="Vinodhariharan Ravi" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="Blog â€" Vinodhariharan Ravi" />
-  <meta name="twitter:description" content="Thoughts on AI, full-stack engineering, and building things." />
-  <meta name="twitter:image"       content="https://vinodhariharan.vercel.app/assets/og-cover.png" />
-
-  <style>
-    /* Reading progress bar */
-    #reading-progress {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 2px;
-      width: 0%;
-      background: #2563eb;
-      z-index: 100;
-      transition: width 0.1s linear;
-    }
-
-    /* Featured post card gradient */
-    .featured-card {
-      background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
-    }
-
-    /* Post card hover lift */
-    .post-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-    .post-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
-      border-color: #2563eb;
-    }
-  </style>
+  <meta name="description" content="Tech Rovers — a YouTube channel by Vinodhariharan Ravi covering tech, builds, and tutorials." />
+  <link rel="canonical" href="https://vinodhariharan.vercel.app/tech-rovers.html" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://vinodhariharan.vercel.app/tech-rovers.html" />
+  <meta property="og:title"       content="Tech Rovers — YouTube Channel" />
+  <meta property="og:description" content="Tech reviews, builds, and tutorials. Subscribe on YouTube." />
+  <meta property="og:image"       content="https://vinodhariharan.vercel.app/assets/Subscribe_ad.png" />
 </head>
 
 <body class="min-h-screen flex flex-col">
 
-  <!-- Reading progress bar (shown only during single post) -->
-  <div id="reading-progress"></div>
-
-  <!-- â"€â"€ Navigation â"€â"€ -->
+  <!-- ── Navigation ── -->
   <nav class="fixed top-0 w-full z-50 nav-bg backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
-
-      <a href="/" class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] tracking-tight shrink-0" style="font-family:'Glacial Indifference',sans-serif;">vh</a>
-
-      <!-- Post title in nav (shown when reading a post) -->
-      <p id="nav-post-title" class="hidden md:block text-sm text-[#737373] truncate max-w-xs mx-4 flex-1 text-center"></p>
-
-      <div class="hidden md:flex items-center gap-8 shrink-0">
+      <a href="/" class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] tracking-tight" style="font-family:'Glacial Indifference',sans-serif;">vh</a>
+      <div class="hidden md:flex items-center gap-8">
         <a href="/" class="nav-link">Home</a>
-        <a href="blog.html" id="nav-blog-link" class="text-sm font-medium text-[#2563eb]" style="text-decoration:none;">Blog</a>
-        <a href="tech-rovers.html" class="nav-link">Tech Rovers</a>
+        <a href="blog.html" class="nav-link">Blog</a>
+        <a href="tech-rovers.html" class="text-sm font-medium text-[#2563eb]" style="text-decoration:none;">Tech Rovers</a>
         <button id="darkModeToggle" class="p-2 rounded-full text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Toggle dark mode">
           <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
           <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         </button>
       </div>
-
       <div class="md:hidden flex items-center gap-3">
         <button id="darkModeToggleMobile" class="p-2 rounded-full text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Toggle dark mode">
           <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -120,141 +66,61 @@
         </button>
       </div>
     </div>
-
     <div id="mobileMenu" class="hidden md:hidden border-t border-[#e5e5e5] dark:border-[#222222] bg-white/95 dark:bg-[#0a0a0a]/95">
       <div class="max-w-5xl mx-auto px-6 py-4 flex flex-col gap-4">
         <a href="/" class="py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Home</a>
-        <a href="blog.html" class="py-1 text-sm text-[#2563eb]">Blog</a>
-        <a href="tech-rovers.html" class="py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Tech Rovers</a>
+        <a href="blog.html" class="py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Blog</a>
+        <a href="tech-rovers.html" class="py-1 text-sm text-[#2563eb]">Tech Rovers</a>
       </div>
     </div>
   </nav>
 
-  <!-- â"€â"€ Main â"€â"€ -->
-  <main class="flex-grow">
+  <!-- ── Hero ── -->
+  <main class="flex-grow pt-32 pb-24">
+    <div class="max-w-5xl mx-auto px-6">
 
-    <!-- â•â• LIST VIEW â•â• -->
-    <div id="blog-list-view" class="pt-28 pb-24">
-      <div class="max-w-5xl mx-auto px-6">
+      <section class="text-center mb-20">
+        <p class="section-label">YouTube Channel</p>
+        <h1 class="text-4xl md:text-6xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-4 leading-tight">Tech Rovers</h1>
+        <p class="text-lg text-[#737373] max-w-xl mx-auto mb-8 leading-relaxed">Exploring tech — reviews, builds, and the things I learn along the way.</p>
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+          <a href="https://www.youtube.com/@tech_rovers?sub_confirmation=1" target="_blank" rel="noopener"
+             class="inline-flex items-center gap-2 px-6 py-3 bg-[#ff0000] hover:bg-[#cc0000] text-white rounded-full text-sm font-medium transition-colors shadow-sm">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            Subscribe on YouTube
+          </a>
+          <a href="https://www.youtube.com/@tech_rovers" target="_blank" rel="noopener"
+             class="btn-ghost text-sm">Visit channel ↗</a>
+        </div>
+      </section>
 
-        <!-- Header -->
-        <div class="mb-14">
-          <p class="section-label">Writing</p>
-          <h1 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mt-1 mb-2">Blog</h1>
-          <p class="text-[#737373]">Thoughts on AI, full-stack engineering, and building things.</p>
+      <!-- ── Latest videos grid ── -->
+      <section class="mb-24">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Latest videos</h2>
+          <a href="https://www.youtube.com/@tech_rovers/videos" target="_blank" rel="noopener" class="text-sm text-[#737373] hover:text-[#2563eb] transition-colors">See all ↗</a>
         </div>
 
-        <!-- Loading -->
-        <div id="loading-state" class="flex justify-center py-20">
+        <div id="videos-loading" class="flex justify-center py-16">
           <div class="w-6 h-6 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin"></div>
         </div>
 
-        <!-- Empty state -->
-        <div id="empty-state" class="hidden text-center py-24">
-          <i data-lucide="pen-line" class="w-12 h-12 text-[#e5e5e5] dark:text-[#222222] mx-auto mb-4"></i>
-          <p class="text-[#737373] text-base">No posts yet â€" check back soon.</p>
+        <div id="videos-error" class="hidden text-center py-12 text-[#737373]">
+          <p class="mb-3">Couldn't load the latest videos right now.</p>
+          <a href="https://www.youtube.com/@tech_rovers" target="_blank" rel="noopener" class="text-[#2563eb] hover:underline">Visit the channel directly ↗</a>
         </div>
 
-        <!-- Featured post (first/latest) -->
-        <div id="featured-post" class="hidden mb-10">
-          <!-- rendered by JS -->
-        </div>
+        <div id="videos-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
 
-        <!-- Ad slot: between featured and post grid -->
-        <div id="list-ad-slot" class="hidden mb-10">
-          <a href="https://www.youtube.com/@tech_rovers" target="_blank" rel="noopener" class="block rounded-xl overflow-hidden">
-            <img src="/assets/Subscribe_ad.png" alt="Subscribe to Tech Rovers on YouTube" class="w-full h-[90px] object-cover object-center" style="display:block;"/>
-          </a>
-        </div>
+      <!-- ── About ── -->
+      <section class="mb-16">
+        <p class="section-label">About</p>
+        <h2 class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-4">Why this channel</h2>
+        <p class="text-[#737373] leading-relaxed max-w-2xl">Tech Rovers is where I share the tech I'm curious about — hardware I'm trying, tools I'm using, builds I'm working on. It's a companion to the writing on this site: less polished, more in-the-moment. If you'd like to follow along, subscribe and the next one shows up in your feed.</p>
+      </section>
 
-        <!-- Divider + remaining posts -->
-        <div id="posts-section" class="hidden">
-          <div class="flex items-center gap-4 mb-8">
-            <span class="section-label">All Posts</span>
-            <div class="flex-1 h-px bg-[#e5e5e5] dark:bg-[#222222]"></div>
-          </div>
-
-          <!-- Grid + right sidebar ad -->
-          <div class="flex items-start gap-6">
-
-            <!-- Post cards -->
-            <div id="posts-grid" class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5"></div>
-
-            <!-- Right-side inline ad (desktop only, not sticky) -->
-            <div class="hidden lg:flex flex-col items-center gap-1 w-44 shrink-0">
-              <p class="text-[0.6rem] font-medium tracking-widest uppercase text-[#c4c4c4] dark:text-[#444]">Advertisement</p>
-              <div class="border border-dashed border-[#e5e5e5] dark:border-[#2a2a2a] bg-[#fafafa] dark:bg-[#0f0f0f] rounded-xl flex items-center justify-center w-full" style="height:300px;">
-                <span class="text-xs text-[#d4d4d4] dark:text-[#2a2a2a] rotate-90 whitespace-nowrap">160 × 300</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
     </div>
-
-    <!-- â•â• SINGLE POST VIEW â•â• -->
-    <div id="blog-post-view" class="hidden pt-24 pb-24">
-      <div class="max-w-5xl mx-auto px-6">
-
-        <!-- Back + meta bar -->
-        <div class="flex items-center justify-between mb-10">
-          <a href="blog.html" class="inline-flex items-center gap-2 text-sm text-[#737373] hover:text-[#2563eb] transition-colors">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-            All posts
-          </a>
-          <span id="post-readtime-bar" class="text-xs text-[#737373]"></span>
-        </div>
-
-        <!-- Loading -->
-        <div id="post-loading" class="flex justify-center py-20">
-          <div class="w-6 h-6 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin"></div>
-        </div>
-
-        <!-- Not found -->
-        <div id="post-not-found" class="hidden text-center py-24">
-          <p class="text-[#737373] mb-4">Post not found.</p>
-          <a href="blog.html" class="text-[#2563eb] hover:underline text-sm">Return to blog</a>
-        </div>
-
-        <!-- Article layout: content + sidebar -->
-        <article id="post-article" class="hidden">
-          <div class="max-w-2xl">
-            <!-- Post header -->
-            <header class="mb-10 pb-8 border-b border-[#e5e5e5] dark:border-[#222222]">
-              <h1 id="post-title" class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa] leading-tight mb-5"></h1>
-              <div class="flex flex-wrap items-center gap-3">
-                <div class="flex items-center gap-2">
-                  <div class="w-7 h-7 rounded-full overflow-hidden bg-[#e5e5e5] dark:bg-[#222222] shrink-0">
-                    <img src="./assets/new_profile.png" alt="Vinodhariharan Ravi" class="w-full h-full object-cover" />
-                  </div>
-                  <span class="text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">Vinodhariharan Ravi</span>
-                </div>
-                <span class="text-[#e5e5e5] dark:text-[#333333]">Â·</span>
-                <span id="post-date" class="text-sm text-[#737373]"></span>
-                <span class="text-[#e5e5e5] dark:text-[#333333]">Â·</span>
-                <span id="post-readtime" class="text-sm text-[#737373]"></span>
-              </div>
-              <p id="post-excerpt" class="mt-5 text-[#737373] text-base leading-relaxed"></p>
-            </header>
-
-            <!-- Content -->
-            <div id="post-content" class="prose-blog"></div>
-
-            <!-- Footer -->
-            <footer class="mt-14 pt-8 border-t border-[#e5e5e5] dark:border-[#222222]">
-              <a href="blog.html" class="inline-flex items-center gap-2 text-sm text-[#737373] hover:text-[#2563eb] transition-colors">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                Back to all posts
-              </a>
-            </footer>
-          </div>
-        </article>
-
-      </div>
-    </div>
-
   </main>
 
   <!-- ── Footer fade ── -->
@@ -263,26 +129,21 @@
   <!-- ── Footer ── -->
   <footer class="footer-bg transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-10 border-t border-[#e5e5e5] dark:border-[#222222]">
-
-      <!-- Brand -->
       <div>
         <a href="/" class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] tracking-tight" style="font-family:'Glacial Indifference',sans-serif;">vh</a>
         <p class="text-sm text-[#737373] mt-2 leading-relaxed">Full-Stack Engineer &amp; AI Developer building scalable systems and agentic AI.</p>
         <p class="text-xs text-[#737373] mt-5">© 2026 Vinodhariharan Ravi</p>
       </div>
-
-      <!-- Pages -->
       <div>
         <p class="text-xs font-semibold uppercase tracking-widest text-[#737373] mb-4">Pages</p>
         <nav class="flex flex-col gap-2.5">
           <a href="/" class="text-sm text-[#737373] hover:text-[#2563eb] transition-colors">Home</a>
           <a href="/blog.html" class="text-sm text-[#737373] hover:text-[#2563eb] transition-colors">Blog</a>
+          <a href="/tech-rovers.html" class="text-sm text-[#737373] hover:text-[#2563eb] transition-colors">Tech Rovers</a>
           <a href="/privacy.html" class="text-sm text-[#737373] hover:text-[#2563eb] transition-colors">Privacy</a>
           <a href="/terms.html" class="text-sm text-[#737373] hover:text-[#2563eb] transition-colors">Terms</a>
         </nav>
       </div>
-
-      <!-- Connect -->
       <div>
         <p class="text-xs font-semibold uppercase tracking-widest text-[#737373] mb-4">Connect</p>
         <div class="flex flex-col gap-2.5">
@@ -304,18 +165,14 @@
           </a>
         </div>
       </div>
-
     </div>
   </footer>
 
-  <script src="blog.js"></script>
   <script>
     lucide.createIcons();
-
     const menuToggle = document.getElementById('menuToggle');
     const mobileMenu = document.getElementById('mobileMenu');
     if (menuToggle) menuToggle.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-
     const toggleDark = () => {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
@@ -323,6 +180,67 @@
     document.getElementById('darkModeToggle')?.addEventListener('click', toggleDark);
     document.getElementById('darkModeToggleMobile')?.addEventListener('click', toggleDark);
 
+    // ── Fetch latest videos and render the grid ──
+    function fmtDate(iso) {
+      return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    function timeAgo(iso) {
+      const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+      if (diff < 60)        return 'just now';
+      if (diff < 3600)      return Math.floor(diff/60) + 'm ago';
+      if (diff < 86400)     return Math.floor(diff/3600) + 'h ago';
+      if (diff < 86400*7)   return Math.floor(diff/86400) + 'd ago';
+      if (diff < 86400*30)  return Math.floor(diff/(86400*7)) + 'w ago';
+      if (diff < 86400*365) return Math.floor(diff/(86400*30)) + 'mo ago';
+      return Math.floor(diff/(86400*365)) + 'y ago';
+    }
+    function escapeHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+    function renderVideo(v) {
+      return `
+        <a href="${v.link}" target="_blank" rel="noopener" class="group flex flex-col gap-3 no-underline">
+          <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-[#f5f5f5] dark:bg-[#111111]">
+            ${v.thumbnail
+              ? `<img src="${v.thumbnail}" alt="${escapeHtml(v.title)}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>`
+              : ''}
+            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
+              <div class="w-14 h-14 rounded-full bg-[#ff0000] flex items-center justify-center shadow-lg">
+                <svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-xs text-[#737373]">
+            <span>${timeAgo(v.published)}</span>
+            ${v.views > 0 ? `<span>${v.views.toLocaleString()} views</span>` : ''}
+          </div>
+          <h3 class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa] leading-snug group-hover:text-[#2563eb] transition-colors line-clamp-2">${escapeHtml(v.title)}</h3>
+        </a>`;
+    }
+
+    (async () => {
+      const loading = document.getElementById('videos-loading');
+      const error   = document.getElementById('videos-error');
+      const grid    = document.getElementById('videos-grid');
+
+      try {
+        const res = await fetch('/api/youtube/feed');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const videos = (data.videos || []).slice(0, 9);
+
+        loading.classList.add('hidden');
+        if (videos.length === 0) {
+          error.classList.remove('hidden');
+          return;
+        }
+        grid.innerHTML = videos.map(renderVideo).join('');
+        grid.classList.remove('hidden');
+      } catch (err) {
+        loading.classList.add('hidden');
+        error.classList.remove('hidden');
+        console.error('Failed to load videos:', err);
+      }
+    })();
   </script>
 </body>
 </html>
