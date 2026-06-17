@@ -93,18 +93,7 @@ export default async function handler(req) {
     return `<h${level} id="${unique}"${attrs || ''}>${inner}</h${level}>`;
   });
 
-  // Inject mid-article ad after 3rd </p>
-  const adHtml = `
-    <div style="margin:2rem 0;">
-      <a href="https://www.youtube.com/@tech_rovers" target="_blank" rel="noopener" style="display:block;border-radius:0.75rem;overflow:hidden;">
-        <img src="/assets/Subscribe_ad.png" alt="Subscribe to Tech Rovers on YouTube" style="display:block;width:100%;height:90px;object-fit:cover;object-position:center;"/>
-      </a>
-    </div>`;
-  let pCount = 0;
-  const contentHtml = withIds.replace(/<\/p>/gi, m => {
-    pCount++;
-    return pCount === 3 ? m + adHtml : m;
-  });
+  const contentHtml = withIds;
   const ogImage     = post.cover_image || `${SITE}/assets/og-cover.png`;
   const date        = new Date(post.created_at).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric'

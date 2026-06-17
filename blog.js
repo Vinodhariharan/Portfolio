@@ -243,7 +243,6 @@ async function loadPostList() {
     if (rest.length > 0) {
       grid.innerHTML = rest.map(renderCard).join('');
       postsSection.classList.remove('hidden');
-      document.getElementById('list-ad-slot')?.classList.remove('hidden');
     }
 
   } catch (err) {
@@ -296,19 +295,6 @@ async function loadSinglePost(slug) {
     }
 
     document.getElementById('post-content').innerHTML = marked.parse(post.content);
-
-    // Inject mid-article ad after 3rd paragraph (if enough content)
-    const contentEl  = document.getElementById('post-content');
-    const paragraphs = contentEl.querySelectorAll('p');
-    if (paragraphs.length >= 3) {
-      const adHtml = `
-        <div class="my-8">
-          <a href="https://www.youtube.com/@tech_rovers" target="_blank" rel="noopener" style="display:block;border-radius:0.75rem;overflow:hidden;">
-            <img src="/assets/Subscribe_ad.png" alt="Subscribe to Tech Rovers on YouTube" style="display:block;width:100%;height:90px;object-fit:cover;object-position:center;"/>
-          </a>
-        </div>`;
-      paragraphs[2].insertAdjacentHTML('afterend', adHtml);
-    }
 
     if (readtimeBar) readtimeBar.textContent = estimateReadTime(post.content);
 
