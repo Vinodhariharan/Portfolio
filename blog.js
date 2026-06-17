@@ -63,6 +63,31 @@ function viewBadge(count, size = 'sm', createdAt = null) {
 
 // ── Post card renderer ────────────────────────────────────────────────────────
 
+// ── "Most read" compact card — ranked, view-count first ─────────────────────
+
+function renderMostReadCard(post, idx) {
+  const rank = (typeof idx === 'number') ? idx + 1 : '';
+  const views = (post.view_count || 0).toLocaleString();
+  return `
+    <a href="/post/${post.slug}"
+       class="card post-card flex gap-3 cursor-pointer no-underline group p-4">
+      <span class="text-3xl font-bold text-[#e5e5e5] dark:text-[#333333] leading-none shrink-0 w-7 group-hover:text-[#2563eb] transition-colors">${rank}</span>
+      <div class="flex-1 min-w-0">
+        <h3 class="text-sm font-semibold text-[#0a0a0a] dark:text-[#fafafa] leading-snug line-clamp-3 mb-1.5 group-hover:text-[#2563eb] transition-colors">
+          ${post.title}
+        </h3>
+        <span class="inline-flex items-center gap-1 text-xs text-[#737373]">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          ${views}
+        </span>
+      </div>
+    </a>
+  `;
+}
+
 function renderCard(post) {
   return `
     <a href="/post/${post.slug}"
@@ -213,16 +238,18 @@ function setNavTitle(title) {
 // ── List view ─────────────────────────────────────────────────────────────────
 
 async function loadPostList() {
-  const featuredEl  = document.getElementById('featured-post');
-  const postsSection = document.getElementById('posts-section');
-  const grid        = document.getElementById('posts-grid');
-  const empty       = document.getElementById('empty-state');
-  const loading     = document.getElementById('loading-state');
+  const featuredEl      = document.getElementById('featured-post');
+  const postsSection    = document.getElementById('posts-section');
+  const grid            = document.getElementById('posts-grid');
+  const mostReadSection = document.getElementById('most-read-section');
+  const mostReadGrid    = document.getElementById('most-read-grid');
+  const empty           = document.getElementById('empty-state');
+  const loading         = document.getElementById('loading-state');
 
   try {
     const { data: posts, error } = await supabaseClient
       .from('posts')
-      .select('id, title, slug, excerpt, content, cover_image, created_at, view_count')
+      .select('id, title, slug, excerpt, content, cover_image, created_at, view_count, is_featured')
       .eq('is_published', true)
       .order('created_at', { ascending: false });
 
@@ -234,11 +261,24 @@ async function loadPostList() {
       return;
     }
 
-    // First post → featured, rest → grid
-    const [featured, ...rest] = posts;
+    // Featured: admin pick (is_featured = true) or latest as fallback.
+    const featured = posts.find(p => p.is_featured) || posts[0];
+    const rest = posts.filter(p => p.id !== featured.id);
 
     featuredEl.innerHTML = renderFeatured(featured);
     featuredEl.classList.remove('hidden');
+
+    // Most read: top 4 by view_count, excluding featured, only counted views.
+    const mostRead = rest
+      .filter(p => (p.view_count || 0) > 0)
+      .slice()
+      .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
+      .slice(0, 4);
+
+    if (mostRead.length >= 2) {
+      mostReadGrid.innerHTML = mostRead.map(renderMostReadCard).join('');
+      mostReadSection.classList.remove('hidden');
+    }
 
     if (rest.length > 0) {
       grid.innerHTML = rest.map(renderCard).join('');

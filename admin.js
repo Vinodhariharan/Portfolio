@@ -65,7 +65,7 @@ async function loadDashboard() {
 
   const { data: posts, error } = await supabaseClient
     .from('posts')
-    .select('id, title, slug, is_published, created_at, view_count')
+    .select('id, title, slug, is_published, is_featured, created_at, view_count')
     .order('created_at', { ascending: false });
 
   hide('dashboard-loading');
@@ -82,6 +82,13 @@ async function loadDashboard() {
           ${p.is_published ? 'Published' : 'Draft'}
         </span>
       </td>
+      <td class="px-5 py-4 text-center">
+        <button onclick="toggleFeatured('${p.id}', ${!!p.is_featured})"
+                title="${p.is_featured ? 'Currently featured — click to unfeature' : 'Mark as featured'}"
+                class="text-xl leading-none ${p.is_featured ? 'text-[#facc15]' : 'text-[#d4d4d4] dark:text-[#444] hover:text-[#facc15]'} transition-colors">
+          ${p.is_featured ? '★' : '☆'}
+        </button>
+      </td>
       <td class="px-5 py-4 text-xs text-[#737373]">
         ${new Date(p.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' })}
       </td>
@@ -94,6 +101,19 @@ async function loadDashboard() {
       </td>
     </tr>
   `).join('');
+}
+
+// Toggle featured: unfeature any others first (partial unique index allows only one),
+// then set the new one. Click on an already-featured post un-features it.
+async function toggleFeatured(postId, currentlyFeatured) {
+  if (currentlyFeatured) {
+    await supabaseClient.from('posts').update({ is_featured: false }).eq('id', postId);
+  } else {
+    // Clear any other featured post first to satisfy the unique constraint.
+    await supabaseClient.from('posts').update({ is_featured: false }).eq('is_featured', true);
+    await supabaseClient.from('posts').update({ is_featured: true }).eq('id', postId);
+  }
+  loadDashboard();
 }
 
 // ── Stats / Channel tab state ─────────────────────────────────────────────────
