@@ -85,7 +85,7 @@ async function fetchTotalViews() {
 async function fetchChannelConfig() {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return {};
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/channel_config?id=eq.1&select=featured_video_id,trailer_video_id`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/channel_config?id=eq.1&select=featured_video_id,trailer_video_id,subscribers_override,videos_override,views_override`, {
       headers: {
         apikey:        SUPABASE_ANON_KEY,
         Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
@@ -96,8 +96,11 @@ async function fetchChannelConfig() {
     const rows = await res.json();
     const row = rows?.[0] || {};
     return {
-      featured_video_id: row.featured_video_id || null,
-      trailer_video_id:  row.trailer_video_id  || null
+      featured_video_id:    row.featured_video_id    || null,
+      trailer_video_id:     row.trailer_video_id     || null,
+      subscribers_override: row.subscribers_override || null,
+      videos_override:      row.videos_override      ?? null,
+      views_override:       row.views_override       ?? null
     };
   } catch {
     return {};
@@ -179,12 +182,14 @@ export default async function handler() {
     }
     if (handlePage.channelId) cachedChannelId = handlePage.channelId;
 
-    // Scrape sub/video count from the same HTML.
+    // Scrape sub/video count from the same HTML, then apply admin overrides.
+    // Overrides win because YouTube's HTML changes frequently and the scraper
+    // can return null or stale values.
     const handleStats = handlePage.html ? parseStatsFromHandle(handlePage.html) : { subscribers: null, videos: null };
     const stats = {
-      subscribers: handleStats.subscribers,
-      videos:      handleStats.videos,
-      views:       totalViews
+      subscribers: config.subscribers_override ?? handleStats.subscribers,
+      videos:      config.videos_override      ?? handleStats.videos,
+      views:       config.views_override       ?? totalViews
     };
 
     const rss = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`);

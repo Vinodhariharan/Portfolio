@@ -196,6 +196,30 @@
               <p class="text-xs text-[#737373] mt-1.5">Plays muted, looped, in the Tech Rovers hero. Pick a short, visually-engaging clip. Browsers that block autoplay will show the static channel art instead.</p>
             </div>
 
+            <!-- Stat overrides -->
+            <div class="pt-6 border-t border-[#e5e5e5] dark:border-[#222222]">
+              <h3 class="text-sm font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Stat overrides</h3>
+              <p class="text-xs text-[#737373] mb-5">YouTube changes their channel page HTML often, which breaks the auto-scrape. Set values here to override what's shown on the public Stats counters. Leave blank to use the scraped value (which may be missing or wrong).</p>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-[#737373] mb-1.5">Subscribers</label>
+                  <input id="channel-subs-override" type="text" placeholder="e.g. 100K" class="field" />
+                  <p class="text-[10px] text-[#737373] mt-1">Use abbreviated form: "100K", "1.2M", "950"</p>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-[#737373] mb-1.5">Videos</label>
+                  <input id="channel-videos-override" type="number" min="0" placeholder="e.g. 42" class="field" />
+                  <p class="text-[10px] text-[#737373] mt-1">Plain integer</p>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-[#737373] mb-1.5">Total views</label>
+                  <input id="channel-views-override" type="number" min="0" placeholder="e.g. 100000" class="field" />
+                  <p class="text-[10px] text-[#737373] mt-1">Plain integer; auto-formats to K/M on the page</p>
+                </div>
+              </div>
+            </div>
+
             <!-- Save -->
             <div class="flex items-center gap-4 pt-2">
               <button id="channel-save-btn" class="btn-primary">Save</button>

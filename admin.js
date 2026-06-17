@@ -415,7 +415,7 @@ async function loadChannelConfig() {
 
   const { data, error } = await supabaseClient
     .from('channel_config')
-    .select('featured_video_id, trailer_video_id')
+    .select('featured_video_id, trailer_video_id, subscribers_override, videos_override, views_override')
     .eq('id', 1)
     .single();
 
@@ -426,22 +426,44 @@ async function loadChannelConfig() {
     setChannelStatus('Could not load config: ' + error.message, false);
     return;
   }
-  $('channel-featured-id').value = data?.featured_video_id || '';
-  $('channel-trailer-id').value  = data?.trailer_video_id  || '';
+  $('channel-featured-id').value       = data?.featured_video_id    || '';
+  $('channel-trailer-id').value        = data?.trailer_video_id     || '';
+  $('channel-subs-override').value     = data?.subscribers_override || '';
+  $('channel-videos-override').value   = data?.videos_override      ?? '';
+  $('channel-views-override').value    = data?.views_override       ?? '';
   updateThumbPreview('channel-featured-id', 'channel-featured-thumb');
   updateThumbPreview('channel-trailer-id',  'channel-trailer-thumb');
 }
 
 async function saveChannelConfig() {
-  const featured = $('channel-featured-id').value.trim() || null;
-  const trailer  = $('channel-trailer-id').value.trim()  || null;
+  const featured        = $('channel-featured-id').value.trim()     || null;
+  const trailer         = $('channel-trailer-id').value.trim()      || null;
+  const subsRaw         = $('channel-subs-override').value.trim();
+  const videosRaw       = $('channel-videos-override').value.trim();
+  const viewsRaw        = $('channel-views-override').value.trim();
+
+  const subscribers     = subsRaw || null;
+  const videosOverride  = videosRaw === '' ? null : parseInt(videosRaw, 10);
+  const viewsOverride   = viewsRaw  === '' ? null : parseInt(viewsRaw, 10);
+
+  if (videosOverride !== null && !Number.isFinite(videosOverride)) {
+    setChannelStatus('Videos override must be a number', false);
+    return;
+  }
+  if (viewsOverride !== null && !Number.isFinite(viewsOverride)) {
+    setChannelStatus('Views override must be a number', false);
+    return;
+  }
 
   const { error } = await supabaseClient
     .from('channel_config')
     .update({
-      featured_video_id: featured,
-      trailer_video_id:  trailer,
-      updated_at:        new Date().toISOString()
+      featured_video_id:    featured,
+      trailer_video_id:     trailer,
+      subscribers_override: subscribers,
+      videos_override:      videosOverride,
+      views_override:       viewsOverride,
+      updated_at:           new Date().toISOString()
     })
     .eq('id', 1);
 
