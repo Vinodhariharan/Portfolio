@@ -649,35 +649,117 @@ function renderDevices(devices) {
   }).join('');
 }
 
+// Small per-page sparkline (compact version of the trend chart).
+function renderMiniSparkline(points, opts = {}) {
+  const w = opts.width || 320;
+  const h = opts.height || 56;
+  const color = opts.color || '#2563eb';
+  if (!points || points.length === 0) return '';
+  const max = Math.max(1, ...points.map(p => p.views));
+  const step = w / (points.length - 1 || 1);
+
+  const path = points.map((p, i) => {
+    const x = i * step;
+    const y = h - (p.views / max) * (h - 4) - 2;
+    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const area = `${path} L${w},${h} L0,${h} Z`;
+  const gid = 'spk-' + Math.random().toString(36).slice(2, 8);
+
+  const dots = points.map((p, i) => {
+    const x = i * step;
+    const y = h - (p.views / max) * (h - 4) - 2;
+    const date = `${p.date.slice(0,4)}-${p.date.slice(4,6)}-${p.date.slice(6,8)}`;
+    return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6" fill="transparent"><title>${date}: ${p.views} views</title></circle>`;
+  }).join('');
+
+  return `
+    <svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" class="block">
+      <defs>
+        <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="${color}" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="${area}" fill="url(#${gid})"/>
+      <path d="${path}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
+    </svg>`;
+}
+
+// Per-page detailed cards (one per top page) with a 30-day sparkline.
 function renderPages(pages) {
   if (pages.length === 0) {
     return `<p class="text-sm text-[#737373]">No page data yet.</p>`;
   }
-  const rows = pages.map(p => {
+
+  // Determine peak day across all pages for the "best day" badge.
+  const cards = pages.map((p, i) => {
     const avgEng = p.views > 0 ? (p.engDur / p.views) : 0;
+    const total30d = (p.daily || []).reduce((a, d) => a + d.views, 0);
+    const peakDay  = (p.daily || []).reduce(
+      (best, d) => d.views > (best?.views || 0) ? d : best, null);
+    const peakStr  = peakDay
+      ? `${peakDay.date.slice(0,4)}-${peakDay.date.slice(4,6)}-${peakDay.date.slice(6,8)} · ${peakDay.views} views`
+      : '—';
+
+    const rankColors = ['#facc15','#a3a3a3','#d97706'];
+    const rankColor  = rankColors[i] || '#737373';
+    const rankBadge  = i < 3
+      ? `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold text-white" style="background:${rankColor}">${i+1}</span>`
+      : `<span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-semibold text-[#737373] bg-[#f5f5f5] dark:bg-[#222]">${i+1}</span>`;
+
     return `
-      <tr class="hover:bg-[#f5f5f5] dark:hover:bg-[#111111] transition-colors">
-        <td class="px-3 py-3 text-sm">
-          <div class="font-medium text-[#0a0a0a] dark:text-[#fafafa] truncate max-w-md">${escapeHtml(p.title || '(no title)')}</div>
-          <div class="text-xs text-[#737373] font-mono truncate max-w-md">${escapeHtml(p.path)}</div>
-        </td>
-        <td class="px-3 py-3 text-right text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">${fmtNumber(p.views)}</td>
-        <td class="px-3 py-3 text-right text-sm text-[#737373]">${fmtDuration(avgEng)}</td>
-        <td class="px-3 py-3 text-right text-sm text-[#737373]">${fmtPct(p.engRate)}</td>
-      </tr>`;
+      <div class="border-t border-[#e5e5e5] dark:border-[#222222] py-5 first:border-t-0 first:pt-0">
+        <div class="flex items-start gap-3 mb-3">
+          ${rankBadge}
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-[#0a0a0a] dark:text-[#fafafa] truncate">${escapeHtml(p.title || '(no title)')}</p>
+            <a href="${escapeAttr(p.path)}" target="_blank" rel="noopener" class="text-xs text-[#737373] font-mono hover:text-[#2563eb] transition-colors truncate block">${escapeHtml(p.path)} ↗</a>
+          </div>
+        </div>
+
+        <!-- Metrics row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-[#737373]">Views</p>
+            <p class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${fmtNumber(p.views)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-[#737373]">Users</p>
+            <p class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${fmtNumber(p.users || 0)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-[#737373]">Avg. engagement</p>
+            <p class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${fmtDuration(avgEng)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-[#737373]">Engagement rate</p>
+            <p class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${fmtPct(p.engRate)}</p>
+          </div>
+        </div>
+
+        <!-- Per-page sparkline -->
+        ${total30d > 0 ? `
+          <div class="rounded-lg bg-[#f5f5f5]/40 dark:bg-[#0f0f0f]/40 px-3 py-2">
+            <div class="flex items-center justify-between text-[10px] text-[#737373] mb-1">
+              <span>Last 30 days</span>
+              <span>Peak: ${peakStr}</span>
+            </div>
+            ${renderMiniSparkline(p.daily || [])}
+          </div>
+        ` : `
+          <p class="text-xs text-[#737373] italic">No daily data in the last 30 days.</p>
+        `}
+      </div>`;
   }).join('');
-  return `
-    <table class="w-full text-sm">
-      <thead class="bg-[#f5f5f5] dark:bg-[#111111] text-[#737373] text-xs uppercase">
-        <tr>
-          <th class="px-3 py-2 text-left">Page</th>
-          <th class="px-3 py-2 text-right">Views</th>
-          <th class="px-3 py-2 text-right">Avg. engagement</th>
-          <th class="px-3 py-2 text-right">Engagement rate</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-[#e5e5e5] dark:divide-[#222222]">${rows}</tbody>
-    </table>`;
+
+  return `<div>${cards}</div>`;
+}
+
+// Escape for HTML attributes (href).
+function escapeAttr(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
 }
 
 async function loadAnalytics(forceFresh = false) {

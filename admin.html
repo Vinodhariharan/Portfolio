@@ -237,19 +237,27 @@
 
           </div>
 
-          <!-- Devices + Top pages -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+          <!-- Devices (narrow) -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="card lg:col-span-1">
               <p class="text-xs uppercase tracking-wider text-[#737373] mb-4">Devices</p>
               <div id="ga-devices" class="space-y-3"></div>
             </div>
-
-            <div class="card lg:col-span-2">
-              <p class="text-xs uppercase tracking-wider text-[#737373] mb-4">Top pages</p>
-              <div id="ga-pages" class="overflow-x-auto"></div>
+            <div class="card lg:col-span-1">
+              <p class="text-xs uppercase tracking-wider text-[#737373] mb-4">Quick takeaways</p>
+              <div id="ga-takeaways" class="space-y-2 text-sm text-[#737373]">
+                <p>Each post below shows its own 30-day trend, peak day, and engagement quality — drill in to see which content actually holds readers.</p>
+              </div>
             </div>
+          </div>
 
+          <!-- Per-page detail with sparklines -->
+          <div class="card">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-xs uppercase tracking-wider text-[#737373]">Top pages · 30-day breakdown</p>
+              <p class="text-[10px] text-[#737373]">Hover dots for daily values</p>
+            </div>
+            <div id="ga-pages"></div>
           </div>
 
           <!-- Fetch timestamp -->

@@ -155,17 +155,27 @@ const reports = {
     orderBys:   [{ metric: { metricName: 'screenPageViews' }, desc: true }]
   },
 
-  // 6. Top pages by views, with engagement.
+  // 6. Top pages by views, with engagement metrics.
   pages: {
     dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
     dimensions: [{ name: 'pagePath' }, { name: 'pageTitle' }],
     metrics:    [
       { name: 'screenPageViews' },
       { name: 'userEngagementDuration' },
-      { name: 'engagementRate' }
+      { name: 'engagementRate' },
+      { name: 'totalUsers' }
     ],
     orderBys:   [{ metric: { metricName: 'screenPageViews' }, desc: true }],
-    limit:      10
+    limit:      15
+  },
+
+  // 7. Per-page daily views for the sparklines under each post card.
+  //    Limit set high; for a personal blog we'll typically see <500 rows.
+  pagesDaily: {
+    dateRanges: [{ startDate: '29daysAgo', endDate: 'today' }],
+    dimensions: [{ name: 'pagePath' }, { name: 'date' }],
+    metrics:    [{ name: 'screenPageViews' }],
+    limit:      5000
   }
 };
 
@@ -229,7 +239,43 @@ function parsePages(report) {
     title:     r.dimensionValues[1].value,
     views:     parseInt(r.metricValues[0].value || '0', 10),
     engDur:    parseFloat(r.metricValues[1].value || '0'), // seconds (total)
-    engRate:   parseFloat(r.metricValues[2].value || '0')  // 0–1
+    engRate:   parseFloat(r.metricValues[2].value || '0'), // 0–1
+    users:     parseInt(r.metricValues[3]?.value || '0', 10)
+  }));
+}
+
+// Build a YYYYMMDD list for the last 30 days, oldest → newest.
+function last30Days() {
+  const days = [];
+  const t = new Date();
+  // GA dates are in UTC; align to UTC to avoid off-by-one on the boundary.
+  const utcToday = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate()));
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(utcToday);
+    d.setUTCDate(d.getUTCDate() - i);
+    const y = d.getUTCFullYear();
+    const m = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+    const dd = d.getUTCDate().toString().padStart(2, '0');
+    days.push(`${y}${m}${dd}`);
+  }
+  return days;
+}
+
+// Group pagesDaily rows by pagePath → date → views, then build a 30-day series
+// for each page in `pages`, filling missing days with 0.
+function mergePagesWithDaily(pages, dailyReport) {
+  const byPath = {};
+  for (const r of (dailyReport.rows || [])) {
+    const path = r.dimensionValues[0].value;
+    const date = r.dimensionValues[1].value;
+    const views = parseInt(r.metricValues[0].value || '0', 10);
+    if (!byPath[path]) byPath[path] = {};
+    byPath[path][date] = views;
+  }
+  const dates = last30Days();
+  return pages.map(p => ({
+    ...p,
+    daily: dates.map(d => ({ date: d, views: byPath[p.path]?.[d] || 0 }))
   }));
 }
 
@@ -246,22 +292,25 @@ export default async function handler() {
   try {
     const token = await getAccessToken();
 
-    const [totalsR, dailyR, citiesR, sourcesR, devicesR, pagesR] = await Promise.all([
+    const [totalsR, dailyR, citiesR, sourcesR, devicesR, pagesR, pagesDailyR] = await Promise.all([
       runReport(token, reports.totals),
       runReport(token, reports.daily),
       runReport(token, reports.cities),
       runReport(token, reports.sources),
       runReport(token, reports.devices),
-      runReport(token, reports.pages)
+      runReport(token, reports.pages),
+      runReport(token, reports.pagesDaily)
     ]);
 
+    const pagesWithDaily = mergePagesWithDaily(parsePages(pagesR), pagesDailyR);
+
     return new Response(JSON.stringify({
-      totals:   parseTotals(totalsR),
-      daily:    parseDaily(dailyR),
-      cities:   parseCities(citiesR),
-      sources:  parseSources(sourcesR),
-      devices:  parseDevices(devicesR),
-      pages:    parsePages(pagesR),
+      totals:    parseTotals(totalsR),
+      daily:     parseDaily(dailyR),
+      cities:    parseCities(citiesR),
+      sources:   parseSources(sourcesR),
+      devices:   parseDevices(devicesR),
+      pages:     pagesWithDaily,
       fetchedAt: new Date().toISOString()
     }), {
       headers: {
