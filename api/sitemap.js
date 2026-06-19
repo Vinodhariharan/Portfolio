@@ -35,21 +35,37 @@ export default async function handler() {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>${SITE}/</loc>
+    <lastmod>2026-06-20</lastmod>
     <priority>1.0</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>${SITE}/blog.html</loc>
+    <lastmod>2026-06-20</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>${SITE}/tech-rovers.html</loc>
+    <lastmod>2026-06-20</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>${SITE}/cam-viewer.html</loc>
+    <lastmod>2026-06-20</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>${SITE}/privacy.html</loc>
+    <lastmod>2026-06-01</lastmod>
     <priority>0.3</priority>
     <changefreq>yearly</changefreq>
   </url>
   <url>
     <loc>${SITE}/terms.html</loc>
+    <lastmod>2026-06-01</lastmod>
     <priority>0.3</priority>
     <changefreq>yearly</changefreq>
   </url>${postUrls}
