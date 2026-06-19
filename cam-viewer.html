@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cam Video Viewer — Free Desktop Viewer for Godrej Ace Pro | Vinodhariharan Ravi</title>
+  <meta name="description" content="Free, open-source desktop app to browse and export Godrej Ace Pro security camera footage. Windows 10/11, no install required." />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6E52VLX2ZZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6E52VLX2ZZ');
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- Dark mode: runs before first paint to avoid FOUC -->
+  <script>
+    (function(){
+      var s = localStorage.getItem('darkMode');
+      var p = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (s === 'enabled' || (s === null && p)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="./assets/icon.png" type="image/png" />
+  <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet" />
+
+  <style>
+    /* Accordion */
+    .accordion-body { display: none; }
+    .accordion-item.open .accordion-body { display: block; }
+    .accordion-item.open .accordion-chevron { transform: rotate(180deg); }
+    .accordion-chevron { transition: transform .2s ease; }
+
+    /* Download hero gradient */
+    .hero-accent-bg {
+      background: radial-gradient(ellipse 70% 60% at 60% 30%,
+        rgba(37,99,235,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 30% 70%,
+        rgba(37,99,235,0.05) 0%, transparent 60%);
+    }
+
+    /* Feature card icon bubble */
+    .feat-icon {
+      width: 2.5rem; height: 2.5rem;
+      border-radius: 0.6rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      background: rgba(37,99,235,0.08);
+      flex-shrink: 0;
+    }
+    .dark .feat-icon { background: rgba(37,99,235,0.15); }
+
+    /* Keyboard shortcut pill */
+    .kbd {
+      display: inline-block;
+      padding: 0.1rem 0.45rem;
+      border: 1px solid #e5e5e5;
+      border-bottom-width: 2px;
+      border-radius: 0.3rem;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+      background: #fafafa;
+      color: #0a0a0a;
+    }
+    .dark .kbd { background: #1a1a1a; border-color: #333; color: #fafafa; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- ── Navigation ── -->
+  <nav id="mainNav" class="nav-bg fixed top-0 w-full z-50 backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
+    <div class="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
+      <div class="flex items-center gap-2.5">
+        <img src="./assets/cam-viewer-icon.png" alt="" class="w-7 h-7 rounded-full" />
+        <span class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm">Cam Video Viewer</span>
+      </div>
+      <div class="hidden md:flex items-center gap-6">
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i> Source
+        </a>
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer/releases" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="tag" class="w-4 h-4"></i> Releases
+        </a>
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer/issues" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="circle-dot" class="w-4 h-4"></i> Issues
+        </a>
+        <button id="darkModeToggle" class="p-2 rounded-full text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Toggle dark mode">
+          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+      </div>
+      <div class="md:hidden flex items-center gap-3">
+        <button id="darkModeToggleMobile" class="p-2 rounded-full text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Toggle dark mode">
+          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+        <button id="menuToggle" class="p-2 text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Open menu">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden border-t border-[#e5e5e5] dark:border-[#222222] bg-white/95 dark:bg-[#0a0a0a]/95">
+      <div class="max-w-5xl mx-auto px-6 py-4 flex flex-col gap-4">
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer" target="_blank" rel="noopener" class="flex items-center gap-2 py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i> Source
+        </a>
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer/releases" target="_blank" rel="noopener" class="flex items-center gap-2 py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="tag" class="w-4 h-4"></i> Releases
+        </a>
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer/issues" target="_blank" rel="noopener" class="flex items-center gap-2 py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="circle-dot" class="w-4 h-4"></i> Issues
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow">
+
+    <!-- ── Hero ── -->
+    <section class="hero-accent-bg pt-32 pb-20 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+
+        <!-- App icon -->
+        <div class="flex justify-center mb-6">
+          <div class="w-20 h-20 rounded-full overflow-hidden shadow-lg border border-[#e5e5e5] dark:border-[#222222]">
+            <img src="./assets/cam-viewer-icon.png" alt="Cam Video Viewer icon" class="w-full h-full object-cover" />
+          </div>
+        </div>
+
+        <p class="section-label mb-3">Windows App · v1.0.0</p>
+        <h1 class="text-4xl md:text-5xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-4 leading-tight">
+          Cam Video Viewer
+        </h1>
+        <p class="text-lg text-[#737373] max-w-2xl mx-auto mb-8 leading-relaxed">
+          Free, open-source desktop viewer for <strong class="text-[#0a0a0a] dark:text-[#fafafa] font-medium">Godrej Ace Pro</strong> camera footage — browse by date, watch HLS streams, and export clips. No install needed.
+        </p>
+        <p class="text-sm text-[#737373] max-w-xl mx-auto mb-8 leading-relaxed">
+          Built as a personal hobby project — I needed a better way to browse my own home camera footage and ended up building this from scratch.
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
+          <a id="download-btn" href="#" download
+             class="btn-primary inline-flex items-center gap-2 text-base px-6 py-3">
+            <i data-lucide="download" class="w-5 h-5"></i>
+            Download <span class="opacity-70 text-sm font-normal">· ~109 MB</span>
+          </a>
+          <a href="https://github.com/Vinodhariharan/cam-video-viewer" target="_blank" rel="noopener"
+             class="btn-ghost inline-flex items-center gap-2 px-6 py-3">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            View on GitHub
+          </a>
+        </div>
+
+        <!-- Badges -->
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <span class="tag inline-flex items-center gap-1.5"><i data-lucide="monitor" class="w-3 h-3"></i>Windows 10 / 11</span>
+          <span class="tag">x64</span>
+          <span class="tag inline-flex items-center gap-1.5"><i data-lucide="lock-open" class="w-3 h-3"></i>Free &amp; Open Source</span>
+          <span class="tag inline-flex items-center gap-1.5"><i data-lucide="zap" class="w-3 h-3"></i>No install needed</span>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ── Features ── -->
+    <section id="features" class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-12">
+          <p class="section-label">What's inside</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Features</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="video" class="w-5 h-5 text-[#2563eb]"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">HLS Video Playback</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Smooth playback of MPEG-TS footage via hls.js. Full keyboard shortcut support for frame-accurate navigation.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="calendar-days" class="w-5 h-5 text-[#2563eb]"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Calendar Browser</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Browse all recordings by date with availability indicators. Instantly see which days have footage.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="layout-grid" class="w-5 h-5 text-[#2563eb]"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Clip Grid</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Thumbnail grid view with auto-generated preview images cached to disk. Jump to any segment instantly.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="scissors" class="w-5 h-5 text-[#2563eb]"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Export Clips</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Drag the timeline to select a time range and export to MP4 — bundled FFmpeg handles the conversion, no extras to install.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="palette" class="w-5 h-5 text-[#2563eb]"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Themes &amp; Accents</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">3 background themes × 4 accent colours. Light, dark, and system modes. Preferences saved automatically.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="hard-drive" class="w-5 h-5 text-[#2563eb]"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Smart Caching</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Thumbnails and calendar data are cached locally. The app only re-scans when new footage is detected — keeping startup fast.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Screenshots ── -->
+    <section id="screenshots" class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-12">
+          <p class="section-label">In action</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Screenshots</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="aspect-video rounded-xl bg-[#f5f5f5] dark:bg-[#111111] border border-[#e5e5e5] dark:border-[#222222] flex items-center justify-center">
+            <div class="text-center">
+              <i data-lucide="monitor-play" class="w-8 h-8 text-[#d4d4d4] dark:text-[#444] mx-auto mb-2"></i>
+              <p class="text-xs text-[#d4d4d4] dark:text-[#444]">Player view</p>
+            </div>
+          </div>
+          <div class="aspect-video rounded-xl bg-[#f5f5f5] dark:bg-[#111111] border border-[#e5e5e5] dark:border-[#222222] flex items-center justify-center">
+            <div class="text-center">
+              <i data-lucide="grid-2x2" class="w-8 h-8 text-[#d4d4d4] dark:text-[#444] mx-auto mb-2"></i>
+              <p class="text-xs text-[#d4d4d4] dark:text-[#444]">Clip grid</p>
+            </div>
+          </div>
+          <div class="aspect-video rounded-xl bg-[#f5f5f5] dark:bg-[#111111] border border-[#e5e5e5] dark:border-[#222222] flex items-center justify-center">
+            <div class="text-center">
+              <i data-lucide="calendar-days" class="w-8 h-8 text-[#d4d4d4] dark:text-[#444] mx-auto mb-2"></i>
+              <p class="text-xs text-[#d4d4d4] dark:text-[#444]">Calendar browser</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-sm text-[#737373] mt-5">Screenshots coming soon.</p>
+      </div>
+    </section>
+
+
+    <!-- ── Requirements + Getting Started ── -->
+    <section id="requirements" class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-12">
+          <p class="section-label">Before you start</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Requirements &amp; Installation</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- Requirements -->
+          <div class="card">
+            <div class="flex items-center gap-3 mb-6">
+              <i data-lucide="monitor" class="w-5 h-5 text-[#2563eb] shrink-0"></i>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa]">System Requirements</h3>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#2563eb] mt-2 shrink-0"></span>
+                <p class="text-sm text-[#737373]"><span class="font-medium text-[#0a0a0a] dark:text-[#fafafa]">OS:</span> Windows 10 or Windows 11 (64-bit)</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#2563eb] mt-2 shrink-0"></span>
+                <p class="text-sm text-[#737373]"><span class="font-medium text-[#0a0a0a] dark:text-[#fafafa]">Architecture:</span> x64 (Intel / AMD)</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#2563eb] mt-2 shrink-0"></span>
+                <p class="text-sm text-[#737373]"><span class="font-medium text-[#0a0a0a] dark:text-[#fafafa]">Disk space:</span> ~200 MB (app + cache)</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#2563eb] mt-2 shrink-0"></span>
+                <p class="text-sm text-[#737373]"><span class="font-medium text-[#0a0a0a] dark:text-[#fafafa]">Camera:</span> Godrej Ace Pro (footage folder structure required)</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#2563eb] mt-2 shrink-0"></span>
+                <p class="text-sm text-[#737373]"><span class="font-medium text-[#0a0a0a] dark:text-[#fafafa]">No install:</span> Portable exe, runs directly</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Getting Started -->
+          <div class="card">
+            <div class="flex items-center gap-3 mb-6">
+              <i data-lucide="rocket" class="w-5 h-5 text-[#2563eb] shrink-0"></i>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa]">Getting Started</h3>
+            </div>
+            <ol class="space-y-4">
+              <li class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#2563eb] text-white text-xs font-bold flex items-center justify-center">1</span>
+                <p class="text-sm text-[#737373] pt-0.5">Download the <code class="text-xs px-1 py-0.5 rounded bg-[#f5f5f5] dark:bg-[#222222] text-[#0a0a0a] dark:text-[#fafafa]">.exe</code> file using the button above.</p>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#2563eb] text-white text-xs font-bold flex items-center justify-center">2</span>
+                <p class="text-sm text-[#737373] pt-0.5">Double-click to run — no installation wizard. Windows SmartScreen may warn on first launch; click <strong class="text-[#0a0a0a] dark:text-[#fafafa]">More info → Run anyway</strong>.</p>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#2563eb] text-white text-xs font-bold flex items-center justify-center">3</span>
+                <p class="text-sm text-[#737373] pt-0.5">Click <strong class="text-[#0a0a0a] dark:text-[#fafafa]">Open Folder</strong> and select the root folder of your camera recordings.</p>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-[#2563eb] text-white text-xs font-bold flex items-center justify-center">4</span>
+                <p class="text-sm text-[#737373] pt-0.5">Browse by date and channel, then click any clip to start watching.</p>
+              </li>
+            </ol>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Usage Guide (accordion) ── -->
+    <section id="usage" class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-12">
+          <p class="section-label">How to use</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Usage Guide</h2>
+        </div>
+
+        <div class="max-w-3xl space-y-2" id="accordion">
+
+          <!-- Item 1 -->
+          <div class="accordion-item card cursor-pointer open">
+            <button class="accordion-trigger w-full flex items-center justify-between gap-4 text-left">
+              <div class="flex items-center gap-3">
+                <i data-lucide="folder-open" class="w-4 h-4 text-[#2563eb] shrink-0"></i>
+                <span class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm">Opening a footage folder</span>
+              </div>
+              <i data-lucide="chevron-down" class="accordion-chevron w-4 h-4 text-[#737373] shrink-0"></i>
+            </button>
+            <div class="accordion-body pt-4 mt-4 border-t border-[#e5e5e5] dark:border-[#222222]">
+              <p class="text-sm text-[#737373] leading-relaxed">On first launch the app will prompt you to select a folder. Click <strong class="text-[#0a0a0a] dark:text-[#fafafa]">Open Folder</strong> in the top toolbar and browse to the root directory where your Godrej Ace Pro stores recordings — typically a folder containing dated sub-folders like <code class="text-xs px-1 py-0.5 rounded bg-[#f5f5f5] dark:bg-[#222222]">2024-06-01/</code>, <code class="text-xs px-1 py-0.5 rounded bg-[#f5f5f5] dark:bg-[#222222]">2024-06-02/</code>, etc. The app remembers your last folder between sessions.</p>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="accordion-item card cursor-pointer">
+            <button class="accordion-trigger w-full flex items-center justify-between gap-4 text-left">
+              <div class="flex items-center gap-3">
+                <i data-lucide="calendar-days" class="w-4 h-4 text-[#2563eb] shrink-0"></i>
+                <span class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm">Navigating by date &amp; channel</span>
+              </div>
+              <i data-lucide="chevron-down" class="accordion-chevron w-4 h-4 text-[#737373] shrink-0"></i>
+            </button>
+            <div class="accordion-body pt-4 mt-4 border-t border-[#e5e5e5] dark:border-[#222222]">
+              <p class="text-sm text-[#737373] leading-relaxed mb-3">Use the <strong class="text-[#0a0a0a] dark:text-[#fafafa]">Calendar</strong> panel on the left to pick a recording date — dots indicate days with footage. Once a date is selected, use the channel tabs at the top to switch between camera feeds. The clip grid updates immediately to show all recordings for that date and channel.</p>
+              <p class="text-sm text-[#737373] leading-relaxed">Click any thumbnail to open it in the player. The timeline at the bottom shows the full day's recording with the selected clip highlighted.</p>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="accordion-item card cursor-pointer">
+            <button class="accordion-trigger w-full flex items-center justify-between gap-4 text-left">
+              <div class="flex items-center gap-3">
+                <i data-lucide="play-circle" class="w-4 h-4 text-[#2563eb] shrink-0"></i>
+                <span class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm">Playback &amp; keyboard shortcuts</span>
+              </div>
+              <i data-lucide="chevron-down" class="accordion-chevron w-4 h-4 text-[#737373] shrink-0"></i>
+            </button>
+            <div class="accordion-body pt-4 mt-4 border-t border-[#e5e5e5] dark:border-[#222222]">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex items-center justify-between text-sm py-1.5 border-b border-[#f5f5f5] dark:border-[#1a1a1a]">
+                  <span class="text-[#737373]">Play / Pause</span>
+                  <span class="kbd">Space</span>
+                </div>
+                <div class="flex items-center justify-between text-sm py-1.5 border-b border-[#f5f5f5] dark:border-[#1a1a1a]">
+                  <span class="text-[#737373]">Seek backward 5s</span>
+                  <span class="kbd">←</span>
+                </div>
+                <div class="flex items-center justify-between text-sm py-1.5 border-b border-[#f5f5f5] dark:border-[#1a1a1a]">
+                  <span class="text-[#737373]">Seek forward 5s</span>
+                  <span class="kbd">→</span>
+                </div>
+                <div class="flex items-center justify-between text-sm py-1.5 border-b border-[#f5f5f5] dark:border-[#1a1a1a]">
+                  <span class="text-[#737373]">Previous clip</span>
+                  <span class="kbd">B</span>
+                </div>
+                <div class="flex items-center justify-between text-sm py-1.5 border-b border-[#f5f5f5] dark:border-[#1a1a1a]">
+                  <span class="text-[#737373]">Next clip</span>
+                  <span class="kbd">F</span>
+                </div>
+                <div class="flex items-center justify-between text-sm py-1.5 border-b border-[#f5f5f5] dark:border-[#1a1a1a]">
+                  <span class="text-[#737373]">Save snapshot</span>
+                  <span class="kbd">S</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="accordion-item card cursor-pointer">
+            <button class="accordion-trigger w-full flex items-center justify-between gap-4 text-left">
+              <div class="flex items-center gap-3">
+                <i data-lucide="scissors" class="w-4 h-4 text-[#2563eb] shrink-0"></i>
+                <span class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm">Exporting a clip</span>
+              </div>
+              <i data-lucide="chevron-down" class="accordion-chevron w-4 h-4 text-[#737373] shrink-0"></i>
+            </button>
+            <div class="accordion-body pt-4 mt-4 border-t border-[#e5e5e5] dark:border-[#222222]">
+              <ol class="space-y-3 text-sm text-[#737373]">
+                <li class="flex items-start gap-2"><span class="text-[#2563eb] font-bold shrink-0">1.</span> While a clip is loaded, hold <span class="kbd mx-1">Shift</span> and drag on the timeline to mark the start and end of the range you want to keep.</li>
+                <li class="flex items-start gap-2"><span class="text-[#2563eb] font-bold shrink-0">2.</span> Click the <strong class="text-[#0a0a0a] dark:text-[#fafafa]">Export</strong> button that appears above the timeline.</li>
+                <li class="flex items-start gap-2"><span class="text-[#2563eb] font-bold shrink-0">3.</span> Choose a destination folder. The app uses the bundled FFmpeg to transcode the selection to MP4. A progress indicator shows export status.</li>
+                <li class="flex items-start gap-2"><span class="text-[#2563eb] font-bold shrink-0">4.</span> The exported file is saved as <code class="text-xs px-1 py-0.5 rounded bg-[#f5f5f5] dark:bg-[#222222]">export_YYYYMMDD_HHMMSS.mp4</code> in your chosen folder.</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="accordion-item card cursor-pointer">
+            <button class="accordion-trigger w-full flex items-center justify-between gap-4 text-left">
+              <div class="flex items-center gap-3">
+                <i data-lucide="settings" class="w-4 h-4 text-[#2563eb] shrink-0"></i>
+                <span class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm">Changing themes in Settings</span>
+              </div>
+              <i data-lucide="chevron-down" class="accordion-chevron w-4 h-4 text-[#737373] shrink-0"></i>
+            </button>
+            <div class="accordion-body pt-4 mt-4 border-t border-[#e5e5e5] dark:border-[#222222]">
+              <p class="text-sm text-[#737373] leading-relaxed mb-3">Click the <strong class="text-[#0a0a0a] dark:text-[#fafafa]">⚙ Settings</strong> icon in the top-right of the toolbar. Under <strong class="text-[#0a0a0a] dark:text-[#fafafa]">Appearance</strong>:</p>
+              <ul class="space-y-2 text-sm text-[#737373]">
+                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#2563eb] mt-2 shrink-0"></span><span><strong class="text-[#0a0a0a] dark:text-[#fafafa]">Background theme:</strong> Light · Dark · System</span></li>
+                <li class="flex items-start gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[#2563eb] mt-2 shrink-0"></span><span><strong class="text-[#0a0a0a] dark:text-[#fafafa]">Accent colour:</strong> Blue · Green · Purple · Orange</span></li>
+              </ul>
+              <p class="text-sm text-[#737373] mt-3 leading-relaxed">Changes apply immediately with no restart required. Preferences are saved to a local config file next to the exe.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Open Source banner ── -->
+    <section class="py-20 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="card border-2 border-[#2563eb]/20 bg-[#eff6ff] dark:bg-[#1e3a5f]/20" style="padding: 3rem;">
+          <div class="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+            <div class="flex-shrink-0">
+              <div class="w-14 h-14 rounded-2xl bg-[#2563eb]/10 flex items-center justify-center">
+                <svg class="w-7 h-7 text-[#2563eb]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              </div>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-2">Cam Video Viewer is open source</h3>
+              <p class="text-sm text-[#737373] leading-relaxed mb-5">Released under the <strong class="text-[#0a0a0a] dark:text-[#fafafa]">MIT License</strong>. Read the code, fork it, extend it for your own camera hardware, or contribute improvements back. PRs and issues are welcome.</p>
+              <a href="https://github.com/Vinodhariharan/cam-video-viewer" target="_blank" rel="noopener"
+                 class="btn-primary inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                View on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Download CTA ── -->
+    <section class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-xl mx-auto px-6 text-center">
+        <div class="flex justify-center mb-5">
+          <div class="w-16 h-16 rounded-full overflow-hidden shadow-md border border-[#e5e5e5] dark:border-[#222222]">
+            <img src="./assets/cam-viewer-icon.png" alt="" class="w-full h-full object-cover" />
+          </div>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-3">Ready to get started?</h2>
+        <p class="text-sm text-[#737373] mb-2">It's free. Always will be.</p>
+        <div class="flex flex-wrap items-center justify-center gap-2 mb-8 text-xs text-[#737373]">
+          <span class="inline-flex items-center gap-1"><i data-lucide="tag" class="w-3 h-3"></i>v1.0.0</span>
+          <span>·</span>
+          <span class="inline-flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i>Released June 2026</span>
+          <span>·</span>
+          <span class="inline-flex items-center gap-1"><i data-lucide="hard-drive" class="w-3 h-3"></i>~109 MB</span>
+        </div>
+        <a id="download-btn-2" href="#" download class="btn-primary inline-flex items-center gap-2 text-base px-8 py-3.5">
+          <i data-lucide="download" class="w-5 h-5"></i>
+          Download for Windows
+        </a>
+        <p class="text-xs text-[#737373] mt-4">Windows 10 / 11 · 64-bit · No account required</p>
+        <p class="text-xs text-[#a3a3a3] mt-3">Co-authored with <a href="https://claude.ai" target="_blank" rel="noopener" class="underline hover:text-[#737373] transition-colors">Claude</a> by Anthropic.</p>
+        <p class="text-xs text-[#a3a3a3] mt-2">Not affiliated with or endorsed by Godrej. "Godrej Ace Pro" is a trademark of Godrej &amp; Boyce Mfg. Co. Ltd.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="footer-bg border-t border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
+    <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <img src="./assets/cam-viewer-icon.png" alt="" class="w-6 h-6 rounded-full" />
+        <span class="text-sm text-[#737373]">Cam Video Viewer · © 2026 Vinodhariharan Ravi</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i> Repository
+        </a>
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer/releases" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="tag" class="w-4 h-4"></i> Releases
+        </a>
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer/issues" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="circle-dot" class="w-4 h-4"></i> Issues
+        </a>
+        <a href="https://github.com/Vinodhariharan/cam-video-viewer/blob/main/LICENSE" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="scale" class="w-4 h-4"></i> MIT License
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button id="backToTop" class="fixed bottom-8 right-8 z-50 w-10 h-10 bg-[#2563eb] text-white rounded-full flex items-center justify-center hidden hover:bg-[#1d4ed8] transition-colors shadow-sm">
+    <i data-lucide="arrow-up" class="w-4 h-4"></i>
+  </button>
+
+  <script src="./script.js"></script>
+  <script>
+    // ── Download URL — replace with your actual Supabase Storage URL ──────────
+    const DOWNLOAD_URL = 'https://github.com/Vinodhariharan/cam-video-viewer/releases/download/v1.0.0/Cam.Video.Viewer.1.0.0.exe';
+
+    document.getElementById('download-btn').href   = DOWNLOAD_URL;
+    document.getElementById('download-btn-2').href = DOWNLOAD_URL;
+
+    // ── Accordion ─────────────────────────────────────────────────────────────
+    document.querySelectorAll('.accordion-trigger').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.accordion-item');
+        const wasOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.accordion-item.open').forEach(i => i.classList.remove('open'));
+        // Toggle clicked
+        if (!wasOpen) item.classList.add('open');
+      });
+    });
+
+    // ── Lucide icons ──────────────────────────────────────────────────────────
+    lucide.createIcons();
+  </script>
+</body>
+</html>
