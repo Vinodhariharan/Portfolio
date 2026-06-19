@@ -334,6 +334,81 @@ async function savePost(isPublished) {
   setTimeout(() => { showSection('dashboard-section'); loadDashboard(); }, 1200);
 }
 
+// ── Preview ───────────────────────────────────────────────────────────────────
+function formatPreviewDate(d) {
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function estimateReadTimeFromText(content) {
+  const words = (content || '').trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 200)) + ' min read';
+}
+
+function openPreview() {
+  const title   = $('post-title-input').value.trim();
+  const excerpt = $('post-excerpt-input').value.trim();
+  const content = $('post-content-input').value.trim();
+  const cover   = $('cover-image-url').value.trim();
+
+  const titleEl    = $('preview-title');
+  const excerptEl  = $('preview-excerpt');
+  const dateEl     = $('preview-date');
+  const readtimeEl = $('preview-readtime');
+  const contentEl  = $('preview-content');
+  const coverEl    = $('preview-cover');
+  const emptyEl    = $('preview-empty');
+
+  // Empty state — show only when there's truly nothing
+  if (!title && !content) {
+    titleEl.classList.add('hidden');
+    excerptEl.classList.add('hidden');
+    contentEl.innerHTML = '';
+    coverEl.classList.add('hidden');
+    emptyEl.classList.remove('hidden');
+    show('preview-modal');
+    document.body.style.overflow = 'hidden';
+    return;
+  }
+  emptyEl.classList.add('hidden');
+  titleEl.classList.remove('hidden');
+
+  // Populate
+  titleEl.textContent  = title || 'Untitled post';
+  dateEl.textContent   = formatPreviewDate(new Date());
+  readtimeEl.textContent = estimateReadTimeFromText(content);
+
+  if (excerpt) {
+    excerptEl.textContent = excerpt;
+    excerptEl.classList.remove('hidden');
+  } else {
+    excerptEl.classList.add('hidden');
+  }
+
+  if (cover) {
+    coverEl.src = cover;
+    coverEl.alt = title || '';
+    coverEl.classList.remove('hidden');
+  } else {
+    coverEl.classList.add('hidden');
+  }
+
+  // Render markdown via marked (loaded from CDN in admin.html)
+  contentEl.innerHTML = (typeof marked !== 'undefined' && content)
+    ? marked.parse(content)
+    : '<p class="text-[#737373]">(no content yet)</p>';
+
+  // Reset scroll inside the modal in case it was open before
+  const modal = $('preview-modal');
+  show('preview-modal');
+  modal.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closePreview() {
+  hide('preview-modal');
+  document.body.style.overflow = '';
+}
+
 // ── Delete ────────────────────────────────────────────────────────────────────
 function openDeleteModal(postId) {
   deleteTargetId = postId;
@@ -531,6 +606,17 @@ document.addEventListener('DOMContentLoaded', () => {
     $('cover-image-url').value = '';
     $('cover-preview').src     = '';
     hide('cover-preview-wrap');
+  });
+
+  // Preview
+  $('preview-btn')?.addEventListener('click', openPreview);
+  $('close-preview-btn')?.addEventListener('click', closePreview);
+  $('preview-modal')?.addEventListener('click', (e) => {
+    // Close only when clicking the backdrop (not when scrolling content)
+    if (e.target === $('preview-modal')) closePreview();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !$('preview-modal').classList.contains('hidden')) closePreview();
   });
 
   $('cancel-delete-btn').addEventListener('click', closeDeleteModal);

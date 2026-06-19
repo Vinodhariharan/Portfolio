@@ -16,3 +16,6 @@ Thumbs.db
 # Editor
 .vscode/
 *.swp
+
+# Local UI/design preview files — never push these
+previews/

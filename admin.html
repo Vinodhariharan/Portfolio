@@ -19,6 +19,7 @@
   <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <meta name="robots" content="noindex, nofollow" />
   <script>tailwind.config = { darkMode: 'class' };</script>
   <style>
@@ -245,6 +246,7 @@
         </button>
         <h2 id="editor-heading" class="text-sm font-semibold text-[#0a0a0a] dark:text-[#fafafa]">New Post</h2>
         <div class="flex gap-2">
+          <button id="preview-btn" class="btn-ghost text-sm" title="Preview how this post will look on the live site">Preview</button>
           <button id="save-draft-btn" class="btn-ghost text-sm">Save Draft</button>
           <button id="save-publish-btn" class="btn-primary text-sm">Publish</button>
         </div>
@@ -321,6 +323,63 @@
       <p id="editor-error" class="hidden text-sm text-red-600 bg-red-50 dark:bg-red-900/20 px-4 py-3 rounded-lg"></p>
       <p id="editor-success" class="hidden text-sm text-green-600 bg-green-50 dark:bg-green-900/20 px-4 py-3 rounded-lg"></p>
     </main>
+  </div>
+
+  <!-- ── PREVIEW MODAL ──────────────────────────────────────────────────────── -->
+  <div id="preview-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm overflow-y-auto">
+    <div class="min-h-screen w-full flex flex-col">
+
+      <!-- Top bar -->
+      <div class="sticky top-0 z-10 bg-[#0a0a0a] text-white border-b border-[#222] px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#fbbf24] text-[#0a0a0a] text-[10px] font-bold tracking-wider">● DRAFT PREVIEW</span>
+          <span class="text-sm text-white/60">Not visible on the live site — this is just what it'll look like.</span>
+        </div>
+        <button id="close-preview-btn" class="text-white/70 hover:text-white transition-colors p-1" aria-label="Close preview">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Rendered post body -->
+      <div class="flex-1 bg-white dark:bg-[#0a0a0a]">
+        <article class="max-w-2xl mx-auto px-6 py-16">
+
+          <!-- Cover image (if any) -->
+          <img id="preview-cover" src="" alt="" class="hidden w-full rounded-xl mb-8 border border-[#e5e5e5] dark:border-[#222222] object-cover max-h-80"/>
+
+          <!-- Header -->
+          <header class="mb-10 pb-8 border-b border-[#e5e5e5] dark:border-[#222222]">
+            <h1 id="preview-title" class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa] leading-tight mb-5">Post title</h1>
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-full overflow-hidden bg-[#e5e5e5] dark:bg-[#222222] shrink-0">
+                  <img src="/assets/new_profile.png" alt="" class="w-full h-full object-cover"/>
+                </div>
+                <span class="text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">Vinodhariharan Ravi</span>
+              </div>
+              <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
+              <span id="preview-date" class="text-sm text-[#737373]"></span>
+              <span class="text-[#e5e5e5] dark:text-[#333333]">·</span>
+              <span id="preview-readtime" class="text-sm text-[#737373]"></span>
+            </div>
+            <p id="preview-excerpt" class="hidden mt-5 text-[#737373] text-base leading-relaxed"></p>
+          </header>
+
+          <!-- Markdown-rendered body -->
+          <div id="preview-content" class="prose-blog"></div>
+
+          <!-- Empty state -->
+          <div id="preview-empty" class="hidden text-center py-16 text-[#737373]">
+            <p class="text-base">Nothing to preview yet.</p>
+            <p class="text-sm mt-2">Add a title and some content, then click Preview again.</p>
+          </div>
+
+        </article>
+      </div>
+
+    </div>
   </div>
 
   <!-- ── DELETE MODAL ───────────────────────────────────────────────────────── -->
