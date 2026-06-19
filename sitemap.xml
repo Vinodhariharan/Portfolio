@@ -11,6 +11,16 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://vinodhariharan.vercel.app/tech-rovers.html</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://vinodhariharan.vercel.app/cam-viewer.html</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://vinodhariharan.vercel.app/privacy.html</loc>
     <priority>0.3</priority>
     <changefreq>yearly</changefreq>
