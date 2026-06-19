@@ -81,9 +81,10 @@
     <!-- Tab bar -->
     <div class="border-b border-[#e5e5e5] dark:border-[#222222] bg-[#ffffff] dark:bg-[#111111]">
       <div class="max-w-5xl mx-auto px-6 flex gap-6">
-        <button data-tab="posts"   class="admin-tab py-3 text-sm font-medium border-b-2 border-[#2563eb] text-[#0a0a0a] dark:text-[#fafafa]">Posts</button>
-        <button data-tab="stats"   class="admin-tab py-3 text-sm font-medium border-b-2 border-transparent text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Stats</button>
-        <button data-tab="channel" class="admin-tab py-3 text-sm font-medium border-b-2 border-transparent text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Channel</button>
+        <button data-tab="posts"     class="admin-tab py-3 text-sm font-medium border-b-2 border-[#2563eb] text-[#0a0a0a] dark:text-[#fafafa]">Posts</button>
+        <button data-tab="stats"     class="admin-tab py-3 text-sm font-medium border-b-2 border-transparent text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Stats</button>
+        <button data-tab="analytics" class="admin-tab py-3 text-sm font-medium border-b-2 border-transparent text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Analytics</button>
+        <button data-tab="channel"   class="admin-tab py-3 text-sm font-medium border-b-2 border-transparent text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Channel</button>
       </div>
     </div>
 
@@ -164,6 +165,98 @@
             </tbody>
           </table>
         </div>
+      </div>
+
+      <!-- ANALYTICS TAB -->
+      <div id="tab-analytics" class="hidden">
+
+        <div class="flex items-end justify-between mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Analytics</h2>
+            <p class="text-sm text-[#737373] mt-1">Last 30 days. Data from Google Analytics 4.</p>
+          </div>
+          <button id="analytics-refresh-btn" class="btn-ghost text-sm" title="Force a fresh fetch (bypasses the 30-min CDN cache)">↻ Refresh</button>
+        </div>
+
+        <!-- Loading -->
+        <div id="analytics-loading" class="flex justify-center py-16">
+          <div class="w-6 h-6 border-2 border-[#2563eb] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Error -->
+        <div id="analytics-error" class="hidden card p-6 border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-900/10 text-sm text-red-700 dark:text-red-300 mb-6"></div>
+
+        <!-- Body -->
+        <div id="analytics-body" class="hidden space-y-8">
+
+          <!-- Key metrics -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="card">
+              <p class="text-xs uppercase tracking-wider text-[#737373] mb-1">Page views</p>
+              <p id="ga-views"     class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">—</p>
+              <p id="ga-views-d"   class="text-xs mt-1"></p>
+            </div>
+            <div class="card">
+              <p class="text-xs uppercase tracking-wider text-[#737373] mb-1">Users</p>
+              <p id="ga-users"     class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">—</p>
+              <p id="ga-users-d"   class="text-xs mt-1"></p>
+            </div>
+            <div class="card">
+              <p class="text-xs uppercase tracking-wider text-[#737373] mb-1">Engagement rate</p>
+              <p id="ga-eng"       class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">—</p>
+              <p id="ga-eng-d"     class="text-xs mt-1"></p>
+            </div>
+            <div class="card">
+              <p class="text-xs uppercase tracking-wider text-[#737373] mb-1">Avg. session</p>
+              <p id="ga-dur"       class="text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">—</p>
+              <p id="ga-dur-d"     class="text-xs mt-1"></p>
+            </div>
+          </div>
+
+          <!-- Trend sparkline -->
+          <div class="card">
+            <div class="flex items-center justify-between mb-4">
+              <p class="text-xs uppercase tracking-wider text-[#737373]">Views over the last 30 days</p>
+              <p class="text-xs text-[#737373]">Hover for daily values</p>
+            </div>
+            <div id="ga-trend" class="w-full overflow-hidden"></div>
+          </div>
+
+          <!-- Cities + Sources side by side on lg+ -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <div class="card">
+              <p class="text-xs uppercase tracking-wider text-[#737373] mb-4">Top cities</p>
+              <div id="ga-cities" class="space-y-2"></div>
+            </div>
+
+            <div class="card">
+              <p class="text-xs uppercase tracking-wider text-[#737373] mb-4">How they found you</p>
+              <div id="ga-sources" class="space-y-2"></div>
+            </div>
+
+          </div>
+
+          <!-- Devices + Top pages -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <div class="card lg:col-span-1">
+              <p class="text-xs uppercase tracking-wider text-[#737373] mb-4">Devices</p>
+              <div id="ga-devices" class="space-y-3"></div>
+            </div>
+
+            <div class="card lg:col-span-2">
+              <p class="text-xs uppercase tracking-wider text-[#737373] mb-4">Top pages</p>
+              <div id="ga-pages" class="overflow-x-auto"></div>
+            </div>
+
+          </div>
+
+          <!-- Fetch timestamp -->
+          <p id="ga-fetchedAt" class="text-[10px] text-[#737373] text-center"></p>
+
+        </div>
+
       </div>
 
       <!-- CHANNEL TAB -->

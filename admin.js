@@ -116,9 +116,10 @@ async function toggleFeatured(postId, currentlyFeatured) {
   loadDashboard();
 }
 
-// ── Stats / Channel tab state ─────────────────────────────────────────────────
-let statsLoaded   = false;
-let channelLoaded = false;
+// ── Stats / Analytics / Channel tab state ────────────────────────────────────
+let statsLoaded     = false;
+let analyticsLoaded = false;
+let channelLoaded   = false;
 
 function switchTab(tab) {
   document.querySelectorAll('.admin-tab').forEach(btn => {
@@ -129,13 +130,18 @@ function switchTab(tab) {
     btn.classList.toggle('border-transparent', !active);
     btn.classList.toggle('text-[#737373]', !active);
   });
-  $('tab-posts').classList.toggle('hidden',   tab !== 'posts');
-  $('tab-stats').classList.toggle('hidden',   tab !== 'stats');
-  $('tab-channel').classList.toggle('hidden', tab !== 'channel');
+  $('tab-posts').classList.toggle('hidden',     tab !== 'posts');
+  $('tab-stats').classList.toggle('hidden',     tab !== 'stats');
+  $('tab-analytics').classList.toggle('hidden', tab !== 'analytics');
+  $('tab-channel').classList.toggle('hidden',   tab !== 'channel');
 
   if (tab === 'stats' && !statsLoaded) {
     statsLoaded = true;
     loadStats();
+  }
+  if (tab === 'analytics' && !analyticsLoaded) {
+    analyticsLoaded = true;
+    loadAnalytics();
   }
   if (tab === 'channel' && !channelLoaded) {
     channelLoaded = true;
@@ -481,6 +487,250 @@ async function handleImageUpload(e) {
   e.target.value = '';
 }
 
+// ── Analytics (GA4) ───────────────────────────────────────────────────────────
+const COUNTRY_FLAGS = {
+  IN:'🇮🇳', US:'🇺🇸', GB:'🇬🇧', CA:'🇨🇦', AU:'🇦🇺', DE:'🇩🇪', FR:'🇫🇷', SG:'🇸🇬',
+  JP:'🇯🇵', NL:'🇳🇱', BR:'🇧🇷', NG:'🇳🇬', PK:'🇵🇰', BD:'🇧🇩', LK:'🇱🇰', AE:'🇦🇪'
+};
+const COUNTRY_CODES = {
+  India:'IN', 'United States':'US', 'United Kingdom':'GB', Canada:'CA', Australia:'AU',
+  Germany:'DE', France:'FR', Singapore:'SG', Japan:'JP', Netherlands:'NL', Brazil:'BR',
+  Nigeria:'NG', Pakistan:'PK', Bangladesh:'BD', 'Sri Lanka':'LK', 'United Arab Emirates':'AE'
+};
+function flagOf(country) {
+  return COUNTRY_FLAGS[COUNTRY_CODES[country] || ''] || '🌐';
+}
+function fmtNumber(n) {
+  if (!Number.isFinite(n)) return '—';
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000)     return (n / 1_000).toFixed(1) + 'K';
+  return Math.round(n).toLocaleString();
+}
+function fmtDuration(secs) {
+  if (!Number.isFinite(secs)) return '—';
+  const m = Math.floor(secs / 60);
+  const s = Math.round(secs % 60);
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+function fmtPct(ratio) {
+  if (!Number.isFinite(ratio)) return '—';
+  return Math.round(ratio * 100) + '%';
+}
+function fmtDelta(pct) {
+  if (pct == null || !Number.isFinite(pct)) {
+    return '<span class="text-[#737373]">no prior data</span>';
+  }
+  const up = pct >= 0;
+  const arrow = up ? '▲' : '▼';
+  const color = up ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400';
+  return `<span class="${color}">${arrow} ${Math.abs(pct).toFixed(1)}%</span> <span class="text-[#737373]">vs prior 30d</span>`;
+}
+
+// Tiny inline-SVG sparkline w/ tooltip area
+function renderSparkline(points, opts = {}) {
+  const w = opts.width || 700;
+  const h = opts.height || 110;
+  if (!points || points.length === 0) return '';
+  const max = Math.max(1, ...points.map(p => p.views));
+  const step = w / (points.length - 1 || 1);
+
+  const path = points.map((p, i) => {
+    const x = i * step;
+    const y = h - (p.views / max) * (h - 6) - 3;
+    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const area = `${path} L${w},${h} L0,${h} Z`;
+
+  const dots = points.map((p, i) => {
+    const x = i * step;
+    const y = h - (p.views / max) * (h - 6) - 3;
+    const date = `${p.date.slice(0,4)}-${p.date.slice(4,6)}-${p.date.slice(6,8)}`;
+    return `<g transform="translate(${x},${y})">
+              <circle r="8" fill="transparent">
+                <title>${date}: ${p.views} views</title>
+              </circle>
+              <circle r="1.5" fill="#2563eb"/>
+            </g>`;
+  }).join('');
+
+  return `
+    <svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" class="block">
+      <defs>
+        <linearGradient id="ga-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#2563eb" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="${area}" fill="url(#ga-grad)"/>
+      <path d="${path}" fill="none" stroke="#2563eb" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
+    </svg>`;
+}
+
+function renderBarRow(label, value, max, options = {}) {
+  const pct = Math.max(2, (value / max) * 100);
+  const color = options.color || '#2563eb';
+  return `
+    <div class="flex items-center gap-3 text-sm">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between gap-2">
+          <span class="truncate text-[#0a0a0a] dark:text-[#fafafa]">${escapeHtml(label)}</span>
+          <span class="text-xs text-[#737373] shrink-0">${fmtNumber(value)}</span>
+        </div>
+        <div class="mt-1 h-1.5 rounded-full bg-[#f5f5f5] dark:bg-[#222] overflow-hidden">
+          <div class="h-full rounded-full" style="width:${pct}%;background:${color};"></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderCities(cities) {
+  if (cities.length === 0) {
+    return `<p class="text-sm text-[#737373]">No city data yet.</p>`;
+  }
+  const top = cities.slice(0, 10);
+  const max = Math.max(...top.map(c => c.views), 1);
+  return top.map(c => {
+    const label = `<span class="mr-2">${flagOf(c.country)}</span>${c.city} · <span class="text-[#737373] text-xs">${c.country || 'Unknown'}</span>`;
+    const pct = Math.max(2, (c.views / max) * 100);
+    return `
+      <div class="text-sm">
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <span class="truncate text-[#0a0a0a] dark:text-[#fafafa]">${label}</span>
+          <span class="text-xs text-[#737373] shrink-0">${fmtNumber(c.views)}</span>
+        </div>
+        <div class="h-1.5 rounded-full bg-[#f5f5f5] dark:bg-[#222] overflow-hidden">
+          <div class="h-full rounded-full" style="width:${pct}%;background:#2563eb;"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderSources(sources) {
+  if (sources.length === 0) {
+    return `<p class="text-sm text-[#737373]">No traffic source data yet.</p>`;
+  }
+  const max = Math.max(...sources.map(s => s.sessions), 1);
+  const colorFor = (medium) => {
+    const m = (medium || '').toLowerCase();
+    if (m.includes('organic'))     return '#16a34a';
+    if (m.includes('referral'))    return '#a855f7';
+    if (m.includes('social'))      return '#ec4899';
+    if (m.includes('email'))       return '#f59e0b';
+    if (m === '(none)' || m === '') return '#737373';
+    return '#2563eb';
+  };
+  return sources.map(s => {
+    const label = `${s.source} <span class="text-[#737373] text-xs">/ ${s.medium || '(none)'}</span>`;
+    return renderBarRow(label, s.sessions, max, { color: colorFor(s.medium) });
+  }).join('');
+}
+
+function renderDevices(devices) {
+  if (devices.length === 0) {
+    return `<p class="text-sm text-[#737373]">No device data yet.</p>`;
+  }
+  const total = devices.reduce((a, d) => a + d.views, 0) || 1;
+  const icon = { mobile: '📱', desktop: '💻', tablet: '📲' };
+  return devices.map(d => {
+    const pct = Math.round((d.views / total) * 100);
+    const cat = (d.category || 'other').toLowerCase();
+    return `
+      <div>
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-sm text-[#0a0a0a] dark:text-[#fafafa]">${icon[cat] || '🌐'} ${d.category}</span>
+          <span class="text-sm font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${pct}%</span>
+        </div>
+        <div class="h-2 rounded-full bg-[#f5f5f5] dark:bg-[#222] overflow-hidden">
+          <div class="h-full rounded-full bg-[#2563eb]" style="width:${pct}%;"></div>
+        </div>
+        <p class="text-[10px] text-[#737373] mt-1">${fmtNumber(d.views)} views · ${fmtNumber(d.users)} users</p>
+      </div>`;
+  }).join('');
+}
+
+function renderPages(pages) {
+  if (pages.length === 0) {
+    return `<p class="text-sm text-[#737373]">No page data yet.</p>`;
+  }
+  const rows = pages.map(p => {
+    const avgEng = p.views > 0 ? (p.engDur / p.views) : 0;
+    return `
+      <tr class="hover:bg-[#f5f5f5] dark:hover:bg-[#111111] transition-colors">
+        <td class="px-3 py-3 text-sm">
+          <div class="font-medium text-[#0a0a0a] dark:text-[#fafafa] truncate max-w-md">${escapeHtml(p.title || '(no title)')}</div>
+          <div class="text-xs text-[#737373] font-mono truncate max-w-md">${escapeHtml(p.path)}</div>
+        </td>
+        <td class="px-3 py-3 text-right text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">${fmtNumber(p.views)}</td>
+        <td class="px-3 py-3 text-right text-sm text-[#737373]">${fmtDuration(avgEng)}</td>
+        <td class="px-3 py-3 text-right text-sm text-[#737373]">${fmtPct(p.engRate)}</td>
+      </tr>`;
+  }).join('');
+  return `
+    <table class="w-full text-sm">
+      <thead class="bg-[#f5f5f5] dark:bg-[#111111] text-[#737373] text-xs uppercase">
+        <tr>
+          <th class="px-3 py-2 text-left">Page</th>
+          <th class="px-3 py-2 text-right">Views</th>
+          <th class="px-3 py-2 text-right">Avg. engagement</th>
+          <th class="px-3 py-2 text-right">Engagement rate</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-[#e5e5e5] dark:divide-[#222222]">${rows}</tbody>
+    </table>`;
+}
+
+async function loadAnalytics(forceFresh = false) {
+  show('analytics-loading');
+  hide('analytics-error');
+  hide('analytics-body');
+
+  try {
+    const url = '/api/analytics/dashboard' + (forceFresh ? `?t=${Date.now()}` : '');
+    const res = await fetch(url, { cache: forceFresh ? 'no-store' : 'default' });
+    const data = await res.json();
+
+    hide('analytics-loading');
+    if (!res.ok || data.error) {
+      const el = $('analytics-error');
+      el.innerHTML = `<p class="font-semibold mb-1">Couldn't load analytics</p>
+        <p class="text-xs">${escapeHtml(data.message || data.hint || data.error || 'Unknown error')}</p>`;
+      show('analytics-error');
+      return;
+    }
+
+    // Top-line metrics
+    $('ga-views').textContent  = fmtNumber(data.totals.views.value);
+    $('ga-views-d').innerHTML  = fmtDelta(data.totals.views.change);
+    $('ga-users').textContent  = fmtNumber(data.totals.users.value);
+    $('ga-users-d').innerHTML  = fmtDelta(data.totals.users.change);
+    $('ga-eng').textContent    = fmtPct(data.totals.engagement.value);
+    $('ga-eng-d').innerHTML    = fmtDelta(data.totals.engagement.change);
+    $('ga-dur').textContent    = fmtDuration(data.totals.avgDur.value);
+    $('ga-dur-d').innerHTML    = fmtDelta(data.totals.avgDur.change);
+
+    // Trend
+    $('ga-trend').innerHTML    = renderSparkline(data.daily);
+
+    // Cities, sources, devices, pages
+    $('ga-cities').innerHTML   = renderCities(data.cities);
+    $('ga-sources').innerHTML  = renderSources(data.sources);
+    $('ga-devices').innerHTML  = renderDevices(data.devices);
+    $('ga-pages').innerHTML    = renderPages(data.pages);
+
+    // Timestamp
+    const ts = new Date(data.fetchedAt);
+    $('ga-fetchedAt').textContent = `Data fetched ${ts.toLocaleString()}`;
+
+    show('analytics-body');
+  } catch (err) {
+    hide('analytics-loading');
+    const el = $('analytics-error');
+    el.innerHTML = `<p class="font-semibold mb-1">Network error</p><p class="text-xs">${escapeHtml(String(err))}</p>`;
+    show('analytics-error');
+  }
+}
+
 // ── Channel config ────────────────────────────────────────────────────────────
 function updateThumbPreview(inputId, imgId) {
   const input = $(inputId);
@@ -629,6 +879,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.admin-tab').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
+
+  // Analytics tab — refresh button
+  $('analytics-refresh-btn')?.addEventListener('click', () => loadAnalytics(true));
 
   // Channel tab — save button + live thumbnail previews
   $('channel-save-btn')?.addEventListener('click', saveChannelConfig);
