@@ -2,31 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vinodhariharan.vercel.app/</loc>
+    <lastmod>2026-06-20</lastmod>
     <priority>1.0</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://vinodhariharan.vercel.app/blog.html</loc>
+    <lastmod>2026-06-20</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://vinodhariharan.vercel.app/tech-rovers.html</loc>
+    <lastmod>2026-06-20</lastmod>
     <priority>0.7</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://vinodhariharan.vercel.app/cam-viewer.html</loc>
+    <lastmod>2026-06-20</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://vinodhariharan.vercel.app/privacy.html</loc>
+    <lastmod>2026-06-01</lastmod>
     <priority>0.3</priority>
     <changefreq>yearly</changefreq>
   </url>
   <url>
     <loc>https://vinodhariharan.vercel.app/terms.html</loc>
+    <lastmod>2026-06-01</lastmod>
     <priority>0.3</priority>
     <changefreq>yearly</changefreq>
   </url>
