@@ -800,6 +800,55 @@ async function loadAnalytics(forceFresh = false) {
     $('ga-devices').innerHTML  = renderDevices(data.devices);
     $('ga-pages').innerHTML    = renderPages(data.pages);
 
+    // Cam-viewer dedicated card
+    const cv = data.pages.find(p => p.path === '/cam-viewer.html');
+    const cvBody = $('ga-cv-body');
+    const cvStatus = $('ga-cv-status');
+    if (cv) {
+      const avgEng   = cv.views > 0 ? (cv.engDur / cv.views) : 0;
+      const total30d = (cv.daily || []).reduce((a, d) => a + d.views, 0);
+      const peakDay  = (cv.daily || []).reduce((best, d) => d.views > (best?.views || 0) ? d : best, null);
+      const peakStr  = peakDay
+        ? `${peakDay.date.slice(0,4)}-${peakDay.date.slice(4,6)}-${peakDay.date.slice(6,8)} · ${peakDay.views} views`
+        : '—';
+
+      cvStatus.textContent = cv.views > 0 ? 'Live' : 'No traffic';
+      cvStatus.className = `text-[10px] font-semibold px-2 py-0.5 rounded-full ${cv.views > 0 ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400' : 'bg-[#f5f5f5] text-[#737373] dark:bg-[#222]'}`;
+
+      cvBody.innerHTML = `
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-[#737373]">Views (30d)</p>
+            <p class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${fmtNumber(total30d)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-[#737373]">Users</p>
+            <p class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${fmtNumber(cv.users || 0)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-[#737373]">Avg. engagement</p>
+            <p class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${fmtDuration(avgEng)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-[#737373]">Engagement rate</p>
+            <p class="text-base font-semibold text-[#0a0a0a] dark:text-[#fafafa]">${fmtPct(cv.engRate)}</p>
+          </div>
+        </div>
+        ${total30d > 0 ? `
+          <div class="rounded-lg bg-[#f5f5f5]/40 dark:bg-[#0f0f0f]/40 px-3 py-2">
+            <div class="flex items-center justify-between text-[10px] text-[#737373] mb-1">
+              <span>Last 30 days</span>
+              <span>Peak: ${peakStr}</span>
+            </div>
+            ${renderMiniSparkline(cv.daily || [])}
+          </div>` : `<p class="text-xs text-[#737373] italic">No daily data in the last 30 days.</p>`}`;
+    } else {
+      cvStatus.textContent = 'No data';
+      cvStatus.className = 'text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#f5f5f5] text-[#737373] dark:bg-[#222]';
+      cvBody.innerHTML = `<p class="text-sm text-[#737373] italic">Page hasn't appeared in GA4 yet — check back after a few visits.</p>`;
+    }
+    cvStatus.classList.remove('hidden');
+
     // Timestamp
     const ts = new Date(data.fetchedAt);
     $('ga-fetchedAt').textContent = `Data fetched ${ts.toLocaleString()}`;
