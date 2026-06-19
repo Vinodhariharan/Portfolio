@@ -3,8 +3,7 @@
   "outputDirectory": ".",
   "installCommand": "npm install",
   "rewrites": [
-    { "source": "/post/:slug", "destination": "/api/post/[slug]" },
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
+    { "source": "/post/:slug", "destination": "/api/post/[slug]" }
   ],
   "headers": [
     {
