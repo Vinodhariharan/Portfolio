@@ -2,6 +2,9 @@
   "buildCommand": "npm install && node build-config.js",
   "outputDirectory": ".",
   "installCommand": "npm install",
+  "crons": [
+    { "path": "/api/sync-views", "schedule": "0 2 * * *" }
+  ],
   "rewrites": [
     { "source": "/post/:slug", "destination": "/api/post/[slug]" }
   ],
