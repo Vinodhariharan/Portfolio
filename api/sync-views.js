@@ -106,12 +106,12 @@ export default async function handler(req) {
           apikey:         SUPABASE_SVC_KEY,
           Authorization:  `Bearer ${SUPABASE_SVC_KEY}`,
           'Content-Type': 'application/json',
-          Prefer:         'return=representation'
+          Prefer:         'return=minimal'
         },
         body: JSON.stringify({ view_count: views })
       });
-      const body = await res.text();
-      return { slug, views, status: res.status, body };
+      await res.text();
+      return { slug, views, status: res.status };
     }));
 
     const failed = results.filter(r => r.status < 200 || r.status >= 300);
