@@ -98,21 +98,25 @@ export default async function handler(req) {
       if (match) updates.push({ slug: match[1], views });
     }
 
-    // Write to Supabase in parallel
-    await Promise.all(updates.map(({ slug, views }) =>
-      fetch(`${SUPABASE_URL}/rest/v1/posts?slug=eq.${encodeURIComponent(slug)}`, {
+    // Write to Supabase in parallel, capture each result
+    const results = await Promise.all(updates.map(async ({ slug, views }) => {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/posts?slug=eq.${encodeURIComponent(slug)}`, {
         method: 'PATCH',
         headers: {
           apikey:         SUPABASE_SVC_KEY,
           Authorization:  `Bearer ${SUPABASE_SVC_KEY}`,
           'Content-Type': 'application/json',
-          Prefer:         'return=minimal'
+          Prefer:         'return=representation'
         },
         body: JSON.stringify({ view_count: views })
-      })
-    ));
+      });
+      const body = await res.text();
+      return { slug, views, status: res.status, body };
+    }));
 
-    return new Response(JSON.stringify({ ok: true, synced: updates.length, updates }), {
+    const failed = results.filter(r => r.status < 200 || r.status >= 300);
+
+    return new Response(JSON.stringify({ ok: failed.length === 0, synced: updates.length, results }), {
       headers: { 'Content-Type': 'application/json' }
     });
   } catch (err) {
