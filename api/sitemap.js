@@ -30,6 +30,12 @@ const STATIC_URLS = `
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>${SITE}/taskflow.html</loc>
+    <lastmod>2026-06-25</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>`;
+  <url>
     <loc>${SITE}/privacy.html</loc>
     <lastmod>2026-06-01</lastmod>
     <priority>0.3</priority>

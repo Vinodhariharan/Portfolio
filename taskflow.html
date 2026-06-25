@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — Minimalist Task Manager for Android</title>
+  <meta name="description" content="Free, open-source Flutter task manager for Android. Daily carry-over, smart scheduling, overdue tracking, and a beautiful dark/light UI. No account needed." />
+  <meta name="keywords" content="TaskFlow, task manager, Flutter app, Android, to-do, productivity, open source, offline" />
+  <meta name="author" content="Vinodhariharan Ravi" />
+  <link rel="canonical" href="https://vinodhariharan.vercel.app/taskflow.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://vinodhariharan.vercel.app/taskflow.html" />
+  <meta property="og:title"       content="TaskFlow — Minimalist Task Manager for Android" />
+  <meta property="og:description" content="Free, open-source Flutter task manager. Daily carry-over, smart scheduling, beautiful dark/light UI. No account needed." />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="TaskFlow — Minimalist Task Manager for Android" />
+  <meta name="twitter:description" content="Free, open-source Flutter task manager. Daily carry-over, smart scheduling, beautiful dark/light UI. No account needed." />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6E52VLX2ZZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6E52VLX2ZZ');
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>document.documentElement.classList.remove('dark');</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="./assets/taskflow_icon_v2_1782377047512.png" type="image/png" />
+  <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --tf-primary:       #6C63FF;
+      --tf-primary-hover: #5a52d4;
+      --tf-bg:            #F5F5FA;
+      --tf-surface:       #FFFFFF;
+      --tf-border:        #DDDDE8;
+      --tf-text-muted:    #AAAAAE;
+      --tf-text-secondary:#7878A0;
+      --tf-text-primary:  #18181C;
+    }
+    [data-theme="dark"], .dark {
+      --tf-bg:            #0E0E10;
+      --tf-surface:       #1A1A1F;
+      --tf-border:        #3A3A4A;
+      --tf-text-muted:    #555568;
+      --tf-text-secondary:#9090A8;
+      --tf-text-primary:  #E8E8F0;
+    }
+
+    main, main h1, main h2, main h3, main p, main a, main li, main span, main button {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* ── Hero gradient ── */
+    .hero-accent-bg {
+      background:
+        radial-gradient(ellipse 60% 55% at 75% 40%, rgba(108,99,255,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 35% at 20% 70%, rgba(108,99,255,0.06) 0%, transparent 60%);
+    }
+
+    /* ── Phone frame ── */
+    .phone-frame {
+      position: relative;
+      width: 210px;
+      border: 8px solid #1c1c28;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .dark .phone-frame {
+      border-color: #3a3a50;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+    }
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 72px; height: 18px;
+      background: #1c1c28;
+      border-radius: 0 0 12px 12px;
+      z-index: 10;
+    }
+    .dark .phone-frame::before { background: #3a3a50; }
+    .phone-frame img { display: block; width: 100%; }
+
+    /* ── Feature cards ── */
+    .tf-card {
+      background: var(--tf-surface);
+      border-radius: 18px;
+      padding: 1.4rem;
+      border: 1px solid var(--tf-border);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .tf-card:hover {
+      box-shadow: 0 8px 24px rgba(108,99,255,0.10);
+      transform: translateY(-2px);
+    }
+    .dark .tf-card {
+      background: var(--tf-surface);
+    }
+
+    .feat-icon {
+      width: 2.5rem; height: 2.5rem;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(108,99,255,0.10);
+      flex-shrink: 0;
+    }
+    .dark .feat-icon { background: rgba(108,99,255,0.18); }
+    .tf-accent { color: var(--tf-primary); }
+
+    /* ── CTA button ── */
+    .tf-btn-primary {
+      background: var(--tf-primary);
+      color: #fff;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: background-color 0.2s, transform 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+    }
+    .tf-btn-primary:hover {
+      background: var(--tf-primary-hover);
+      transform: scale(0.98);
+    }
+
+    /* ── Android device frame ── */
+    .android-device {
+      position: relative;
+      flex-shrink: 0;
+      width: 240px;
+      background: #111114;
+      border-radius: 36px;
+      padding: 12px 10px 18px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.07),
+        0 0 0 2px #0a0a0c,
+        0 40px 80px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    /* Volume buttons – left */
+    .android-device::before {
+      content: '';
+      position: absolute;
+      left: -3px; top: 100px;
+      width: 3px; height: 38px;
+      background: #1e1e24;
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 52px 0 #1e1e24;
+    }
+    /* Power button – right */
+    .android-device::after {
+      content: '';
+      position: absolute;
+      right: -3px; top: 128px;
+      width: 3px; height: 30px;
+      background: #1e1e24;
+      border-radius: 0 2px 2px 0;
+    }
+    .android-screen {
+      background: #000;
+      border-radius: 26px;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Punch-hole camera */
+    .android-screen::before {
+      content: '';
+      position: absolute;
+      top: 10px; left: 50%;
+      transform: translateX(-50%);
+      width: 10px; height: 10px;
+      background: #111114;
+      border-radius: 50%;
+      z-index: 10;
+      box-shadow: 0 0 0 1.5px rgba(255,255,255,0.10);
+    }
+    /* Crop status bar from screenshots */
+    .android-screen img {
+      display: block;
+      width: 100%;
+      margin-top: -13%;
+    }
+    /* ── Screenshots full-viewport scroller ── */
+    .screenshots-viewport {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: none;
+      cursor: grab;
+      -webkit-mask-image: linear-gradient(to right, transparent 0, black 100px, black calc(100% - 100px), transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0, black 100px, black calc(100% - 100px), transparent 100%);
+      padding: 40px 0 36px;
+      user-select: none;
+      scroll-snap-type: x proximity;
+    }
+    .screenshots-viewport::-webkit-scrollbar { display: none; }
+    .screenshots-viewport.is-dragging { cursor: grabbing; }
+    .screenshots-track {
+      display: flex;
+      gap: 2.5rem;
+      padding: 0 140px;
+      width: max-content;
+    }
+    .ss-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      flex-shrink: 0;
+      scroll-snap-align: center;
+    }
+    .ss-caption {
+      text-align: center;
+      width: 200px;
+    }
+    .ss-caption strong {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #e8e8f0;
+      margin-bottom: 0.2rem;
+    }
+    .ss-caption span {
+      font-size: 0.72rem;
+      color: #6b6b80;
+      line-height: 1.4;
+    }
+
+    /* ── Install steps ── */
+    .step-num {
+      width: 1.75rem; height: 1.75rem;
+      background: rgba(108,99,255,0.10);
+      color: var(--tf-primary);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── Section label ── */
+    .tf-section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--tf-primary);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- ── Navigation ── -->
+  <nav id="mainNav" class="nav-bg fixed top-0 w-full z-50 backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
+    <div class="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-2xl overflow-hidden flex-shrink-0" style="box-shadow:0 2px 8px rgba(108,99,255,0.2)">
+          <img src="./assets/taskflow_icon_v2_1782377047512.png" alt="" class="w-full h-full object-cover" style="transform:scale(1.25);transform-origin:center;" />
+        </div>
+        <span class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm">TaskFlow</span>
+      </div>
+      <div class="hidden md:flex items-center gap-6">
+        <a href="#features" class="text-sm text-[#737373] hover:text-[#0a0a0a] transition-colors">Features</a>
+        <a href="#install" class="text-sm text-[#737373] hover:text-[#0a0a0a] transition-colors">Install</a>
+        <a href="https://github.com/Vinodhariharan/TaskFlow" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i> Source
+        </a>
+        <a href="https://github.com/Vinodhariharan/TaskFlow/releases/download/v1.0.0/TaskFlow-v1.0.0.apk"
+           class="tf-btn-primary !px-4 !py-2 !text-sm" download>
+          <i data-lucide="download" class="w-4 h-4"></i> Download
+        </a>
+      </div>
+      <div class="md:hidden flex items-center gap-3">
+        <button id="menuToggle" class="p-2 text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Open menu">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden border-t border-[#e5e5e5] dark:border-[#222222] bg-white/95 dark:bg-[#0a0a0a]/95">
+      <div class="max-w-5xl mx-auto px-6 py-4 flex flex-col gap-4">
+        <a href="#features" class="py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Features</a>
+        <a href="#screenshots" class="py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Screenshots</a>
+        <a href="https://github.com/Vinodhariharan/TaskFlow" target="_blank" rel="noopener" class="flex items-center gap-2 py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i> Source
+        </a>
+        <a href="https://github.com/Vinodhariharan/TaskFlow/releases" target="_blank" rel="noopener" class="flex items-center gap-2 py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="tag" class="w-4 h-4"></i> Releases
+        </a>
+        <a href="https://github.com/Vinodhariharan/TaskFlow/issues" target="_blank" rel="noopener" class="flex items-center gap-2 py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="circle-dot" class="w-4 h-4"></i> Issues
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow">
+
+    <!-- ── Hero ── -->
+    <section class="hero-accent-bg pt-28 pb-20 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row items-center gap-12 md:gap-16">
+
+          <!-- Left: text content -->
+          <div class="flex-1 text-center md:text-left">
+
+            <div class="flex items-center gap-3 justify-center md:justify-start mb-5">
+              <img src="./assets/taskflow_icon_v2_1782377047512.png" alt="TaskFlow icon" class="w-11 h-11 rounded-2xl shadow-md" />
+              <span class="tf-section-label !mb-0">Android App · v1.0.0</span>
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-4 leading-tight">
+              TaskFlow
+            </h1>
+            <p class="text-lg text-[#737373] mb-3 leading-relaxed max-w-lg">
+              A minimalistic task manager built with <strong class="text-[#0a0a0a] dark:text-[#fafafa] font-medium">Flutter</strong> — daily carry-over, smart scheduling, and a beautiful UI that stays out of your way.
+            </p>
+            <p class="text-sm text-[#a3a3a3] mb-8 max-w-md">
+              Built as a personal hobby project. Simple, private, and fully offline.
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-6">
+              <a href="https://github.com/Vinodhariharan/TaskFlow/releases/download/v1.0.0/TaskFlow-v1.0.0.apk"
+                 class="tf-btn-primary" download>
+                <i data-lucide="download" class="w-5 h-5"></i>
+                Download APK
+                <span class="opacity-60 text-sm font-normal">· ~95 MB</span>
+              </a>
+              <a href="https://github.com/Vinodhariharan/TaskFlow" target="_blank" rel="noopener"
+                 class="btn-ghost inline-flex items-center gap-2 px-5 py-3">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                View on GitHub
+              </a>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+              <span class="tag inline-flex items-center gap-1.5"><i data-lucide="smartphone" class="w-3 h-3"></i>Android 6.0+</span>
+              <span class="tag inline-flex items-center gap-1.5"><i data-lucide="wifi-off" class="w-3 h-3"></i>Fully Offline</span>
+              <span class="tag inline-flex items-center gap-1.5"><i data-lucide="lock-open" class="w-3 h-3"></i>Free &amp; Open Source</span>
+              <span class="tag inline-flex items-center gap-1.5"><i data-lucide="user-x" class="w-3 h-3"></i>No Account</span>
+            </div>
+          </div>
+
+          <!-- Right: phone mockup -->
+          <div class="flex-shrink-0 flex justify-center md:justify-end relative">
+            <!-- Decorative blur blob behind phone -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+              <div style="width:220px;height:220px;background:radial-gradient(circle,rgba(108,99,255,0.18) 0%,transparent 70%);border-radius:50%;"></div>
+            </div>
+            <div class="android-device relative z-10" style="width:220px;">
+              <div class="android-screen">
+                <img src="./assets/taskflow_screenshots/Screenshot_20260625_163736.jpg.jpeg" alt="TaskFlow task list view" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Features ── -->
+    <section id="features" class="py-20 bg-[var(--tf-bg)] dark:bg-[#0e0e10] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-10">
+          <span class="tf-section-label">What's inside</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Features</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          <div class="tf-card">
+            <div class="feat-icon"><i data-lucide="refresh-cw" class="w-5 h-5 tf-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Daily Carry-over</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Unfinished general tasks automatically roll over to the next day — nothing falls through the cracks.</p>
+            </div>
+          </div>
+
+          <div class="tf-card">
+            <div class="feat-icon"><i data-lucide="calendar-clock" class="w-5 h-5 tf-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Smart Scheduling</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Schedule tasks for any future date. Upcoming tasks are grouped by date so your list stays organised.</p>
+            </div>
+          </div>
+
+          <div class="tf-card">
+            <div class="feat-icon"><i data-lucide="alarm-clock" class="w-5 h-5 tf-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Overdue Tracking</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Missed scheduled tasks carry over with a subtle indicator so you always know what's overdue.</p>
+            </div>
+          </div>
+
+          <div class="tf-card">
+            <div class="feat-icon"><i data-lucide="flag" class="w-5 h-5 tf-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">High Priority</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Flag important tasks to pin them at the top of your list. Critical things never get buried.</p>
+            </div>
+          </div>
+
+          <div class="tf-card">
+            <div class="feat-icon"><i data-lucide="bar-chart-2" class="w-5 h-5 tf-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Progress Indicator</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">At-a-glance task counter and progress bar show how much you've done vs. what's left for the day.</p>
+            </div>
+          </div>
+
+          <div class="tf-card">
+            <div class="feat-icon"><i data-lucide="sun-moon" class="w-5 h-5 tf-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Dark &amp; Light Mode</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Beautifully crafted themes for day and night. Your preference is saved automatically.</p>
+            </div>
+          </div>
+
+          <div class="tf-card md:col-span-2 lg:col-span-3">
+            <div class="feat-icon"><i data-lucide="hard-drive" class="w-5 h-5 tf-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Fully Local — No Cloud, No Account</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">All tasks are saved on your device using SQLite. No sign-up, no internet connection, no data leaving your phone. Ever.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── App showcase ── -->
+    <section id="screenshots" class="py-20 overflow-hidden bg-[#0a0a0f]">
+      <div class="max-w-5xl mx-auto px-6 mb-10">
+        <span class="tf-section-label">See it in action</span>
+        <h2 class="text-3xl md:text-4xl font-bold text-[#fafafa]">Built for how you actually work</h2>
+      </div>
+
+      <div class="screenshots-viewport" id="screenshotsViewport">
+        <div class="screenshots-track">
+
+          <div class="ss-item">
+            <div class="android-device">
+              <div class="android-screen">
+                <img src="./assets/taskflow_screenshots/Screenshot_20260625_163515.jpg.jpeg" alt="Today view" draggable="false" />
+              </div>
+            </div>
+            <div class="ss-caption">
+              <strong>Start fresh each day</strong>
+              <span>Unfinished tasks carry over automatically so nothing slips through.</span>
+            </div>
+          </div>
+
+          <div class="ss-item">
+            <div class="android-device">
+              <div class="android-screen">
+                <img src="./assets/taskflow_screenshots/Screenshot_20260625_163550.jpg.jpeg" alt="Add new task" draggable="false" />
+              </div>
+            </div>
+            <div class="ss-caption">
+              <strong>Add anything in seconds</strong>
+              <span>Name, note, priority, and schedule — all from one quick sheet.</span>
+            </div>
+          </div>
+
+          <div class="ss-item">
+            <div class="android-device">
+              <div class="android-screen">
+                <img src="./assets/taskflow_screenshots/Screenshot_20260625_163736.jpg.jpeg" alt="Task list" draggable="false" />
+              </div>
+            </div>
+            <div class="ss-caption">
+              <strong>Track your momentum</strong>
+              <span>A live progress bar shows how far you've come through the day.</span>
+            </div>
+          </div>
+
+          <div class="ss-item">
+            <div class="android-device">
+              <div class="android-screen">
+                <img src="./assets/taskflow_screenshots/Screenshot_20260625_163751.jpg.jpeg" alt="Schedule picker" draggable="false" />
+              </div>
+            </div>
+            <div class="ss-caption">
+              <strong>Plan any day ahead</strong>
+              <span>Schedule tasks for future dates with a simple calendar picker.</span>
+            </div>
+          </div>
+
+          <div class="ss-item">
+            <div class="android-device">
+              <div class="android-screen">
+                <img src="./assets/taskflow_screenshots/Screenshot_20260625_163806.jpg.jpeg" alt="Dark mode" draggable="false" />
+              </div>
+            </div>
+            <div class="ss-caption">
+              <strong>Easy on the eyes</strong>
+              <span>A fully crafted dark theme that's just as usable as the light one.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <p class="text-center text-xs text-[#444455] mt-2 px-6">Drag or swipe to explore</p>
+    </section>
+
+
+    <!-- ── Installation ── -->
+    <section id="install" class="py-20 bg-[var(--tf-bg)] dark:bg-[#0e0e10] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-10">
+          <span class="tf-section-label">Getting started</span>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Installation</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <div class="tf-card flex-col !gap-0">
+            <p class="text-xs uppercase tracking-wider text-[#737373] mb-5">Requirements</p>
+            <ul class="space-y-3">
+              <li class="flex items-center gap-3 text-sm text-[#737373]">
+                <i data-lucide="smartphone" class="w-4 h-4 tf-accent shrink-0"></i>
+                Android 6.0 (Marshmallow) or later
+              </li>
+              <li class="flex items-center gap-3 text-sm text-[#737373]">
+                <i data-lucide="cpu" class="w-4 h-4 tf-accent shrink-0"></i>
+                ARM64 or x86_64 device
+              </li>
+              <li class="flex items-center gap-3 text-sm text-[#737373]">
+                <i data-lucide="hard-drive" class="w-4 h-4 tf-accent shrink-0"></i>
+                ~20 MB free storage after install
+              </li>
+              <li class="flex items-center gap-3 text-sm text-[#737373]">
+                <i data-lucide="wifi-off" class="w-4 h-4 tf-accent shrink-0"></i>
+                No internet connection required
+              </li>
+            </ul>
+          </div>
+
+          <div class="tf-card flex-col !gap-0">
+            <p class="text-xs uppercase tracking-wider text-[#737373] mb-5">Install steps</p>
+            <ol class="space-y-4">
+              <li class="flex items-start gap-3">
+                <div class="step-num">1</div>
+                <div>
+                  <p class="text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">Download the APK</p>
+                  <p class="text-xs text-[#737373] mt-0.5">Tap Download above or get it from <a href="https://github.com/Vinodhariharan/TaskFlow/releases" target="_blank" rel="noopener" class="text-[#6C63FF] hover:underline">GitHub Releases</a>.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="step-num">2</div>
+                <div>
+                  <p class="text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">Allow unknown sources</p>
+                  <p class="text-xs text-[#737373] mt-0.5">Settings → Security → enable <em>Install unknown apps</em> for your browser or file manager.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="step-num">3</div>
+                <div>
+                  <p class="text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">Open the APK</p>
+                  <p class="text-xs text-[#737373] mt-0.5">Tap the downloaded file in your notifications or file manager and follow the prompts.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="step-num">4</div>
+                <div>
+                  <p class="text-sm font-medium text-[#0a0a0a] dark:text-[#fafafa]">Start organising</p>
+                  <p class="text-xs text-[#737373] mt-0.5">Open TaskFlow and add your first task. No sign-up, no setup — ready immediately.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Download CTA ── -->
+    <section class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-lg mx-auto px-6 text-center">
+
+        <!-- Icon + glow -->
+        <div class="flex justify-center mb-6 relative">
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">
+            <div style="width:120px;height:120px;background:radial-gradient(circle,rgba(108,99,255,0.15) 0%,transparent 70%);border-radius:50%;"></div>
+          </div>
+          <img src="./assets/taskflow_icon_v2_1782377047512.png" alt="TaskFlow icon" class="w-16 h-16 rounded-2xl shadow-lg relative z-10" />
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-2">Ready to stay organised?</h2>
+        <p class="text-[#737373] mb-8">Free forever. No ads. No account. Just tasks.</p>
+
+        <a href="https://github.com/Vinodhariharan/TaskFlow/releases/download/v1.0.0/TaskFlow-v1.0.0.apk"
+           class="tf-btn-primary !px-8 !py-3.5 !text-base mx-auto" download>
+          <i data-lucide="download" class="w-5 h-5"></i>
+          Download TaskFlow APK
+        </a>
+
+        <p class="text-xs text-[#a3a3a3] mt-4">Android 6.0+ · v1.0.0 · MIT License</p>
+        <p class="text-xs text-[#a3a3a3] mt-1">Co-authored with <a href="https://claude.ai" target="_blank" rel="noopener" class="underline hover:text-[#737373] transition-colors">Claude</a> by Anthropic.</p>
+
+        <div class="mt-8 flex items-center justify-center gap-4">
+          <a href="https://github.com/Vinodhariharan/TaskFlow" target="_blank" rel="noopener"
+             class="btn-ghost inline-flex items-center gap-2 px-4 py-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            View Source
+          </a>
+          <a href="https://github.com/Vinodhariharan/TaskFlow/blob/main/LICENSE" target="_blank" rel="noopener"
+             class="btn-ghost inline-flex items-center gap-2 px-4 py-2">
+            <i data-lucide="scale" class="w-4 h-4"></i> MIT License
+          </a>
+          <a href="https://github.com/Vinodhariharan/TaskFlow/issues/new" target="_blank" rel="noopener"
+             class="btn-ghost inline-flex items-center gap-2 px-4 py-2">
+            <i data-lucide="message-square-plus" class="w-4 h-4"></i> Report Issue
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ── Footer ── -->
+  <footer class="footer-bg border-t border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
+    <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <img src="./assets/taskflow_icon_v2_1782377047512.png" alt="" class="w-5 h-5 rounded shrink-0" />
+        <span class="text-sm text-[#737373]">TaskFlow · © 2026 <a href="https://vinodhariharan.vercel.app" class="hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Vinodhariharan Ravi</a></span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/Vinodhariharan/TaskFlow" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i> Repository
+        </a>
+        <a href="https://github.com/Vinodhariharan/TaskFlow/releases" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="tag" class="w-4 h-4"></i> Releases
+        </a>
+        <a href="https://github.com/Vinodhariharan/TaskFlow/issues" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="circle-dot" class="w-4 h-4"></i> Issues
+        </a>
+        <a href="https://github.com/Vinodhariharan/TaskFlow/blob/main/LICENSE" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="scale" class="w-4 h-4"></i> MIT License
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" class="fixed bottom-8 right-8 z-50 w-10 h-10 bg-[#6C63FF] text-white rounded-full flex items-center justify-center hidden hover:bg-[#5a52d4] transition-colors shadow-sm">
+    <i data-lucide="arrow-up" class="w-4 h-4"></i>
+  </button>
+
+  <script src="./script.js"></script>
+  <script>
+    // Generate rounded favicon matching the nav icon style
+    (function() {
+      const img = new Image();
+      img.onload = function() {
+        const size = 64;
+        const radius = size * 0.22;
+        const canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.beginPath();
+        ctx.moveTo(radius, 0);
+        ctx.lineTo(size - radius, 0);
+        ctx.quadraticCurveTo(size, 0, size, radius);
+        ctx.lineTo(size, size - radius);
+        ctx.quadraticCurveTo(size, size, size - radius, size);
+        ctx.lineTo(radius, size);
+        ctx.quadraticCurveTo(0, size, 0, size - radius);
+        ctx.lineTo(0, radius);
+        ctx.quadraticCurveTo(0, 0, radius, 0);
+        ctx.closePath();
+        ctx.clip();
+        // 1.25× zoom to match nav icon crop
+        const scale = 1.25;
+        const offset = (size * (scale - 1)) / 2;
+        ctx.drawImage(img, -offset, -offset, size * scale, size * scale);
+        const link = document.querySelector("link[rel='icon']");
+        if (link) link.href = canvas.toDataURL('image/png');
+      };
+      img.src = './assets/taskflow_icon_v2_1782377047512.png';
+    })();
+  </script>
+  <script>
+    const vp = document.getElementById('screenshotsViewport');
+    if (vp) {
+      let down = false, startX, sl;
+      vp.addEventListener('mousedown', e => {
+        down = true; sl = vp.scrollLeft; startX = e.pageX;
+        vp.classList.add('is-dragging');
+      });
+      document.addEventListener('mouseup', () => { down = false; vp.classList.remove('is-dragging'); });
+      vp.addEventListener('mousemove', e => {
+        if (!down) return;
+        e.preventDefault();
+        vp.scrollLeft = sl - (e.pageX - startX) * 1.5;
+      });
+    }
+  </script>
+</body>
+</html>
