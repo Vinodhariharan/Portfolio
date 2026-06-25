@@ -34,7 +34,7 @@ const STATIC_URLS = `
     <lastmod>2026-06-25</lastmod>
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
-  </url>`;
+  </url>
   <url>
     <loc>${SITE}/privacy.html</loc>
     <lastmod>2026-06-01</lastmod>
