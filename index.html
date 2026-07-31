@@ -402,6 +402,26 @@
           </div>
         </div>
 
+        <!-- HexaConquest -->
+        <div class="card cursor-pointer group animate-on-scroll" onclick="openProjectModal('hexaconquest')">
+          <div class="w-full h-40 -mx-5 -mt-5 mb-4 overflow-hidden rounded-t-[0.75rem] relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-950 flex items-center justify-center" style="margin-left:-1.25rem;margin-right:-1.25rem;margin-top:-1.25rem;width:calc(100% + 2.5rem)">
+            <div class="absolute inset-0 opacity-[0.07]" style="background-image:repeating-linear-gradient(60deg,#f59e0b 0,#f59e0b 1px,transparent 0,transparent 50%);background-size:24px 42px;"></div>
+            <i data-lucide="hexagon" class="w-14 h-14 text-amber-400 opacity-80 group-hover:scale-110 transition-transform duration-300" style="filter:drop-shadow(0 0 12px rgba(245,158,11,0.4))"></i>
+          </div>
+          <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">HexaConquest</h3>
+          <p class="text-sm text-[#737373] mb-3">Real-Time Multiplayer Strategy Game · Full-Stack</p>
+          <div class="flex flex-wrap gap-1.5 mb-4">
+            <span class="tag">React</span>
+            <span class="tag">Three.js</span>
+            <span class="tag">Socket.io</span>
+            <span class="tag">TypeScript</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-[#737373] flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i>2–8 Players</span>
+            <span class="text-xs text-[#2563eb] flex items-center gap-1">Details <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+          </div>
+        </div>
+
         <!-- BotaniCart -->
         <div class="card cursor-pointer group animate-on-scroll" onclick="openProjectModal('botanicart')">
           <div class="w-full h-40 -mx-5 -mt-5 mb-4 overflow-hidden rounded-t-[0.75rem] bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center" style="margin-left:-1.25rem;margin-right:-1.25rem;margin-top:-1.25rem;width:calc(100% + 2.5rem)">
@@ -606,6 +626,32 @@
   <!-- Project data + modal JS -->
   <script>
     const projectData = {
+      hexaconquest: {
+        title: "HexaConquest",
+        subtitle: "Real-Time Multiplayer Strategy Game · Full-Stack",
+        icon: "hexagon",
+        mediaType: "image",
+        image: "https://opengraph.githubassets.com/1/Vinodhariharan/hexaconquest",
+        mediaTitle: "HexaConquest",
+        mediaDescription: "Hex-grid territory-conquest strategy game — 2–8 players, 3D map, real-time multiplayer.",
+        links: [],
+        description: "Real-time multiplayer territory-conquest strategy game playable in the browser. 2–8 players compete on a shared hex-grid map, each starting from a stronghold and expanding by marching troops across adjacent tiles. Features an authoritative Node.js + Socket.io game server with tick-based simulation, a 3D map rendered via React Three Fiber / Three.js with animated troop movement, Google/email auth, match history, leaderboards, and a friends system with real-time invites.",
+        features: [
+          { icon: "hexagon",    text: "3D hex-grid map (React Three Fiber / Three.js) with free-orbit camera and animated troop markers" },
+          { icon: "zap",        text: "Authoritative real-time server — tick-based simulation, matchmaking, and room management via Socket.io" },
+          { icon: "trophy",     text: "Two win conditions: eliminate all opponents or hit a configurable territory-domination threshold (50–80%)" },
+          { icon: "cpu",        text: "Bot opponents with configurable AI difficulty — auto-fill ensures solo players always get a match instantly" },
+          { icon: "users",      text: "Google/email auth, guest-to-account upgrade, match history, leaderboards, and real-time friend invites" },
+          { icon: "package",    text: "Monorepo (client / server / shared) — single source of truth for game types and hex-grid math via pnpm" }
+        ],
+        techStack: ["React", "TypeScript", "Three.js", "React Three Fiber", "Socket.io", "Node.js", "Express", "Prisma", "Supabase", "Vite", "Tailwind CSS", "Vitest"],
+        stats: [
+          { value: "2–8",   label: "Players" },
+          { value: "3",     label: "Map Sizes" },
+          { value: "3D",    label: "Rendering" },
+          { value: "Live",  label: "Multiplayer" }
+        ]
+      },
       sociography: {
         title: "SocioGraphy",
         subtitle: "Full-Stack Social Platform · Team Lead",
