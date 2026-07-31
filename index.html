@@ -505,121 +505,130 @@
   </section>
 
   <!-- ── HexaConquest ── -->
-  <section id="hexaconquest" class="py-24 relative overflow-hidden" style="background:#0a0e14;">
-    <div class="absolute inset-0 opacity-[0.06] pointer-events-none" style="background-image:repeating-linear-gradient(60deg,#f59e0b 0,#f59e0b 1px,transparent 0,transparent 50%),repeating-linear-gradient(0deg,#f59e0b 0,#f59e0b 1px,transparent 0,transparent 50%);background-size:28px 48px,28px 48px;"></div>
+  <section id="hexaconquest" class="relative overflow-hidden" style="background:#0a0e14;">
+    <div class="absolute inset-0 opacity-[0.07] pointer-events-none" style="background-image:repeating-linear-gradient(60deg,#f59e0b 0,#f59e0b 1px,transparent 0,transparent 50%),repeating-linear-gradient(0deg,#f59e0b 0,#f59e0b 1px,transparent 0,transparent 50%);background-size:28px 48px,28px 48px;"></div>
+    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(245,158,11,0.14) 0%,transparent 70%);"></div>
 
-    <div class="max-w-5xl mx-auto px-6 relative">
+    <!-- Promo hero -->
+    <div class="max-w-5xl mx-auto px-6 pt-24 pb-16 relative">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-      <div class="mb-14 animate-on-scroll">
-        <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#f59e0b;">Real-time multiplayer</p>
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(245,158,11,0.12); box-shadow:0 0 0 1px rgba(245,158,11,0.25);">
-            <i data-lucide="hexagon" class="w-6 h-6" style="color:#f59e0b;"></i>
+        <div class="animate-on-scroll">
+          <div class="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-5" style="background:rgba(245,158,11,0.10); border:1px solid rgba(245,158,11,0.25);">
+            <span class="w-1.5 h-1.5 rounded-full" style="background:#f59e0b; box-shadow:0 0 6px #f59e0b;"></span>
+            <span class="text-xs font-semibold tracking-wide" style="color:#f59e0b;">Live now · Free to play</span>
           </div>
-          <h2 class="text-3xl md:text-4xl font-bold text-white">HexaConquest</h2>
+
+          <h2 class="text-4xl md:text-5xl font-bold text-white leading-[1.05] mb-5">
+            Conquer the map.<br />Together, in real time.
+          </h2>
+
+          <p class="text-base leading-relaxed mb-8 max-w-md" style="color:#8b93a3;">
+            HexaConquest is a hex-grid territory-conquest game I built from scratch — 2 to 8 players battling live on a shared 3D map. March troops, cut supply lines, and out-empire every rival before the clock runs out. No install, just a browser tab.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <a href="https://hexaconquest.vercel.app" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-transform hover:scale-[1.03]"
+               style="background:#f59e0b; color:#0a0e14;">
+              <i data-lucide="play" class="w-4 h-4"></i>
+              Play HexaConquest
+            </a>
+            <span class="text-xs" style="color:#5c6377;">hexaconquest.vercel.app</span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-4 mt-8 pt-6" style="border-top:1px solid #1e2530;">
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="users" class="w-4 h-4" style="color:#f59e0b;"></i>
+              <span class="text-xs" style="color:#8b93a3;">2–8 players</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="globe" class="w-4 h-4" style="color:#f59e0b;"></i>
+              <span class="text-xs" style="color:#8b93a3;">Plays in-browser</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="box" class="w-4 h-4" style="color:#f59e0b;"></i>
+              <span class="text-xs" style="color:#8b93a3;">Live 3D map</span>
+            </div>
+          </div>
         </div>
-        <p class="max-w-2xl leading-relaxed" style="color:#8b93a3;">A hex-grid territory-conquest strategy game where 2–8 players battle in real time to conquer a shared map — march troops, cut supply lines, and race to eliminate every rival empire or seize the majority of the board.</p>
+
+        <!-- Cover art panel -->
+        <div class="animate-on-scroll relative">
+          <div class="rounded-2xl p-8 relative overflow-hidden" style="background:linear-gradient(160deg,#151b26 0%,#0d1119 100%); border:1px solid #232b38; box-shadow:0 30px 70px rgba(0,0,0,0.5);">
+            <div class="absolute inset-0 opacity-[0.15] pointer-events-none" style="background-image:repeating-linear-gradient(60deg,#f59e0b 0,#f59e0b 1px,transparent 0,transparent 50%),repeating-linear-gradient(0deg,#f59e0b 0,#f59e0b 1px,transparent 0,transparent 50%);background-size:22px 38px,22px 38px;"></div>
+            <div class="relative flex flex-col items-center justify-center py-10">
+              <i data-lucide="hexagon" class="w-24 h-24 mb-4" style="color:#f59e0b; filter:drop-shadow(0 0 24px rgba(245,158,11,0.45));"></i>
+              <p class="text-2xl font-bold text-white tracking-tight">HEXACONQUEST</p>
+              <p class="text-xs mt-1 tracking-widest uppercase" style="color:#5c6377;">Territory conquest · Real-time</p>
+            </div>
+            <div class="relative flex items-center justify-center gap-2 mt-4">
+              <span class="w-2 h-2 rounded-full" style="background:#f59e0b;"></span>
+              <span class="w-2 h-2 rounded-full" style="background:#3b4354;"></span>
+              <span class="w-2 h-2 rounded-full" style="background:#3b4354;"></span>
+              <span class="w-2 h-2 rounded-full" style="background:#3b4354;"></span>
+            </div>
+          </div>
+        </div>
+
       </div>
+    </div>
 
-      <!-- Feature grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-14">
-
-        <div class="animate-on-scroll rounded-xl p-5" style="background:#11161f; border:1px solid #1e2530;">
-          <div class="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style="background:rgba(245,158,11,0.10);">
-            <i data-lucide="box" class="w-4 h-4" style="color:#f59e0b;"></i>
-          </div>
-          <h3 class="font-semibold text-white mb-1 text-sm">Live 3D battle map</h3>
-          <p class="text-xs leading-relaxed" style="color:#7a8294;">Rendered with Three.js and React Three Fiber — free-orbit camera, tilting perspective, and troops that visibly march across capture paths in real time.</p>
-        </div>
+    <!-- Feature strip -->
+    <div class="max-w-5xl mx-auto px-6 pb-16 relative">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
         <div class="animate-on-scroll rounded-xl p-5" style="background:#11161f; border:1px solid #1e2530;">
           <div class="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style="background:rgba(245,158,11,0.10);">
             <i data-lucide="server" class="w-4 h-4" style="color:#f59e0b;"></i>
           </div>
-          <h3 class="font-semibold text-white mb-1 text-sm">Authoritative game server</h3>
-          <p class="text-xs leading-relaxed" style="color:#7a8294;">Node.js + Socket.io drives tick-based simulation, matchmaking, and room/lobby state independently of any single client — with reconnect support if a connection drops.</p>
+          <h3 class="font-semibold text-white mb-1 text-sm">Truly real-time</h3>
+          <p class="text-xs leading-relaxed" style="color:#7a8294;">An authoritative Node.js + Socket.io server runs the simulation — every troop movement, attack, and capture syncs live across all players.</p>
         </div>
 
         <div class="animate-on-scroll rounded-xl p-5" style="background:#11161f; border:1px solid #1e2530;">
           <div class="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style="background:rgba(245,158,11,0.10);">
             <i data-lucide="swords" class="w-4 h-4" style="color:#f59e0b;"></i>
           </div>
-          <h3 class="font-semibold text-white mb-1 text-sm">Attack, reinforce, defend</h3>
-          <p class="text-xs leading-relaxed" style="color:#7a8294;">Send troops into adjacent enemy tiles at 30% attacker attrition, or reinforce your own for free. Connected clusters regenerate troops each tick; cut-off tiles slowly starve.</p>
-        </div>
-
-        <div class="animate-on-scroll rounded-xl p-5" style="background:#11161f; border:1px solid #1e2530;">
-          <div class="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style="background:rgba(245,158,11,0.10);">
-            <i data-lucide="trophy" class="w-4 h-4" style="color:#f59e0b;"></i>
-          </div>
-          <h3 class="font-semibold text-white mb-1 text-sm">Two paths to victory</h3>
-          <p class="text-xs leading-relaxed" style="color:#7a8294;">Eliminate every opponent outright, or hit a host-configured territory-domination threshold between 50–80% of the map.</p>
+          <h3 class="font-semibold text-white mb-1 text-sm">Strategic depth</h3>
+          <p class="text-xs leading-relaxed" style="color:#7a8294;">Attack, reinforce, or defend — cut off an enemy's supply lines and watch their empire starve, or race for a 50–80% domination win.</p>
         </div>
 
         <div class="animate-on-scroll rounded-xl p-5" style="background:#11161f; border:1px solid #1e2530;">
           <div class="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style="background:rgba(245,158,11,0.10);">
             <i data-lucide="cpu" class="w-4 h-4" style="color:#f59e0b;"></i>
           </div>
-          <h3 class="font-semibold text-white mb-1 text-sm">Bots fill empty seats</h3>
-          <p class="text-xs leading-relaxed" style="color:#7a8294;">Configurable AI difficulty backfills open lobbies automatically, so solo players get an instant match instead of waiting on an empty room.</p>
-        </div>
-
-        <div class="animate-on-scroll rounded-xl p-5" style="background:#11161f; border:1px solid #1e2530;">
-          <div class="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style="background:rgba(245,158,11,0.10);">
-            <i data-lucide="users" class="w-4 h-4" style="color:#f59e0b;"></i>
-          </div>
-          <h3 class="font-semibold text-white mb-1 text-sm">Accounts &amp; friends</h3>
-          <p class="text-xs leading-relaxed" style="color:#7a8294;">Google/email auth with guest-to-account upgrade, match history and leaderboards backed by Prisma + Supabase, and a real-time friends system with invites.</p>
+          <h3 class="font-semibold text-white mb-1 text-sm">Jump in solo</h3>
+          <p class="text-xs leading-relaxed" style="color:#7a8294;">No one online? Configurable AI bots auto-fill empty seats so you get an instant match — plus accounts, friends, and leaderboards.</p>
         </div>
 
       </div>
+    </div>
 
-      <!-- Stats + tech stack -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-on-scroll">
-
-        <div class="lg:col-span-1 rounded-xl p-5" style="background:#11161f; border:1px solid #1e2530;">
-          <p class="text-xs font-semibold uppercase tracking-wider mb-4" style="color:#7a8294;">At a glance</p>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-xl font-bold" style="color:#f59e0b;">2–8</p>
-              <p class="text-xs" style="color:#7a8294;">Players per match</p>
-            </div>
-            <div>
-              <p class="text-xl font-bold" style="color:#f59e0b;">3</p>
-              <p class="text-xs" style="color:#7a8294;">Map sizes (25/50/100)</p>
-            </div>
-            <div>
-              <p class="text-xl font-bold" style="color:#f59e0b;">3D</p>
-              <p class="text-xs" style="color:#7a8294;">Real-time rendering</p>
-            </div>
-            <div>
-              <p class="text-xl font-bold" style="color:#f59e0b;">Live</p>
-              <p class="text-xs" style="color:#7a8294;">Server-authoritative</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="lg:col-span-2 rounded-xl p-5" style="background:#11161f; border:1px solid #1e2530;">
-          <p class="text-xs font-semibold uppercase tracking-wider mb-4" style="color:#7a8294;">Tech stack</p>
+    <!-- Tech stack + CTA -->
+    <div class="max-w-5xl mx-auto px-6 pb-24 relative">
+      <div class="animate-on-scroll rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6" style="background:#11161f; border:1px solid #1e2530;">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#7a8294;">Built with</p>
           <div class="flex flex-wrap gap-2">
             <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">React</span>
-            <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">TypeScript</span>
             <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">Three.js</span>
-            <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">React Three Fiber</span>
             <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">Socket.io</span>
             <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">Node.js</span>
-            <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">Express</span>
             <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">Prisma</span>
             <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">Supabase</span>
-            <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">Vite</span>
-            <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">Tailwind CSS</span>
-            <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">Vitest</span>
+            <span class="text-xs px-2.5 py-1 rounded-full" style="background:rgba(245,158,11,0.10); color:#f59e0b; border:1px solid rgba(245,158,11,0.2);">TypeScript</span>
           </div>
         </div>
-
+        <a href="https://hexaconquest.vercel.app" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm shrink-0 transition-transform hover:scale-[1.03]"
+           style="background:#f59e0b; color:#0a0e14;">
+          <i data-lucide="play" class="w-4 h-4"></i>
+          Play Now
+        </a>
       </div>
-
     </div>
+
   </section>
 
   <!-- ── Personal Builds ── -->
