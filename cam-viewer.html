@@ -94,8 +94,30 @@
 
 <body class="min-h-screen flex flex-col">
 
+  <!-- ── HexaConquest promo banner ── -->
+  <div id="hexaPromoBanner">
+    <i data-lucide="hexagon" class="hexa-dot w-4 h-4"></i>
+    <span class="hexa-text"><strong>HexaConquest</strong> — real-time multiplayer strategy game, live now.</span>
+    <a href="https://hexaconquest.vercel.app" target="_blank" rel="noopener" class="hexa-cta">Play now →</a>
+    <button class="hexa-close" onclick="dismissHexaBanner()" aria-label="Dismiss banner">✕</button>
+  </div>
+  <script>
+    (function(){
+      if (localStorage.getItem('hexaBannerDismissed') === '1') {
+        document.documentElement.classList.add('hexa-banner-dismissed');
+      } else {
+        document.body.classList.add('hexa-banner-active');
+      }
+    })();
+    function dismissHexaBanner(){
+      localStorage.setItem('hexaBannerDismissed', '1');
+      document.documentElement.classList.add('hexa-banner-dismissed');
+      document.body.classList.remove('hexa-banner-active');
+    }
+  </script>
+
   <!-- ── Navigation ── -->
-  <nav id="mainNav" class="nav-bg fixed top-0 w-full z-50 backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
+  <nav id="mainNav" class="site-nav nav-bg fixed top-0 w-full z-50 backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
       <div class="flex items-center gap-2.5">
         <img src="./assets/cam-viewer-icon.png" alt="" class="w-7 h-7 rounded-full" />

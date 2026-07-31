@@ -216,8 +216,30 @@
 
 <body class="min-h-screen flex flex-col">
 
+  <!-- ── HexaConquest promo banner ── -->
+  <div id="hexaPromoBanner">
+    <i data-lucide="hexagon" class="hexa-dot w-4 h-4"></i>
+    <span class="hexa-text"><strong>HexaConquest</strong> — real-time multiplayer strategy game, live now.</span>
+    <a href="https://hexaconquest.vercel.app" target="_blank" rel="noopener" class="hexa-cta">Play now →</a>
+    <button class="hexa-close" onclick="dismissHexaBanner()" aria-label="Dismiss banner">✕</button>
+  </div>
+  <script>
+    (function(){
+      if (localStorage.getItem('hexaBannerDismissed') === '1') {
+        document.documentElement.classList.add('hexa-banner-dismissed');
+      } else {
+        document.body.classList.add('hexa-banner-active');
+      }
+    })();
+    function dismissHexaBanner(){
+      localStorage.setItem('hexaBannerDismissed', '1');
+      document.documentElement.classList.add('hexa-banner-dismissed');
+      document.body.classList.remove('hexa-banner-active');
+    }
+  </script>
+
   <!-- ── Navigation (hidden over the hero, slides in on scroll past it) ── -->
-  <nav id="trNav" class="tr-nav tr-nav-hidden fixed top-0 w-full z-50 nav-bg backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
+  <nav id="trNav" class="site-nav tr-nav tr-nav-hidden fixed top-0 w-full z-50 nav-bg backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
       <a href="/" class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] tracking-tight" style="font-family:'Glacial Indifference',sans-serif;">vh</a>
       <div class="hidden md:flex items-center gap-8">
