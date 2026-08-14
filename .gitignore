@@ -9,6 +9,9 @@ supabase-config.js
 .env.local
 .env*.local
 
+# Dependencies (installed by the Vercel build via npm install)
+node_modules/
+
 # OS noise
 .DS_Store
 Thumbs.db

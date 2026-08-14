@@ -523,6 +523,53 @@ body.hexa-banner-active .site-nav { top: 40px; }
   font-size: 0.875rem;
 }
 
+/* ── Syntax highlighting (highlight.js tokens, tuned for the fixed dark
+   code-block background above — code blocks stay dark in both themes) ── */
+.hljs-comment,
+.hljs-quote            { color: #6c7086; font-style: italic; }
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-doctag,
+.hljs-meta .hljs-keyword { color: #cba6f7; }
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attr,
+.hljs-meta-string       { color: #a6e3a1; }
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-deletion          { color: #fab387; }
+
+.hljs-title,
+.hljs-title.function_,
+.hljs-title.class_,
+.hljs-section           { color: #89b4fa; }
+
+.hljs-name,
+.hljs-tag,
+.hljs-built_in,
+.hljs-attribute         { color: #f38ba8; }
+
+.hljs-variable,
+.hljs-template-variable,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-params            { color: #f9e2af; }
+
+.hljs-type,
+.hljs-class .hljs-title { color: #94e2d5; }
+
+.hljs-meta,
+.hljs-link              { color: #89dceb; }
+
+.hljs-emphasis          { font-style: italic; }
+.hljs-strong             { font-weight: 700; }
+
 .prose-blog img {
   max-width: 100%;
   border-radius: 0.5rem;

@@ -1,4 +1,55 @@
 import { marked } from 'marked';
+import hljs from 'highlight.js/lib/core';
+import javascript  from 'highlight.js/lib/languages/javascript';
+import typescript  from 'highlight.js/lib/languages/typescript';
+import python      from 'highlight.js/lib/languages/python';
+import bash        from 'highlight.js/lib/languages/bash';
+import json        from 'highlight.js/lib/languages/json';
+import css         from 'highlight.js/lib/languages/css';
+import xml         from 'highlight.js/lib/languages/xml';
+import sql         from 'highlight.js/lib/languages/sql';
+import yaml        from 'highlight.js/lib/languages/yaml';
+import java        from 'highlight.js/lib/languages/java';
+import cpp         from 'highlight.js/lib/languages/cpp';
+import c           from 'highlight.js/lib/languages/c';
+import go          from 'highlight.js/lib/languages/go';
+import rust        from 'highlight.js/lib/languages/rust';
+import dockerfile  from 'highlight.js/lib/languages/dockerfile';
+import markdown    from 'highlight.js/lib/languages/markdown';
+
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('json', json);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('xml', xml);
+hljs.registerLanguage('sql', sql);
+hljs.registerLanguage('yaml', yaml);
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('cpp', cpp);
+hljs.registerLanguage('c', c);
+hljs.registerLanguage('go', go);
+hljs.registerLanguage('rust', rust);
+hljs.registerLanguage('dockerfile', dockerfile);
+hljs.registerLanguage('markdown', markdown);
+
+const esc = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// Syntax-highlight fenced code blocks; unrecognised/unspecified languages
+// fall back to plain (escaped) code rather than guessing via auto-detect,
+// which can mislabel short snippets.
+const renderer = new marked.Renderer();
+renderer.code = (code, infostring) => {
+  const lang = (infostring || '').trim().split(/\s+/)[0].toLowerCase();
+  const known = lang && hljs.getLanguage(lang);
+  const html = known
+    ? hljs.highlight(code, { language: lang, ignoreIllegals: true }).value
+    : esc(code);
+  const langClass = known ? ` language-${lang}` : '';
+  return `<pre><code class="hljs${langClass}">${html}</code></pre>`;
+};
+marked.use({ renderer });
 
 export const config = { runtime: 'edge' };
 
@@ -117,8 +168,7 @@ export default async function handler(req) {
   const VIEW_TRACKING_START = '2026-06-15';
   const partial = post.created_at && new Date(post.created_at) < new Date(VIEW_TRACKING_START);
 
-  // Escape helpers
-  const esc    = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // Escape helper for attributes (esc() for text nodes is defined at module scope, above)
   const escAttr = s => (s || '').replace(/"/g, '&quot;');
 
   // Share URLs

@@ -420,6 +420,11 @@ function openPreview() {
     ? marked.parse(content)
     : '<p class="text-[#737373]">(no content yet)</p>';
 
+  // Syntax-highlight code blocks to match the live post page
+  if (typeof hljs !== 'undefined') {
+    contentEl.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
+  }
+
   // Reset scroll inside the modal in case it was open before
   const modal = $('preview-modal');
   show('preview-modal');
