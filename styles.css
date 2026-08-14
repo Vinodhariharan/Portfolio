@@ -195,6 +195,18 @@ body.hexa-banner-active .site-nav { top: 40px; }
   color: var(--accent);
 }
 
+.tag-filter {
+  cursor: pointer;
+  background: transparent;
+  font: inherit;
+}
+
+.tag-filter.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
 /* ── Timeline ── */
 .timeline {
   border-left: 2px solid var(--border);

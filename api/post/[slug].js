@@ -21,12 +21,24 @@ export default async function handler(req) {
   };
   const [postRes, relatedRes] = await Promise.all([
     fetch(`${SUPABASE_URL}/rest/v1/posts?slug=eq.${encodeURIComponent(slug)}&is_published=eq.true&select=*&limit=1`, { headers: sbHeaders }),
-    fetch(`${SUPABASE_URL}/rest/v1/posts?slug=neq.${encodeURIComponent(slug)}&is_published=eq.true&select=title,slug,excerpt,cover_image,created_at,view_count&order=created_at.desc&limit=3`, { headers: sbHeaders })
+    fetch(`${SUPABASE_URL}/rest/v1/posts?slug=neq.${encodeURIComponent(slug)}&is_published=eq.true&select=title,slug,excerpt,cover_image,tags,created_at,view_count&order=created_at.desc&limit=20`, { headers: sbHeaders })
   ]);
 
-  const posts        = await postRes.json();
-  const post         = posts?.[0];
-  const relatedPosts = await relatedRes.json().catch(() => []);
+  const posts    = await postRes.json();
+  const post     = posts?.[0];
+  let relatedPosts = await relatedRes.json().catch(() => []);
+
+  // Rank candidates by shared-tag count (ties broken by recency, since the
+  // candidate list is already ordered newest-first), then take the top 3.
+  // Posts with no tags/overlap naturally fall back to "most recent".
+  if (Array.isArray(relatedPosts) && post) {
+    const postTags = new Set(post.tags || []);
+    relatedPosts = relatedPosts
+      .map((rp, i) => ({ rp, shared: (rp.tags || []).filter(t => postTags.has(t)).length, i }))
+      .sort((a, b) => b.shared - a.shared || a.i - b.i)
+      .slice(0, 3)
+      .map(({ rp }) => rp);
+  }
 
   // Compute IP hash (raw IP never stored, only the SHA-256)
   let ipHash = '';
@@ -218,6 +230,7 @@ export default async function handler(req) {
     "description":${JSON.stringify(post.excerpt || '')},
     "datePublished":${JSON.stringify(post.created_at)},
     "image":${JSON.stringify(ogImage)},
+    "keywords":${JSON.stringify((post.tags || []).join(', '))},
     "author":{"@type":"Person","name":"Vinodhariharan Ravi","url":"${SITE}"},
     "url":"${SITE}/post/${post.slug}"
   }
@@ -308,6 +321,12 @@ export default async function handler(req) {
           ${post.excerpt
             ? `<p class="mt-5 text-[#737373] text-base leading-relaxed">${esc(post.excerpt)}</p>`
             : ''}
+
+          ${(post.tags && post.tags.length > 0) ? `
+            <div class="mt-5 flex flex-wrap gap-1.5">
+              ${post.tags.map(t => `<a href="/blog.html?tag=${encodeURIComponent(t)}" class="tag no-underline">${esc(t)}</a>`).join('')}
+            </div>
+          ` : ''}
 
           <!-- Share row under title -->
           <div class="mt-6 flex items-center gap-3 lg:hidden">

@@ -88,6 +88,14 @@ function renderMostReadCard(post, idx) {
   `;
 }
 
+function tagPills(tags) {
+  if (!tags || tags.length === 0) return '';
+  return `
+    <div class="flex flex-wrap gap-1.5">
+      ${tags.map(t => `<span class="tag">${t}</span>`).join('')}
+    </div>`;
+}
+
 function renderCard(post) {
   return `
     <a href="/post/${post.slug}"
@@ -111,6 +119,7 @@ function renderCard(post) {
         </h3>
         ${post.excerpt ? `<p class="text-sm text-[#737373] line-clamp-3 leading-relaxed">${post.excerpt}</p>` : ''}
       </div>
+      ${tagPills(post.tags)}
       <div class="flex items-center gap-1 text-xs font-medium text-[#2563eb] mt-1">
         Read more
         <svg class="w-3 h-3 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
@@ -132,6 +141,7 @@ function renderFeatured(post) {
             ${post.title}
           </h2>
           ${post.excerpt ? `<p class="text-[#737373] leading-relaxed line-clamp-3">${post.excerpt}</p>` : ''}
+          ${post.tags && post.tags.length > 0 ? `<div class="mt-3">${tagPills(post.tags)}</div>` : ''}
         </div>
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -237,19 +247,94 @@ function setNavTitle(title) {
 
 // ── List view ─────────────────────────────────────────────────────────────────
 
-async function loadPostList() {
+let allPosts = [];
+let activeTag = null;
+
+function renderTagFilterBar(posts) {
+  const bar = document.getElementById('tag-filter-bar');
+  if (!bar) return;
+
+  const tagSet = new Set();
+  posts.forEach(p => (p.tags || []).forEach(t => tagSet.add(t)));
+  const tags = Array.from(tagSet).sort();
+
+  if (tags.length === 0) {
+    bar.classList.add('hidden');
+    return;
+  }
+
+  const chip = (label, value, active) => `
+    <button type="button" data-tag="${value || ''}"
+      class="tag tag-filter${active ? ' active' : ''}">${label}</button>`;
+
+  bar.innerHTML = chip('All', '', !activeTag) + tags.map(t => chip(t, t, activeTag === t)).join('');
+  bar.classList.remove('hidden');
+  bar.classList.add('flex', 'flex-wrap', 'gap-2');
+
+  bar.querySelectorAll('.tag-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeTag = btn.dataset.tag || null;
+      const url = new URL(window.location.href);
+      if (activeTag) url.searchParams.set('tag', activeTag);
+      else url.searchParams.delete('tag');
+      window.history.replaceState({}, '', url);
+      applyTagFilter();
+    });
+  });
+}
+
+function applyTagFilter() {
   const featuredEl      = document.getElementById('featured-post');
   const postsSection    = document.getElementById('posts-section');
   const grid            = document.getElementById('posts-grid');
   const mostReadSection = document.getElementById('most-read-section');
   const mostReadGrid    = document.getElementById('most-read-grid');
-  const empty           = document.getElementById('empty-state');
-  const loading         = document.getElementById('loading-state');
+
+  renderTagFilterBar(allPosts);
+
+  if (!activeTag) {
+    // Default view: featured + most read + rest
+    const featured = allPosts.find(p => p.is_featured) || allPosts[0];
+    const rest = allPosts.filter(p => p.id !== featured.id);
+
+    featuredEl.innerHTML = renderFeatured(featured);
+    featuredEl.classList.remove('hidden');
+
+    const mostRead = rest
+      .filter(p => (p.view_count || 0) > 0)
+      .slice()
+      .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
+      .slice(0, 4);
+
+    if (mostRead.length >= 2) {
+      mostReadGrid.innerHTML = mostRead.map(renderMostReadCard).join('');
+      mostReadSection.classList.remove('hidden');
+    } else {
+      mostReadSection.classList.add('hidden');
+    }
+
+    grid.innerHTML = rest.map(renderCard).join('');
+    postsSection.classList.toggle('hidden', rest.length === 0);
+    return;
+  }
+
+  // Filtered view: hide featured/most-read, show all matching posts in the grid.
+  featuredEl.classList.add('hidden');
+  mostReadSection.classList.add('hidden');
+
+  const matching = allPosts.filter(p => (p.tags || []).includes(activeTag));
+  grid.innerHTML = matching.map(renderCard).join('');
+  postsSection.classList.toggle('hidden', matching.length === 0);
+}
+
+async function loadPostList() {
+  const empty   = document.getElementById('empty-state');
+  const loading = document.getElementById('loading-state');
 
   try {
     const { data: posts, error } = await supabaseClient
       .from('posts')
-      .select('id, title, slug, excerpt, content, cover_image, created_at, view_count, is_featured')
+      .select('id, title, slug, excerpt, content, cover_image, tags, created_at, view_count, is_featured')
       .eq('is_published', true)
       .order('created_at', { ascending: false });
 
@@ -261,29 +346,9 @@ async function loadPostList() {
       return;
     }
 
-    // Featured: admin pick (is_featured = true) or latest as fallback.
-    const featured = posts.find(p => p.is_featured) || posts[0];
-    const rest = posts.filter(p => p.id !== featured.id);
-
-    featuredEl.innerHTML = renderFeatured(featured);
-    featuredEl.classList.remove('hidden');
-
-    // Most read: top 4 by view_count, excluding featured, only counted views.
-    const mostRead = rest
-      .filter(p => (p.view_count || 0) > 0)
-      .slice()
-      .sort((a, b) => (b.view_count || 0) - (a.view_count || 0))
-      .slice(0, 4);
-
-    if (mostRead.length >= 2) {
-      mostReadGrid.innerHTML = mostRead.map(renderMostReadCard).join('');
-      mostReadSection.classList.remove('hidden');
-    }
-
-    if (rest.length > 0) {
-      grid.innerHTML = rest.map(renderCard).join('');
-      postsSection.classList.remove('hidden');
-    }
+    allPosts = posts;
+    activeTag = new URLSearchParams(window.location.search).get('tag') || null;
+    applyTagFilter();
 
   } catch (err) {
     loading.classList.add('hidden');

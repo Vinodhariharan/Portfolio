@@ -29,6 +29,15 @@ function generateSlug(title) {
     .replace(/-+/g, '-');
 }
 
+function parseTags(raw) {
+  const seen = new Set();
+  (raw || '').split(',').forEach(t => {
+    const clean = t.trim().toLowerCase();
+    if (clean) seen.add(clean);
+  });
+  return Array.from(seen);
+}
+
 // ── Auth ──────────────────────────────────────────────────────────────────────
 async function checkSession() {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -65,7 +74,7 @@ async function loadDashboard() {
 
   const { data: posts, error } = await supabaseClient
     .from('posts')
-    .select('id, title, slug, is_published, is_featured, created_at, view_count')
+    .select('id, title, slug, is_published, is_featured, tags, created_at, view_count')
     .order('created_at', { ascending: false });
 
   hide('dashboard-loading');
@@ -88,6 +97,11 @@ async function loadDashboard() {
                 class="text-xl leading-none ${p.is_featured ? 'text-[#facc15]' : 'text-[#d4d4d4] dark:text-[#444] hover:text-[#facc15]'} transition-colors">
           ${p.is_featured ? '★' : '☆'}
         </button>
+      </td>
+      <td class="px-5 py-4">
+        ${(p.tags && p.tags.length > 0)
+          ? p.tags.map(t => `<span class="tag mr-1 mb-1 inline-block">${escapeHtml(t)}</span>`).join('')
+          : '<span class="text-xs text-[#737373]">—</span>'}
       </td>
       <td class="px-5 py-4 text-xs text-[#737373]">
         ${new Date(p.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' })}
@@ -280,6 +294,7 @@ async function openEditor(postId = null) {
       $('post-slug-input').value    = post.slug;
       $('slug-preview').textContent = post.slug;
       $('post-excerpt-input').value = post.excerpt || '';
+      $('post-tags-input').value    = (post.tags || []).join(', ');
       $('post-content-input').value = post.content;
       // Cover image
       $('cover-image-url').value = post.cover_image || '';
@@ -295,6 +310,7 @@ async function openEditor(postId = null) {
     $('post-slug-input').value    = '';
     $('slug-preview').textContent = '…';
     $('post-excerpt-input').value = '';
+    $('post-tags-input').value    = '';
     $('post-content-input').value = '';
     // Cover image reset
     $('cover-image-url').value = '';
@@ -322,7 +338,8 @@ async function savePost(isPublished) {
   }
 
   const cover_image = $('cover-image-url').value || null;
-  const payload = { title, slug, excerpt, content, cover_image, is_published: isPublished };
+  const tags = parseTags($('post-tags-input').value);
+  const payload = { title, slug, excerpt, content, cover_image, tags, is_published: isPublished };
 
   const { error } = editingPostId
     ? await supabaseClient.from('posts').update(payload).eq('id', editingPostId)
