@@ -34,7 +34,8 @@ hljs.registerLanguage('rust', rust);
 hljs.registerLanguage('dockerfile', dockerfile);
 hljs.registerLanguage('markdown', markdown);
 
-const esc = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const esc     = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const escAttr = s => (s || '').replace(/"/g, '&quot;');
 
 // Syntax-highlight fenced code blocks; unrecognised/unspecified languages
 // fall back to plain (escaped) code rather than guessing via auto-detect,
@@ -49,6 +50,15 @@ renderer.code = (code, infostring) => {
   const langClass = known ? ` language-${lang}` : '';
   return `<pre><code class="hljs${langClass}">${html}</code></pre>`;
 };
+
+// Inline content images are below the fold within the article body, so lazy
+// loading them is a clear win. (The post's own cover image, above the fold,
+// stays eager — see its <img> tag further down.)
+renderer.image = (href, title, text) => {
+  const titleAttr = title ? ` title="${escAttr(title)}"` : '';
+  return `<img src="${escAttr(href)}" alt="${escAttr(text)}"${titleAttr} loading="lazy" decoding="async"/>`;
+};
+
 marked.use({ renderer });
 
 export const config = { runtime: 'edge' };
@@ -168,8 +178,7 @@ export default async function handler(req) {
   const VIEW_TRACKING_START = '2026-06-15';
   const partial = post.created_at && new Date(post.created_at) < new Date(VIEW_TRACKING_START);
 
-  // Escape helper for attributes (esc() for text nodes is defined at module scope, above)
-  const escAttr = s => (s || '').replace(/"/g, '&quot;');
+  // esc()/escAttr() are defined at module scope, above.
 
   // Share URLs
   const postUrl       = `${SITE}/post/${post.slug}`;
@@ -329,9 +338,11 @@ export default async function handler(req) {
           All posts
         </a>
 
-        <!-- Cover image -->
+        <!-- Cover image: above the fold, so eager + high priority (likely LCP element).
+             width/height (matching the 1200x630 og:image convention) let the browser
+             reserve the right aspect ratio before the image loads, avoiding layout shift. -->
         ${post.cover_image
-          ? `<img src="${post.cover_image}" alt="${escAttr(post.title)}" class="w-full rounded-xl mb-8 border border-[#e5e5e5] dark:border-[#222222] object-cover max-h-80"/>`
+          ? `<img src="${escAttr(post.cover_image)}" alt="${escAttr(post.title)}" width="1200" height="630" loading="eager" fetchpriority="high" decoding="async" class="w-full rounded-xl mb-8 border border-[#e5e5e5] dark:border-[#222222] object-cover max-h-80"/>`
           : ''}
 
         <!-- Header -->
