@@ -447,11 +447,31 @@ export default async function handler(req) {
       localStorage.setItem('darkMode', d ? 'enabled' : 'disabled');
     });
 
-    // Reading progress
-    window.addEventListener('scroll', () => {
-      const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
-      document.getElementById('reading-progress').style.width = Math.min(100, pct) + '%';
-    }, { passive: true });
+    // Reading progress + GA4 scroll-depth / completion tracking
+    (function(){
+      const thresholds = [25, 50, 75, 90];
+      const fired = new Set();
+      const slug = ${JSON.stringify(post.slug)};
+
+      window.addEventListener('scroll', () => {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+        document.getElementById('reading-progress').style.width = Math.min(100, pct) + '%';
+
+        thresholds.forEach(t => {
+          if (pct >= t && !fired.has(t)) {
+            fired.add(t);
+            if (typeof gtag === 'function') {
+              gtag('event', t === 90 ? 'blog_read_complete' : 'scroll_depth', {
+                percent_scrolled: t,
+                post_slug: slug,
+                post_title: ${JSON.stringify(post.title)}
+              });
+            }
+          }
+        });
+      }, { passive: true });
+    })();
 
     // Copy-link button — fills clipboard, swaps icon to checkmark briefly
     function copyPostLink(btn) {

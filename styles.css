@@ -207,6 +207,24 @@ body.hexa-banner-active .site-nav { top: 40px; }
   background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
+/* ── Search ── */
+.search-input {
+  width: 100%;
+  padding: 0.55rem 0.9rem 0.55rem 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.search-input:focus {
+  border-color: var(--accent);
+}
+
+
 /* ── Timeline ── */
 .timeline {
   border-left: 2px solid var(--border);
