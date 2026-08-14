@@ -249,6 +249,15 @@ function setNavTitle(title) {
 
 let allPosts = [];
 let activeTag = null;
+let searchQuery = '';
+
+function matchesSearch(post, query) {
+  if (!query) return true;
+  const q = query.toLowerCase();
+  return (post.title || '').toLowerCase().includes(q)
+    || (post.excerpt || '').toLowerCase().includes(q)
+    || (post.content || '').toLowerCase().includes(q);
+}
 
 function renderTagFilterBar(posts) {
   const bar = document.getElementById('tag-filter-bar');
@@ -278,21 +287,24 @@ function renderTagFilterBar(posts) {
       if (activeTag) url.searchParams.set('tag', activeTag);
       else url.searchParams.delete('tag');
       window.history.replaceState({}, '', url);
-      applyTagFilter();
+      applyFilters();
     });
   });
 }
 
-function applyTagFilter() {
+function applyFilters() {
   const featuredEl      = document.getElementById('featured-post');
   const postsSection    = document.getElementById('posts-section');
   const grid            = document.getElementById('posts-grid');
   const mostReadSection = document.getElementById('most-read-section');
   const mostReadGrid    = document.getElementById('most-read-grid');
+  const noResults        = document.getElementById('no-results-state');
 
   renderTagFilterBar(allPosts);
 
-  if (!activeTag) {
+  const filtering = !!activeTag || !!searchQuery;
+
+  if (!filtering) {
     // Default view: featured + most read + rest
     const featured = allPosts.find(p => p.is_featured) || allPosts[0];
     const rest = allPosts.filter(p => p.id !== featured.id);
@@ -315,6 +327,7 @@ function applyTagFilter() {
 
     grid.innerHTML = rest.map(renderCard).join('');
     postsSection.classList.toggle('hidden', rest.length === 0);
+    noResults.classList.add('hidden');
     return;
   }
 
@@ -322,9 +335,12 @@ function applyTagFilter() {
   featuredEl.classList.add('hidden');
   mostReadSection.classList.add('hidden');
 
-  const matching = allPosts.filter(p => (p.tags || []).includes(activeTag));
+  const matching = allPosts.filter(p =>
+    (!activeTag || (p.tags || []).includes(activeTag)) && matchesSearch(p, searchQuery)
+  );
   grid.innerHTML = matching.map(renderCard).join('');
   postsSection.classList.toggle('hidden', matching.length === 0);
+  noResults.classList.toggle('hidden', matching.length > 0);
 }
 
 async function loadPostList() {
@@ -348,7 +364,7 @@ async function loadPostList() {
 
     allPosts = posts;
     activeTag = new URLSearchParams(window.location.search).get('tag') || null;
-    applyTagFilter();
+    applyFilters();
 
   } catch (err) {
     loading.classList.add('hidden');
@@ -480,6 +496,11 @@ function route() {
 
 document.addEventListener('DOMContentLoaded', () => {
   route();
+
+  document.getElementById('post-search-input')?.addEventListener('input', e => {
+    searchQuery = e.target.value.trim();
+    if (allPosts.length > 0) applyFilters();
+  });
 });
 
 window.addEventListener('hashchange', route);

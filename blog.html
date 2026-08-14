@@ -166,6 +166,13 @@
           <p class="text-[#737373]">Thoughts on AI, full-stack engineering, and building things.</p>
         </div>
 
+        <!-- Search -->
+        <div class="relative mb-6 max-w-sm">
+          <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#737373] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
+          <input id="post-search-input" type="search" placeholder="Search posts…"
+            class="search-input" autocomplete="off" />
+        </div>
+
         <!-- Tag filter bar -->
         <div id="tag-filter-bar" class="hidden mb-10"></div>
 
@@ -178,6 +185,12 @@
         <div id="empty-state" class="hidden text-center py-24">
           <i data-lucide="pen-line" class="w-12 h-12 text-[#e5e5e5] dark:text-[#222222] mx-auto mb-4"></i>
           <p class="text-[#737373] text-base">No posts yet â€" check back soon.</p>
+        </div>
+
+        <!-- No search/filter results -->
+        <div id="no-results-state" class="hidden text-center py-24">
+          <i data-lucide="search-x" class="w-12 h-12 text-[#e5e5e5] dark:text-[#222222] mx-auto mb-4"></i>
+          <p class="text-[#737373] text-base">No posts match your search.</p>
         </div>
 
         <!-- Featured post (admin-pick, falls back to latest) -->
