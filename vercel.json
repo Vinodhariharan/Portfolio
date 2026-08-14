@@ -6,11 +6,18 @@
     { "path": "/api/sync-views", "schedule": "0 2 * * *" }
   ],
   "rewrites": [
-    { "source": "/post/:slug", "destination": "/api/post/[slug]" }
+    { "source": "/post/:slug", "destination": "/api/post/[slug]" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
   ],
   "headers": [
     {
       "source": "/api/sitemap",
+      "headers": [
+        { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
       "headers": [
         { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
       ]
