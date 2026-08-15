@@ -1,0 +1,46 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   "Refined Blueprint" — preview re-skin for homepage-v2.html only.
+   Loaded after styles.css so these rules take precedence. Not linked from
+   anywhere else, not referenced by any other page's stylesheet chain.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Slightly cooler-tinted near-white / near-black canvas (dark reuses the
+   same #0A0E14 already used by the HexaConquest section further down the
+   page, so the whole page now shares one dark tone instead of two). */
+:root {
+  --bg: #FAFBFC;
+}
+.dark {
+  --bg: #0A0E14;
+}
+
+/* Section eyebrow labels read as technical annotations, not marketing copy. */
+.section-label {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+  letter-spacing: 0.14em;
+}
+
+/* One continuous canvas instead of alternating grey/white bands — sections
+   are now separated by a hairline rule instead of a background swap.
+   (Scoped to direct <section> siblings, so it can't leak into the modal
+   or any nested content.) */
+body > section + section {
+  border-top: 1px solid var(--border);
+}
+
+/* Hero photo: a quieter offset rectangle instead of a floating circle,
+   with a thin accent-colored frame set behind it. */
+.hero-photo-frame {
+  position: relative;
+  border-radius: 4px;
+}
+.hero-photo-frame img { border-radius: 3px; }
+.hero-photo-frame::after {
+  content: "";
+  position: absolute;
+  inset: 12px -12px -12px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  z-index: -1;
+  opacity: 0.5;
+}
