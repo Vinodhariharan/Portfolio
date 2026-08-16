@@ -101,11 +101,7 @@
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     .po-stat-row:last-child { border-bottom: none; }
-    .po-stat-bar {
-      height: 5px; border-radius: 3px; background: rgba(255,255,255,0.08);
-      overflow: hidden; width: 100px;
-    }
-    .po-stat-fill { height: 100%; border-radius: 3px; background: #22d3ee; }
+    .po-spark { display: block; overflow: visible; }
 
     /* Technical highlight cards */
     .po-tech-card {
@@ -251,30 +247,30 @@
             <div class="py-2">
               <div class="po-stat-row">
                 <span class="text-xs po-mono" style="color:#8b93a3;">CPU</span>
-                <div class="flex items-center gap-2">
-                  <div class="po-stat-bar"><div class="po-stat-fill" style="width:34%;"></div></div>
-                  <span class="text-xs po-mono" style="color:#22d3ee;">34%</span>
+                <div class="flex items-center gap-3">
+                  <svg class="po-spark" width="90" height="18" viewBox="0 0 90 18"><polyline points="0,10 8,9 16,11 24,7 32,10 40,5 48,9 56,6 64,10 72,7 80,9 90,8" fill="none" stroke="#22d3ee" stroke-width="1.3"/></svg>
+                  <span class="text-xs po-mono w-8 text-right" style="color:#22d3ee;">6%</span>
                 </div>
               </div>
               <div class="po-stat-row">
                 <span class="text-xs po-mono" style="color:#8b93a3;">RAM</span>
-                <div class="flex items-center gap-2">
-                  <div class="po-stat-bar"><div class="po-stat-fill" style="width:58%;"></div></div>
-                  <span class="text-xs po-mono" style="color:#22d3ee;">58%</span>
+                <div class="flex items-center gap-3">
+                  <svg class="po-spark" width="90" height="18" viewBox="0 0 90 18"><polyline points="0,9 90,9" fill="none" stroke="#22d3ee" stroke-width="1.3"/></svg>
+                  <span class="text-xs po-mono w-8 text-right" style="color:#22d3ee;">66%</span>
                 </div>
               </div>
               <div class="po-stat-row">
                 <span class="text-xs po-mono" style="color:#8b93a3;">GPU 0 · RTX</span>
-                <div class="flex items-center gap-2">
-                  <div class="po-stat-bar"><div class="po-stat-fill" style="width:12%;"></div></div>
-                  <span class="text-xs po-mono" style="color:#22d3ee;">12%</span>
+                <div class="flex items-center gap-3">
+                  <svg class="po-spark" width="90" height="18" viewBox="0 0 90 18"><polyline points="0,10 8,10 16,9 24,10 32,8 40,10 48,9 56,10 64,9 72,10 80,10 90,9" fill="none" stroke="#22d3ee" stroke-width="1.3"/></svg>
+                  <span class="text-xs po-mono w-8 text-right" style="color:#22d3ee;">1%</span>
                 </div>
               </div>
               <div class="po-stat-row">
                 <span class="text-xs po-mono" style="color:#8b93a3;">GPU 1 · Intel</span>
-                <div class="flex items-center gap-2">
-                  <div class="po-stat-bar"><div class="po-stat-fill" style="width:4%;"></div></div>
-                  <span class="text-xs po-mono" style="color:#22d3ee;">4%</span>
+                <div class="flex items-center gap-3">
+                  <svg class="po-spark" width="90" height="18" viewBox="0 0 90 18"><polyline points="0,10 90,10" fill="none" stroke="#22d3ee" stroke-width="1.3"/></svg>
+                  <span class="text-xs po-mono w-8 text-right" style="color:#22d3ee;">0%</span>
                 </div>
               </div>
             </div>
@@ -380,7 +376,7 @@
           <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Screenshots</h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
           <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
             <img src="./assets/overlay-pics/vertical-layout-sparklines.png" alt="PerfOverlay vertical layout with history sparklines" class="w-full" />
           </div>
