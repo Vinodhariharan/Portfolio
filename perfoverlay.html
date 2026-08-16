@@ -108,6 +108,59 @@
       border-left: 2px solid rgba(6,182,212,0.35);
       padding-left: 1.25rem;
     }
+
+    /* Screenshot carousel */
+    .po-carousel-wrap { max-width: 640px; margin: 0 auto; }
+    .po-carousel {
+      position: relative;
+      height: 420px;
+      border-radius: 1rem;
+      background: #05070a;
+      border: 1px solid #1c2530;
+      overflow: hidden;
+    }
+    .po-carousel-track { position: relative; width: 100%; height: 100%; }
+    .po-carousel-slide {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      padding: 2.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease;
+    }
+    .po-carousel-slide.active { opacity: 1; visibility: visible; }
+    .po-carousel-slide img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      border-radius: 0.6rem;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    }
+    .po-carousel-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #8b93a3;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .po-carousel-nav:hover { background: rgba(34,211,238,0.12); color: #22d3ee; }
+    .po-carousel-nav.prev { left: 12px; }
+    .po-carousel-nav.next { right: 12px; }
+    .po-carousel-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(115,115,115,0.35);
+      border: none; cursor: pointer; padding: 0;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .po-carousel-dot.active { background: #06b6d4; transform: scale(1.3); }
+    @media (max-width: 640px) {
+      .po-carousel { height: 300px; }
+    }
   </style>
 </head>
 
@@ -376,21 +429,40 @@
           <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Screenshots</h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
-          <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
-            <img src="./assets/overlay-pics/vertical-layout-sparklines.png" alt="PerfOverlay vertical layout with history sparklines" class="w-full" />
+        <div class="po-carousel-wrap">
+          <div class="po-carousel">
+            <div class="po-carousel-track" id="poCarouselTrack">
+              <div class="po-carousel-slide active">
+                <img src="./assets/overlay-pics/vertical-layout-sparklines.png" alt="PerfOverlay vertical layout with history sparklines" />
+              </div>
+              <div class="po-carousel-slide">
+                <img src="./assets/overlay-pics/horizontal-layout.png" alt="PerfOverlay horizontal layout with solid card background" />
+              </div>
+              <div class="po-carousel-slide">
+                <img src="./assets/overlay-pics/settings-window.png" alt="PerfOverlay native settings window" />
+              </div>
+              <div class="po-carousel-slide">
+                <img src="./assets/overlay-pics/tray-menu.png" alt="PerfOverlay system tray right-click menu" />
+              </div>
+            </div>
+
+            <button class="po-carousel-nav prev" onclick="poCarouselMove(-1)" aria-label="Previous screenshot">
+              <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </button>
+            <button class="po-carousel-nav next" onclick="poCarouselMove(1)" aria-label="Next screenshot">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
           </div>
-          <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
-            <img src="./assets/overlay-pics/horizontal-layout.png" alt="PerfOverlay horizontal layout with solid card background" class="w-full" />
+
+          <div class="flex items-center justify-center gap-2 mt-5" id="poCarouselDots">
+            <button class="po-carousel-dot active" onclick="poCarouselGoTo(0)" aria-label="Slide 1"></button>
+            <button class="po-carousel-dot" onclick="poCarouselGoTo(1)" aria-label="Slide 2"></button>
+            <button class="po-carousel-dot" onclick="poCarouselGoTo(2)" aria-label="Slide 3"></button>
+            <button class="po-carousel-dot" onclick="poCarouselGoTo(3)" aria-label="Slide 4"></button>
           </div>
-          <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
-            <img src="./assets/overlay-pics/settings-window.png" alt="PerfOverlay native settings window" class="w-full" />
-          </div>
-          <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
-            <img src="./assets/overlay-pics/tray-menu.png" alt="PerfOverlay system tray right-click menu" class="w-full" />
-          </div>
+
+          <p class="text-center text-xs text-[#a3a3a3] mt-3" id="poCarouselCaption">Vertical layout — with history sparklines</p>
         </div>
-        <p class="text-center text-xs text-[#a3a3a3] mt-5">Vertical layout with sparklines · Horizontal layout · Settings window · Tray menu</p>
       </div>
     </section>
 
@@ -610,6 +682,32 @@
   <script src="./script.js"></script>
   <script>
     lucide.createIcons();
+
+    // ── Screenshot carousel ───────────────────────────────────────────────────
+    const poCaptions = [
+      'Vertical layout — with history sparklines',
+      'Horizontal layout — single-line HUD',
+      'Native settings window',
+      'System tray menu'
+    ];
+    let poCarouselIndex = 0;
+    const poSlides = document.querySelectorAll('#poCarouselTrack .po-carousel-slide');
+    const poDots   = document.querySelectorAll('#poCarouselDots .po-carousel-dot');
+    const poCaption = document.getElementById('poCarouselCaption');
+
+    function poCarouselRender() {
+      poSlides.forEach((s, i) => s.classList.toggle('active', i === poCarouselIndex));
+      poDots.forEach((d, i) => d.classList.toggle('active', i === poCarouselIndex));
+      poCaption.textContent = poCaptions[poCarouselIndex];
+    }
+    function poCarouselMove(delta) {
+      poCarouselIndex = (poCarouselIndex + delta + poSlides.length) % poSlides.length;
+      poCarouselRender();
+    }
+    function poCarouselGoTo(i) {
+      poCarouselIndex = i;
+      poCarouselRender();
+    }
   </script>
 </body>
 </html>
