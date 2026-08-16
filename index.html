@@ -186,7 +186,7 @@
   </nav>
 
   <!-- ── Hero ── -->
-  <section id="hero" class="hero-bg min-h-screen flex items-center pt-16 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+  <section id="hero" class="hero-bg min-h-screen flex items-center pt-16 bg-[#f0f0f0] dark:bg-[#0a0a0a] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6 py-24 flex flex-col md:flex-row items-center gap-16">
 
       <!-- Text -->
@@ -222,7 +222,7 @@
   </section>
 
   <!-- ── About ── -->
-  <section id="about" class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+  <section id="about" class="py-24 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5 transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
       <div class="mb-12 animate-on-scroll">
         <p class="section-label">Personal Profile</p>
@@ -306,7 +306,7 @@
   </section>
 
   <!-- ── Education ── -->
-  <section id="education" class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+  <section id="education" class="py-24 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5 transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
       <div class="mb-12 animate-on-scroll">
         <p class="section-label">Academic Background</p>
@@ -356,7 +356,7 @@
   </section>
 
   <!-- ── Experience ── -->
-  <section id="experience" class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+  <section id="experience" class="py-24 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5 transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
       <div class="mb-12 animate-on-scroll">
         <p class="section-label">Professional Timeline</p>
@@ -378,12 +378,12 @@
             <p class="text-xs text-[#737373]">Jul 2026 – Present</p>
           </div>
           <div class="md:col-span-2 flex items-start">
-            <p class="text-sm text-[#737373] leading-relaxed pl-4 border-l-2 border-[#e5e5e5] dark:border-[#222222]">Converted from the GenC Next internship into a full-time Programmer Analyst role on Cognizant's Global Network (GN) team.</p>
+            <p class="text-sm text-[#737373] leading-relaxed pl-4 border-l-2 border-[#e5e5e5] dark:border-[#222222]">Converted from the GenC Next internship into a full-time Programmer Analyst role.</p>
           </div>
         </div>
 
         <!-- Cognizant — Internship -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 pb-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 pt-12 pb-12">
           <div>
             <div class="flex items-center gap-2 mb-3">
               <span class="text-xs font-semibold text-[#737373] uppercase tracking-widest">Internship</span>
@@ -443,7 +443,7 @@
   </section>
 
   <!-- ── Projects ── -->
-  <section id="projects" class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+  <section id="projects" class="py-24 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5 transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
       <div class="mb-12 animate-on-scroll">
         <p class="section-label">Portfolio Showcase</p>
@@ -512,6 +512,85 @@
       </div>
 
       <p class="text-center text-sm text-[#737373] mt-10 animate-on-scroll">More projects coming soon — always building and exploring new technologies.</p>
+
+      <!-- ── Personal Builds (same section, visually separated) ── -->
+      <div class="mt-16 pt-10 border-t border-black/5 dark:border-white/5">
+        <div class="mb-8 animate-on-scroll">
+          <p class="section-label !mb-1">Personal builds</p>
+          <h2 class="text-xl md:text-2xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Coding to simplify everyday life</h2>
+          <p class="text-sm text-[#737373] mt-1.5 max-w-2xl">Not every project needs a roadmap or a team — sometimes you just build something because you need it. These are tools I made for myself, shipped open-source so anyone can use them.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <!-- HexaConquest -->
+                <a href="https://hexaconquest.vercel.app" target="_blank" rel="noopener" class="card group animate-on-scroll block hover:shadow-md transition-shadow duration-300 md:col-start-1 md:row-start-1 flex flex-col h-full" style="text-decoration:none;">
+                  <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center" style="background:#0a0e14; box-shadow:inset 0 0 0 1px rgba(245,158,11,0.3);">
+                      <i data-lucide="hexagon" class="w-5 h-5" style="color:#f59e0b;"></i>
+                    </div>
+                    <div class="min-w-0">
+                      <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm leading-tight truncate">HexaConquest</h3>
+                      <p class="text-xs text-[#737373] truncate">React · Three.js · Socket.io</p>
+                    </div>
+                  </div>
+                  <p class="text-xs text-[#737373] leading-relaxed mb-4">Hex-grid territory-conquest — 2 to 8 players battling live on a shared 3D map, straight in the browser.</p>
+                  <div class="flex items-center justify-between pt-3 mt-auto border-t border-[#e5e5e5] dark:border-[#222222]">
+                    <span class="text-xs bg-[#f59e0b]/10 text-[#f59e0b] rounded-full px-2 py-0.5 font-medium">Browser · Free</span>
+                    <span class="text-xs flex items-center gap-1 font-medium shrink-0" style="color:#f59e0b;">Play <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                  </div>
+                </a>
+
+                <!-- TaskFlow -->
+                <a href="taskflow.html" class="card group animate-on-scroll block hover:shadow-md transition-shadow duration-300 md:col-start-2 md:col-span-2 md:row-start-1 md:row-span-2 flex gap-3" style="text-decoration:none;">
+                  <div class="rounded-l-xl overflow-hidden -mt-5 -mb-5 -ml-5 flex-shrink-0 self-start w-44 sm:w-56 aspect-[1080/2340] bg-[#111]">
+                    <img src="./assets/taskflow_screenshots/Screenshot_20260625_163736.jpg.jpeg" alt="TaskFlow task list" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex-1 min-w-0 flex flex-col">
+                    <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm leading-tight">TaskFlow</h3>
+                    <p class="text-xs text-[#737373] mb-1.5">Flutter · Dart · SQLite</p>
+                    <p class="text-xs text-[#737373] leading-snug mb-3 line-clamp-2">Unfinished tasks carry over daily. No cloud, no login — just tasks.</p>
+                    <div class="flex items-center justify-between pt-3 mt-auto border-t border-[#e5e5e5] dark:border-[#222222]">
+                      <span class="text-xs bg-[#6C63FF]/10 text-[#6C63FF] rounded-full px-2 py-0.5 font-medium">Android · Free</span>
+                      <span class="text-xs text-[#6C63FF] flex items-center gap-1 font-medium shrink-0">Explore <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                    </div>
+                  </div>
+                </a>
+
+                <!-- Cam Video Viewer -->
+                <a href="cam-viewer.html" class="card group animate-on-scroll block hover:shadow-md transition-shadow duration-300 md:col-start-1 md:row-start-2 flex flex-col h-full" style="text-decoration:none;">
+                  <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 bg-[#0a0a0a]">
+                      <img src="./assets/cam-viewer-icon.png" alt="Cam Video Viewer" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="min-w-0">
+                      <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm leading-tight truncate">Cam Video Viewer</h3>
+                      <p class="text-xs text-[#737373] truncate">Electron · hls.js · FFmpeg</p>
+                    </div>
+                  </div>
+                  <p class="text-xs text-[#737373] leading-relaxed mb-4">A proper Windows viewer for Godrej Ace Pro SD card footage — browse by date, no clunky mobile app.</p>
+                  <div class="flex items-center justify-between pt-3 mt-auto border-t border-[#e5e5e5] dark:border-[#222222]">
+                    <span class="text-xs bg-[#1a1a1a]/10 dark:bg-white/10 text-[#0a0a0a] dark:text-[#fafafa] rounded-full px-2 py-0.5 font-medium">Windows · Free</span>
+                    <span class="text-xs text-[#2563eb] flex items-center gap-1 font-medium shrink-0">Explore <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                  </div>
+                </a>
+
+                <!-- PerfOverlay -->
+                <a href="perfoverlay.html" class="card group animate-on-scroll block hover:shadow-md transition-shadow duration-300 md:col-start-4 md:row-start-1 md:row-span-2 flex flex-col h-full" style="text-decoration:none;">
+                  <div class="rounded-lg overflow-hidden -mx-4 -mt-4 mb-3 h-32 bg-[#05070a]">
+                    <img src="./assets/overlay-pics/vertical-layout-sparklines.png" alt="PerfOverlay vertical layout" class="w-full h-full object-cover" />
+                  </div>
+                  <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm leading-tight">PerfOverlay</h3>
+                  <p class="text-xs text-[#737373] mb-2">C++17 · Win32 · DXGI</p>
+                  <p class="text-xs text-[#737373] leading-relaxed mb-4">A transparent Windows HUD for live CPU, RAM, and per-GPU usage — near-zero overhead, zero dependencies.</p>
+                  <div class="flex items-center justify-between pt-3 mt-auto border-t border-[#e5e5e5] dark:border-[#222222]">
+                    <span class="text-xs bg-[#06b6d4]/10 text-[#06b6d4] rounded-full px-2 py-0.5 font-medium">Windows · Free</span>
+                    <span class="text-xs flex items-center gap-1 font-medium shrink-0" style="color:#06b6d4;">Explore <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                  </div>
+                </a>
+
+        </div>
+      </div>
     </div>
 
     <!-- ── Modal ── -->
@@ -538,7 +617,7 @@
         <div class="flex flex-col lg:flex-row max-h-[calc(90vh-72px)]">
 
           <!-- Left — media -->
-          <div class="lg:w-1/2 p-6 bg-[#f5f5f5] dark:bg-[#0a0a0a] border-b lg:border-b-0 lg:border-r border-[#e5e5e5] dark:border-[#222222]">
+          <div class="lg:w-1/2 p-6 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-b lg:border-b-0 lg:border-r border-[#e5e5e5] dark:border-[#222222]">
             <div class="aspect-video bg-[#e5e5e5] dark:bg-[#222222] rounded-xl overflow-hidden" id="mediaContainer"></div>
             <div class="mt-4">
               <h3 class="text-sm font-semibold text-[#0a0a0a] dark:text-[#fafafa] flex items-center gap-2 mb-1" id="mediaTitle">
@@ -588,189 +667,6 @@
 
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Personal Builds ── -->
-  <section class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
-    <div class="max-w-5xl mx-auto px-6">
-      <div class="mb-12 animate-on-scroll">
-        <p class="section-label">Personal builds</p>
-        <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Coding to simplify everyday life</h2>
-        <p class="text-[#737373] mt-3 max-w-2xl">Not every project needs a roadmap or a team — sometimes you just build something because you need it. These are tools I made for myself, shipped open-source so anyone can use them.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-        <!-- HexaConquest -->
-        <a href="https://hexaconquest.vercel.app" target="_blank" rel="noopener" class="card group animate-on-scroll block hover:shadow-md transition-shadow duration-300" style="text-decoration:none;">
-          <div class="flex items-start gap-4 mb-5">
-            <div class="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-sm flex items-center justify-center" style="background:#0a0e14; box-shadow:inset 0 0 0 1px rgba(245,158,11,0.3);">
-              <i data-lucide="hexagon" class="w-7 h-7" style="color:#f59e0b;"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-lg leading-tight">HexaConquest</h3>
-                <span class="text-xs bg-[#f59e0b]/10 text-[#f59e0b] rounded-full px-2.5 py-0.5 font-medium shrink-0">Browser · Free</span>
-              </div>
-              <p class="text-sm text-[#737373] mt-0.5">React · Three.js · Socket.io</p>
-            </div>
-          </div>
-
-          <p class="text-sm text-[#737373] leading-relaxed mb-5">A hex-grid territory-conquest game — 2 to 8 players battling live on a shared 3D map. March troops, cut supply lines, and out-empire every rival. No install, just a browser tab.</p>
-
-          <ul class="space-y-2 mb-6">
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 shrink-0" style="color:#f59e0b;"></i>
-              Real-time multiplayer — authoritative Node.js + Socket.io server
-            </li>
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 shrink-0" style="color:#f59e0b;"></i>
-              Bots auto-fill empty seats — solo players get an instant match
-            </li>
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 shrink-0" style="color:#f59e0b;"></i>
-              Accounts, leaderboards, and a real-time friends system
-            </li>
-          </ul>
-
-          <div class="flex items-center justify-between pt-4 border-t border-[#e5e5e5] dark:border-[#222222]">
-            <div class="flex gap-1.5 flex-wrap">
-              <span class="tag">Three.js</span>
-              <span class="tag">Live now</span>
-              <span class="tag">2–8 players</span>
-            </div>
-            <span class="text-xs flex items-center gap-1 font-medium shrink-0" style="color:#f59e0b;">Play now <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
-          </div>
-        </a>
-
-        <!-- TaskFlow -->
-        <a href="taskflow.html" class="card group animate-on-scroll block hover:shadow-md transition-shadow duration-300" style="text-decoration:none;">
-          <div class="flex items-start gap-4 mb-5">
-            <div class="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-sm" style="background:#6C63FF;">
-              <img src="./assets/taskflow_icon_v2_1782377047512.png" alt="TaskFlow" class="w-full h-full object-cover" style="transform:scale(1.25);transform-origin:center;" />
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-lg leading-tight">TaskFlow</h3>
-                <span class="text-xs bg-[#6C63FF]/10 text-[#6C63FF] rounded-full px-2.5 py-0.5 font-medium shrink-0">Android · Free</span>
-              </div>
-              <p class="text-sm text-[#737373] mt-0.5">Flutter · Dart · SQLite</p>
-            </div>
-          </div>
-
-          <p class="text-sm text-[#737373] leading-relaxed mb-5">I needed a task app that worked the way I think — unfinished tasks carry over each day, you schedule ahead with a date picker, everything stays on your device. No cloud, no login, no ads. Just tasks.</p>
-
-          <ul class="space-y-2 mb-6">
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 text-[#6C63FF] shrink-0"></i>
-              Daily carry-over — nothing slips through the cracks
-            </li>
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 text-[#6C63FF] shrink-0"></i>
-              Schedule for any future date with a clean calendar picker
-            </li>
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 text-[#6C63FF] shrink-0"></i>
-              100% offline — no account, no data leaves your phone
-            </li>
-          </ul>
-
-          <div class="flex items-center justify-between pt-4 border-t border-[#e5e5e5] dark:border-[#222222]">
-            <div class="flex gap-1.5 flex-wrap">
-              <span class="tag">Flutter</span>
-              <span class="tag">MIT License</span>
-              <span class="tag">~95 MB APK</span>
-            </div>
-            <span class="text-xs text-[#6C63FF] flex items-center gap-1 font-medium shrink-0">Explore app <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
-          </div>
-        </a>
-
-        <!-- Cam Video Viewer -->
-        <a href="cam-viewer.html" class="card group animate-on-scroll block hover:shadow-md transition-shadow duration-300" style="text-decoration:none;">
-          <div class="flex items-start gap-4 mb-5">
-            <div class="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-sm bg-[#0a0a0a]">
-              <img src="./assets/cam-viewer-icon.png" alt="Cam Video Viewer" class="w-full h-full object-cover" />
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-lg leading-tight">Cam Video Viewer</h3>
-                <span class="text-xs bg-[#1a1a1a]/10 dark:bg-white/10 text-[#0a0a0a] dark:text-[#fafafa] rounded-full px-2.5 py-0.5 font-medium shrink-0">Windows · Free</span>
-              </div>
-              <p class="text-sm text-[#737373] mt-0.5">Electron · hls.js · FFmpeg</p>
-            </div>
-          </div>
-
-          <p class="text-sm text-[#737373] leading-relaxed mb-5">Our Godrej Ace Pro security camera only offered a clunky mobile app to watch footage. So I built a proper Windows viewer — plug in the SD card, browse recordings by date, and watch them in a clean player without any hassle.</p>
-
-          <ul class="space-y-2 mb-6">
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 text-[#2563eb] shrink-0"></i>
-              Browse SD card recordings by date on your desktop
-            </li>
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 text-[#2563eb] shrink-0"></i>
-              Smooth HLS footage playback with keyboard shortcuts
-            </li>
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 text-[#2563eb] shrink-0"></i>
-              One-click Windows installer — no setup needed
-            </li>
-          </ul>
-
-          <div class="flex items-center justify-between pt-4 border-t border-[#e5e5e5] dark:border-[#222222]">
-            <div class="flex gap-1.5 flex-wrap">
-              <span class="tag">Electron</span>
-              <span class="tag">MIT License</span>
-              <span class="tag">Windows</span>
-            </div>
-            <span class="text-xs text-[#2563eb] flex items-center gap-1 font-medium shrink-0">Explore app <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
-          </div>
-        </a>
-
-        <!-- PerfOverlay -->
-        <a href="perfoverlay.html" class="card group animate-on-scroll block hover:shadow-md transition-shadow duration-300" style="text-decoration:none;">
-          <div class="flex items-start gap-4 mb-5">
-            <div class="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 shadow-sm flex items-center justify-center" style="background:#0a0e14; box-shadow:inset 0 0 0 1px rgba(6,182,212,0.3);">
-              <i data-lucide="gauge" class="w-7 h-7" style="color:#22d3ee;"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-lg leading-tight">PerfOverlay</h3>
-                <span class="text-xs bg-[#06b6d4]/10 text-[#06b6d4] rounded-full px-2.5 py-0.5 font-medium shrink-0">Windows · Free</span>
-              </div>
-              <p class="text-sm text-[#737373] mt-0.5">C++17 · Win32 · DXGI · PDH</p>
-            </div>
-          </div>
-
-          <p class="text-sm text-[#737373] leading-relaxed mb-5">A lightweight, transparent HUD that floats over the desktop showing live CPU, RAM, and per-GPU usage — reading the same performance counters Task Manager uses, with near-zero overhead.</p>
-
-          <ul class="space-y-2 mb-6">
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 shrink-0" style="color:#06b6d4;"></i>
-              Multi-GPU support — integrated and discrete tracked separately
-            </li>
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 shrink-0" style="color:#06b6d4;"></i>
-              Zero dependencies — built entirely on native Win32 APIs
-            </li>
-            <li class="flex items-center gap-2.5 text-sm text-[#737373]">
-              <i data-lucide="check-circle" class="w-4 h-4 shrink-0" style="color:#06b6d4;"></i>
-              ~0% idle CPU, ~15–20MB RAM, ~150KB executable
-            </li>
-          </ul>
-
-          <div class="flex items-center justify-between pt-4 border-t border-[#e5e5e5] dark:border-[#222222]">
-            <div class="flex gap-1.5 flex-wrap">
-              <span class="tag">C++17</span>
-              <span class="tag">Public Domain</span>
-              <span class="tag">Win32</span>
-            </div>
-            <span class="text-xs flex items-center gap-1 font-medium shrink-0" style="color:#06b6d4;">Explore app <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
-          </div>
-        </a>
-
       </div>
     </div>
   </section>
@@ -953,7 +849,7 @@
   </script>
 
   <!-- ── Certifications ── -->
-  <section id="certifications" class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+  <section id="certifications" class="py-24 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5 transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
       <div class="mb-12 animate-on-scroll">
         <p class="section-label">Professional Credentials</p>
@@ -1004,7 +900,7 @@
   </section>
 
   <!-- ── Skills ── -->
-  <section id="skills"  class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+  <section id="skills"  class="py-24 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5 transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
       <div class="mb-12 animate-on-scroll">
         <p class="section-label">What I Work With</p>
@@ -1169,7 +1065,7 @@
   </section>
 
   <!-- ── Beyond Code ── -->
-  <section class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+  <section class="py-24 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5 transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-on-scroll">
 
@@ -1203,7 +1099,7 @@
   </section>
 
   <!-- ── Blog Highlights ── -->
-  <section id="blog-highlights" class="hidden py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+  <section id="blog-highlights" class="hidden py-24 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5 transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
 
       <div class="flex items-end justify-between mb-10 animate-on-scroll">
@@ -1230,7 +1126,7 @@
   </section>
 
   <!-- ── From the YouTube channel ── -->
-  <section id="tech-rovers-strip" class="hidden py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+  <section id="tech-rovers-strip" class="hidden py-24 bg-[#f0f0f0] dark:bg-[#0a0a0a] border-t border-black/5 dark:border-white/5 transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6">
 
       <div class="flex items-end justify-between mb-10 animate-on-scroll">
