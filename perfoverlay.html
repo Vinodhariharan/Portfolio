@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PerfOverlay — Lightweight Windows System Stats HUD</title>
+  <meta name="description" content="Free, open-source Win32 desktop overlay showing real-time CPU, RAM, and per-GPU usage. Zero dependencies, ~0% idle CPU, ~15-20MB RAM. Matches Task Manager's own numbers." />
+  <meta name="keywords" content="PerfOverlay, Windows overlay, system monitor, HUD, CPU usage, GPU usage, RAM monitor, Win32, DXGI, PDH, performance overlay, open source" />
+  <meta name="author" content="Vinodhariharan Ravi" />
+  <link rel="canonical" href="https://vinodhariharan.vercel.app/perfoverlay.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://vinodhariharan.vercel.app/perfoverlay.html" />
+  <meta property="og:title"       content="PerfOverlay — Lightweight Windows System Stats HUD" />
+  <meta property="og:description" content="Free, open-source Win32 desktop overlay showing real-time CPU, RAM, and per-GPU usage. Zero dependencies, ~0% idle CPU, ~15-20MB RAM." />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="PerfOverlay — Lightweight Windows System Stats HUD" />
+  <meta name="twitter:description" content="Free, open-source Win32 desktop overlay showing real-time CPU, RAM, and per-GPU usage. Zero dependencies, ~0% idle CPU, ~15-20MB RAM." />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6E52VLX2ZZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-6E52VLX2ZZ');
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- Dark mode: runs before first paint to avoid FOUC -->
+  <script>
+    (function(){
+      var s = localStorage.getItem('darkMode');
+      var p = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (s === 'enabled' || (s === null && p)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="./assets/favicon.png" type="image/png" />
+  <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    .po-mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+
+    .po-accent { color: #06b6d4; }
+    .dark .po-accent { color: #22d3ee; }
+
+    .hero-accent-bg {
+      background: radial-gradient(ellipse 70% 60% at 60% 25%,
+        rgba(6,182,212,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 30% 75%,
+        rgba(6,182,212,0.05) 0%, transparent 60%);
+    }
+
+    .feat-icon {
+      width: 2.5rem; height: 2.5rem;
+      border-radius: 0.6rem;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(6,182,212,0.08);
+      flex-shrink: 0;
+    }
+    .dark .feat-icon { background: rgba(34,211,238,0.12); }
+
+    .po-icon-badge {
+      background: #0a0e14;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: inset 0 0 0 1px rgba(6,182,212,0.3);
+    }
+
+    /* Overlay mock frame for hero visual */
+    .po-hud-mock {
+      background: #05070a;
+      border-radius: 14px;
+      border: 1px solid #1c2530;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+    .po-hud-titlebar {
+      background: #0d1117;
+      border-bottom: 1px solid #1c2530;
+      padding: 8px 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .po-hud-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .po-stat-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .po-stat-row:last-child { border-bottom: none; }
+    .po-stat-bar {
+      height: 5px; border-radius: 3px; background: rgba(255,255,255,0.08);
+      overflow: hidden; width: 100px;
+    }
+    .po-stat-fill { height: 100%; border-radius: 3px; background: #22d3ee; }
+
+    /* Screenshot placeholder */
+    .po-shot-placeholder {
+      aspect-ratio: 16/10;
+      border-radius: 0.85rem;
+      border: 1px dashed #d4d4d4;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dark .po-shot-placeholder { border-color: #333; }
+
+    /* Technical highlight cards */
+    .po-tech-card {
+      border-left: 2px solid rgba(6,182,212,0.35);
+      padding-left: 1.25rem;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- ── HexaConquest promo banner ── -->
+  <div id="hexaPromoBanner">
+    <i data-lucide="hexagon" class="hexa-dot w-4 h-4"></i>
+    <span class="hexa-text"><strong>HexaConquest</strong> — real-time multiplayer strategy game, live now.</span>
+    <a href="https://hexaconquest.vercel.app" target="_blank" rel="noopener" class="hexa-cta">Play now →</a>
+    <button class="hexa-close" onclick="dismissHexaBanner()" aria-label="Dismiss banner">✕</button>
+  </div>
+  <script>
+    (function(){
+      if (localStorage.getItem('hexaBannerDismissed') === '1') {
+        document.documentElement.classList.add('hexa-banner-dismissed');
+      } else {
+        document.body.classList.add('hexa-banner-active');
+      }
+    })();
+    function dismissHexaBanner(){
+      localStorage.setItem('hexaBannerDismissed', '1');
+      document.documentElement.classList.add('hexa-banner-dismissed');
+      document.body.classList.remove('hexa-banner-active');
+    }
+  </script>
+
+  <!-- ── Navigation ── -->
+  <nav id="mainNav" class="site-nav nav-bg fixed top-0 w-full z-50 backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
+    <div class="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-lg po-icon-badge">
+          <i data-lucide="gauge" class="w-4 h-4" style="color:#22d3ee;"></i>
+        </div>
+        <span class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] text-sm po-mono">PerfOverlay</span>
+      </div>
+      <div class="hidden md:flex items-center gap-6">
+        <a href="https://github.com/Vinodhariharan/PerfOverlay" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i> Source
+        </a>
+        <a href="https://github.com/Vinodhariharan/PerfOverlay/releases/latest" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="tag" class="w-4 h-4"></i> Releases
+        </a>
+        <a href="https://github.com/Vinodhariharan/PerfOverlay/issues" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="circle-dot" class="w-4 h-4"></i> Issues
+        </a>
+        <button id="darkModeToggle" class="p-2 rounded-full text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Toggle dark mode">
+          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+      </div>
+      <div class="md:hidden flex items-center gap-3">
+        <button id="darkModeToggleMobile" class="p-2 rounded-full text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Toggle dark mode">
+          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+        <button id="menuToggle" class="p-2 text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Open menu">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden md:hidden border-t border-[#e5e5e5] dark:border-[#222222] bg-white/95 dark:bg-[#0a0a0a]/95">
+      <div class="max-w-5xl mx-auto px-6 py-4 flex flex-col gap-4">
+        <a href="https://github.com/Vinodhariharan/PerfOverlay" target="_blank" rel="noopener" class="flex items-center gap-2 py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i> Source
+        </a>
+        <a href="https://github.com/Vinodhariharan/PerfOverlay/releases/latest" target="_blank" rel="noopener" class="flex items-center gap-2 py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="tag" class="w-4 h-4"></i> Releases
+        </a>
+        <a href="https://github.com/Vinodhariharan/PerfOverlay/issues" target="_blank" rel="noopener" class="flex items-center gap-2 py-1 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="circle-dot" class="w-4 h-4"></i> Issues
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow">
+
+    <!-- ── Hero ── -->
+    <section class="hero-accent-bg pt-32 pb-20 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+          <div class="text-center lg:text-left">
+            <div class="flex justify-center lg:justify-start mb-6">
+              <div class="w-16 h-16 rounded-2xl po-icon-badge">
+                <i data-lucide="gauge" class="w-8 h-8" style="color:#22d3ee;"></i>
+              </div>
+            </div>
+
+            <p class="section-label mb-3">Windows App · Open Source</p>
+            <h1 class="text-4xl md:text-5xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-4 leading-tight po-mono">
+              PerfOverlay
+            </h1>
+            <p class="text-lg text-[#737373] max-w-xl mx-auto lg:mx-0 mb-4 leading-relaxed">
+              A lightweight, transparent Windows HUD for real-time system stats — live CPU, RAM, and per-GPU usage floating directly over your desktop.
+            </p>
+            <p class="text-sm text-[#737373] max-w-lg mx-auto lg:mx-0 mb-8 leading-relaxed">
+              Built with only OS-native APIs — no frameworks, no third-party dependencies — for near-zero resource overhead.
+            </p>
+
+            <!-- CTAs -->
+            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-8">
+              <a href="https://github.com/Vinodhariharan/PerfOverlay/releases/latest"
+                 target="_blank" rel="noopener"
+                 class="btn-primary inline-flex items-center gap-2 text-base px-6 py-3">
+                <i data-lucide="download" class="w-5 h-5"></i>
+                Download Latest Release
+              </a>
+              <a href="https://github.com/Vinodhariharan/PerfOverlay" target="_blank" rel="noopener"
+                 class="btn-ghost inline-flex items-center gap-2 px-6 py-3">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                View on GitHub
+              </a>
+            </div>
+
+            <!-- Badges -->
+            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+              <span class="tag inline-flex items-center gap-1.5"><i data-lucide="monitor" class="w-3 h-3"></i>Windows</span>
+              <span class="tag inline-flex items-center gap-1.5"><i data-lucide="cpu" class="w-3 h-3"></i>~0% idle CPU</span>
+              <span class="tag inline-flex items-center gap-1.5"><i data-lucide="hard-drive" class="w-3 h-3"></i>~15–20MB RAM</span>
+              <span class="tag inline-flex items-center gap-1.5"><i data-lucide="globe" class="w-3 h-3"></i>Public Domain</span>
+            </div>
+          </div>
+
+          <!-- HUD mock visual -->
+          <div class="po-hud-mock max-w-sm mx-auto w-full">
+            <div class="po-hud-titlebar">
+              <span class="po-hud-dot" style="background:#ff5f57;"></span>
+              <span class="po-hud-dot" style="background:#febc2e;"></span>
+              <span class="po-hud-dot" style="background:#28c840;"></span>
+              <span class="text-xs po-mono ml-2" style="color:#5c6377;">PerfOverlay.exe</span>
+            </div>
+            <div class="py-2">
+              <div class="po-stat-row">
+                <span class="text-xs po-mono" style="color:#8b93a3;">CPU</span>
+                <div class="flex items-center gap-2">
+                  <div class="po-stat-bar"><div class="po-stat-fill" style="width:34%;"></div></div>
+                  <span class="text-xs po-mono" style="color:#22d3ee;">34%</span>
+                </div>
+              </div>
+              <div class="po-stat-row">
+                <span class="text-xs po-mono" style="color:#8b93a3;">RAM</span>
+                <div class="flex items-center gap-2">
+                  <div class="po-stat-bar"><div class="po-stat-fill" style="width:58%;"></div></div>
+                  <span class="text-xs po-mono" style="color:#22d3ee;">58%</span>
+                </div>
+              </div>
+              <div class="po-stat-row">
+                <span class="text-xs po-mono" style="color:#8b93a3;">GPU 0 · RTX</span>
+                <div class="flex items-center gap-2">
+                  <div class="po-stat-bar"><div class="po-stat-fill" style="width:12%;"></div></div>
+                  <span class="text-xs po-mono" style="color:#22d3ee;">12%</span>
+                </div>
+              </div>
+              <div class="po-stat-row">
+                <span class="text-xs po-mono" style="color:#8b93a3;">GPU 1 · Intel</span>
+                <div class="flex items-center gap-2">
+                  <div class="po-stat-bar"><div class="po-stat-fill" style="width:4%;"></div></div>
+                  <span class="text-xs po-mono" style="color:#22d3ee;">4%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Features ── -->
+    <section id="features" class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-12">
+          <p class="section-label">What's inside</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Features</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="activity" class="w-5 h-5 po-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Matches Task Manager</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Real-time CPU, RAM, and per-GPU usage read from the same performance counters Task Manager uses — the numbers always agree.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="layers" class="w-5 h-5 po-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Multi-GPU Support</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Each physical adapter shown separately by its real hardware name — integrated and discrete GPUs both tracked correctly.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="eye" class="w-5 h-5 po-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Truly Transparent</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">No background box by default — just floating text over your desktop. An optional solid card mode is available too.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="layout-panel-top" class="w-5 h-5 po-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Flexible Layout</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Switch between vertical (stacked) and horizontal (single-line) layouts at runtime — no restart needed.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="trending-up" class="w-5 h-5 po-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">History Sparklines</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Optional per-metric history sparklines so you can spot spikes and trends at a glance, not just the current value.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="keyboard" class="w-5 h-5 po-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Global Hotkeys</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Show/hide and lock the overlay from anywhere with system-wide keyboard shortcuts.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="mouse-pointer-click" class="w-5 h-5 po-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Click-Through Lock</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Lock mode makes the overlay click-through, and it auto-hides the moment a game goes fullscreen.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="settings-2" class="w-5 h-5 po-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Native Settings &amp; Tray</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">A native settings window and system-tray control — no external UI framework, no bloat.</p>
+            </div>
+          </div>
+
+          <div class="card flex items-start gap-4">
+            <div class="feat-icon"><i data-lucide="save" class="w-5 h-5 po-accent"></i></div>
+            <div>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-1">Persisted Settings</h3>
+              <p class="text-sm text-[#737373] leading-relaxed">Layout, position, and preferences are saved across restarts, along with optional auto-start with Windows.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Screenshots ── -->
+    <section id="screenshots" class="py-24 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-12">
+          <p class="section-label">In action</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Screenshots</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="po-shot-placeholder">
+            <div class="text-center px-4">
+              <i data-lucide="layout-panel-top" class="w-8 h-8 text-[#d4d4d4] dark:text-[#444] mx-auto mb-2"></i>
+              <p class="text-xs text-[#d4d4d4] dark:text-[#444]">Vertical layout</p>
+            </div>
+          </div>
+          <div class="po-shot-placeholder">
+            <div class="text-center px-4">
+              <i data-lucide="rows-3" class="w-8 h-8 text-[#d4d4d4] dark:text-[#444] mx-auto mb-2"></i>
+              <p class="text-xs text-[#d4d4d4] dark:text-[#444]">Horizontal layout</p>
+            </div>
+          </div>
+          <div class="po-shot-placeholder">
+            <div class="text-center px-4">
+              <i data-lucide="settings-2" class="w-8 h-8 text-[#d4d4d4] dark:text-[#444] mx-auto mb-2"></i>
+              <p class="text-xs text-[#d4d4d4] dark:text-[#444]">Settings window</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-sm text-[#737373] mt-5">Screenshots coming soon.</p>
+      </div>
+    </section>
+
+
+    <!-- ── Technical highlights ── -->
+    <section id="tech" class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-12">
+          <p class="section-label">Under the hood</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Technical Highlights</h2>
+          <p class="text-[#737373] mt-3 max-w-2xl">Built entirely on Win32, GDI, PDH, and DXGI — no third-party dependencies, no frameworks. Here's what went into getting the numbers right and the overhead near-zero.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+
+          <div class="po-tech-card">
+            <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-2">Matching Task Manager's numbers</h3>
+            <p class="text-sm text-[#737373] leading-relaxed">Found and fixed a ~15-point discrepancy by switching from the legacy <code class="text-xs px-1 py-0.5 rounded bg-white dark:bg-[#1a1a1a]">% Processor Time</code> counter to <code class="text-xs px-1 py-0.5 rounded bg-white dark:bg-[#1a1a1a]">% Processor Utility</code> — the one Task Manager actually displays — which accounts for CPU boost/throttle states.</p>
+          </div>
+
+          <div class="po-tech-card">
+            <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-2">Multi-vendor GPU support, no vendor SDKs</h3>
+            <p class="text-sm text-[#737373] leading-relaxed">Enumerates physical adapters via DXGI for real names, then matches PDH's per-process GPU Engine counters back to each adapter by parsing the LUID embedded in the counter path — the same technique Task Manager itself uses, working identically across NVIDIA, AMD, and Intel.</p>
+          </div>
+
+          <div class="po-tech-card">
+            <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-2">Performance tuning</h3>
+            <p class="text-sm text-[#737373] leading-relaxed">An early version rebuilt its GPU performance-counter query from scratch every second, costing ~8% CPU. Refactored to a persistent query with periodic (5s) instance rescanning, dropping CPU usage to ~0%.</p>
+          </div>
+
+          <div class="po-tech-card">
+            <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-2">True transparency</h3>
+            <p class="text-sm text-[#737373] leading-relaxed">Uses color-key layered windows (<code class="text-xs px-1 py-0.5 rounded bg-white dark:bg-[#1a1a1a]">LWA_COLORKEY</code>) rather than alpha blending, so the background is genuinely see-through with crisp opaque text — and switched off ClearType in favor of plain antialiasing to avoid color fringing over arbitrary desktop content.</p>
+          </div>
+
+          <div class="po-tech-card md:col-span-2">
+            <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa] mb-2">Zero truncation</h3>
+            <p class="text-sm text-[#737373] leading-relaxed">Window width is computed at runtime from actual measured text (via GDI), so GPU names are never cut off regardless of length.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Footprint stats ── -->
+    <section class="py-16 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="card">
+          <p class="text-xs uppercase tracking-wider text-[#737373] mb-6 text-center">Footprint</p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div>
+              <p class="text-2xl font-bold po-accent po-mono">~150KB</p>
+              <p class="text-xs text-[#737373] mt-1">Executable</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold po-accent po-mono">~0%</p>
+              <p class="text-xs text-[#737373] mt-1">Idle CPU</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold po-accent po-mono">15–20MB</p>
+              <p class="text-xs text-[#737373] mt-1">RAM usage</p>
+            </div>
+            <div>
+              <p class="text-2xl font-bold po-accent po-mono">0</p>
+              <p class="text-xs text-[#737373] mt-1">Dependencies</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Requirements + Tech stack ── -->
+    <section id="requirements" class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="mb-12">
+          <p class="section-label">Before you start</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Requirements &amp; Tech Stack</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- Requirements -->
+          <div class="card">
+            <div class="flex items-center gap-3 mb-6">
+              <i data-lucide="monitor" class="w-5 h-5 po-accent shrink-0"></i>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa]">System Requirements</h3>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style="background:#06b6d4;"></span>
+                <p class="text-sm text-[#737373]"><span class="font-medium text-[#0a0a0a] dark:text-[#fafafa]">OS:</span> Windows 10 or Windows 11</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style="background:#06b6d4;"></span>
+                <p class="text-sm text-[#737373]"><span class="font-medium text-[#0a0a0a] dark:text-[#fafafa]">GPU:</span> Any — NVIDIA, AMD, or Intel (integrated + discrete both supported)</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style="background:#06b6d4;"></span>
+                <p class="text-sm text-[#737373]"><span class="font-medium text-[#0a0a0a] dark:text-[#fafafa]">Disk space:</span> ~150 KB</p>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style="background:#06b6d4;"></span>
+                <p class="text-sm text-[#737373]"><span class="font-medium text-[#0a0a0a] dark:text-[#fafafa]">Install:</span> Portable single executable, no installer</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tech stack -->
+          <div class="card">
+            <div class="flex items-center gap-3 mb-6">
+              <i data-lucide="code-2" class="w-5 h-5 po-accent shrink-0"></i>
+              <h3 class="font-semibold text-[#0a0a0a] dark:text-[#fafafa]">Tech Stack</h3>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <span class="tag">C++17</span>
+              <span class="tag">Win32 API</span>
+              <span class="tag">GDI</span>
+              <span class="tag">PDH</span>
+              <span class="tag">DXGI</span>
+              <span class="tag">Windows Registry</span>
+            </div>
+            <p class="text-sm text-[#737373] leading-relaxed mt-5">Single source file, zero third-party dependencies — built entirely on OS-native APIs for minimal footprint and maximum compatibility.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Open Source banner ── -->
+    <section class="py-20 bg-[#ffffff] dark:bg-[#0a0a0a] transition-colors duration-300">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="card border-2" style="border-color:rgba(6,182,212,0.2); background:rgba(6,182,212,0.05); padding: 3rem;">
+          <div class="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+            <div class="flex-shrink-0">
+              <div class="w-14 h-14 rounded-2xl flex items-center justify-center" style="background:rgba(6,182,212,0.1);">
+                <i data-lucide="globe" class="w-7 h-7 po-accent"></i>
+              </div>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-2">PerfOverlay is public domain</h3>
+              <p class="text-sm text-[#737373] leading-relaxed mb-5">Released under the <strong class="text-[#0a0a0a] dark:text-[#fafafa]">Unlicense</strong> — no attribution required, no restrictions. Read the code, fork it, ship it as part of your own project. PRs and issues are welcome.</p>
+              <a href="https://github.com/Vinodhariharan/PerfOverlay" target="_blank" rel="noopener"
+                 class="btn-primary inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                View on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── Download CTA ── -->
+    <section class="py-24 bg-[#f5f5f5] dark:bg-[#111111] transition-colors duration-300">
+      <div class="max-w-xl mx-auto px-6 text-center">
+        <div class="flex justify-center mb-5">
+          <div class="w-16 h-16 rounded-2xl po-icon-badge">
+            <i data-lucide="gauge" class="w-8 h-8" style="color:#22d3ee;"></i>
+          </div>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-bold text-[#0a0a0a] dark:text-[#fafafa] mb-3">Want to see your real numbers?</h2>
+        <p class="text-sm text-[#737373] mb-2">Free forever. No install wizard, no telemetry.</p>
+        <div class="flex flex-wrap items-center justify-center gap-2 mb-8 text-xs text-[#737373]">
+          <span class="inline-flex items-center gap-1"><i data-lucide="hard-drive" class="w-3 h-3"></i>~150KB</span>
+          <span>·</span>
+          <span class="inline-flex items-center gap-1"><i data-lucide="cpu" class="w-3 h-3"></i>~0% idle</span>
+          <span>·</span>
+          <span class="inline-flex items-center gap-1"><i data-lucide="globe" class="w-3 h-3"></i>Unlicense</span>
+        </div>
+        <a href="https://github.com/Vinodhariharan/PerfOverlay/releases/latest" target="_blank" rel="noopener"
+           class="btn-primary inline-flex items-center gap-2 text-base px-8 py-3.5">
+          <i data-lucide="download" class="w-5 h-5"></i>
+          Download Latest Release
+        </a>
+        <p class="text-xs text-[#737373] mt-4">Windows 10 / 11 · Portable exe · No account required</p>
+        <p class="text-xs text-[#a3a3a3] mt-3">Co-authored with <a href="https://claude.ai" target="_blank" rel="noopener" class="underline hover:text-[#737373] transition-colors">Claude</a> by Anthropic.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="footer-bg border-t border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
+    <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-lg po-icon-badge shrink-0">
+          <i data-lucide="gauge" class="w-3.5 h-3.5" style="color:#22d3ee;"></i>
+        </div>
+        <span class="text-sm text-[#737373]">PerfOverlay · © 2026 <a href="https://vinodhariharan.vercel.app" class="hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">Vinodhariharan Ravi</a></span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/Vinodhariharan/PerfOverlay" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i> Repository
+        </a>
+        <a href="https://github.com/Vinodhariharan/PerfOverlay/releases/latest" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="tag" class="w-4 h-4"></i> Releases
+        </a>
+        <a href="https://github.com/Vinodhariharan/PerfOverlay/issues" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="circle-dot" class="w-4 h-4"></i> Issues
+        </a>
+        <a href="https://github.com/Vinodhariharan/PerfOverlay/blob/main/LICENSE" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors">
+          <i data-lucide="scale" class="w-4 h-4"></i> Unlicense
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top -->
+  <button id="backToTop" class="fixed bottom-8 right-8 z-50 w-10 h-10 text-white rounded-full flex items-center justify-center hidden transition-colors shadow-sm" style="background:#06b6d4;">
+    <i data-lucide="arrow-up" class="w-4 h-4"></i>
+  </button>
+
+  <script src="./script.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
