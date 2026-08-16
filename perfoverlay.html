@@ -15,11 +15,13 @@
   <meta property="og:url"         content="https://vinodhariharan.vercel.app/perfoverlay.html" />
   <meta property="og:title"       content="PerfOverlay — Lightweight Windows System Stats HUD" />
   <meta property="og:description" content="Free, open-source Win32 desktop overlay showing real-time CPU, RAM, and per-GPU usage. Zero dependencies, ~0% idle CPU, ~15-20MB RAM." />
+  <meta property="og:image"       content="https://vinodhariharan.vercel.app/assets/perfoverlay-icon.png" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card"        content="summary" />
   <meta name="twitter:title"       content="PerfOverlay — Lightweight Windows System Stats HUD" />
   <meta name="twitter:description" content="Free, open-source Win32 desktop overlay showing real-time CPU, RAM, and per-GPU usage. Zero dependencies, ~0% idle CPU, ~15-20MB RAM." />
+  <meta name="twitter:image"       content="https://vinodhariharan.vercel.app/assets/perfoverlay-icon.png" />
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-6E52VLX2ZZ"></script>
@@ -45,7 +47,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>tailwind.config = { darkMode: 'class' };</script>
   <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="./assets/favicon.png" type="image/png" />
+  <link rel="icon" href="./assets/perfoverlay-icon.png" type="image/png" />
   <link href="https://fonts.cdnfonts.com/css/glacial-indifference-2" rel="stylesheet" />
 
   <style>
@@ -105,15 +107,6 @@
       overflow: hidden; width: 100px;
     }
     .po-stat-fill { height: 100%; border-radius: 3px; background: #22d3ee; }
-
-    /* Screenshot placeholder */
-    .po-shot-placeholder {
-      aspect-ratio: 16/10;
-      border-radius: 0.85rem;
-      border: 1px dashed #d4d4d4;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .dark .po-shot-placeholder { border-color: #333; }
 
     /* Technical highlight cards */
     .po-tech-card {
@@ -385,27 +378,21 @@
           <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Screenshots</h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="po-shot-placeholder">
-            <div class="text-center px-4">
-              <i data-lucide="layout-panel-top" class="w-8 h-8 text-[#d4d4d4] dark:text-[#444] mx-auto mb-2"></i>
-              <p class="text-xs text-[#d4d4d4] dark:text-[#444]">Vertical layout</p>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
+            <img src="./assets/overlay-pics/vertical-layout-sparklines.png" alt="PerfOverlay vertical layout with history sparklines" class="w-full" />
           </div>
-          <div class="po-shot-placeholder">
-            <div class="text-center px-4">
-              <i data-lucide="rows-3" class="w-8 h-8 text-[#d4d4d4] dark:text-[#444] mx-auto mb-2"></i>
-              <p class="text-xs text-[#d4d4d4] dark:text-[#444]">Horizontal layout</p>
-            </div>
+          <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
+            <img src="./assets/overlay-pics/horizontal-layout.png" alt="PerfOverlay horizontal layout with solid card background" class="w-full" />
           </div>
-          <div class="po-shot-placeholder">
-            <div class="text-center px-4">
-              <i data-lucide="settings-2" class="w-8 h-8 text-[#d4d4d4] dark:text-[#444] mx-auto mb-2"></i>
-              <p class="text-xs text-[#d4d4d4] dark:text-[#444]">Settings window</p>
-            </div>
+          <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
+            <img src="./assets/overlay-pics/settings-window.png" alt="PerfOverlay native settings window" class="w-full" />
+          </div>
+          <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
+            <img src="./assets/overlay-pics/tray-menu.png" alt="PerfOverlay system tray right-click menu" class="w-full" />
           </div>
         </div>
-        <p class="text-center text-sm text-[#737373] mt-5">Screenshots coming soon.</p>
+        <p class="text-center text-xs text-[#a3a3a3] mt-5">Vertical layout with sparklines · Horizontal layout · Settings window · Tray menu</p>
       </div>
     </section>
 
