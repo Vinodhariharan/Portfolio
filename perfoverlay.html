@@ -92,9 +92,8 @@
       background: #0d1117;
       border-bottom: 1px solid #1c2530;
       padding: 8px 12px;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 8px;
     }
-    .po-hud-dot { width: 8px; height: 8px; border-radius: 50%; }
 
     .po-stat-row {
       display: flex; align-items: center; justify-content: space-between;
@@ -241,10 +240,13 @@
           <!-- HUD mock visual -->
           <div class="po-hud-mock max-w-sm mx-auto w-full">
             <div class="po-hud-titlebar">
-              <span class="po-hud-dot" style="background:#ff5f57;"></span>
-              <span class="po-hud-dot" style="background:#febc2e;"></span>
-              <span class="po-hud-dot" style="background:#28c840;"></span>
-              <span class="text-xs po-mono ml-2" style="color:#5c6377;">PerfOverlay.exe</span>
+              <i data-lucide="gauge" class="w-3.5 h-3.5" style="color:#22d3ee;"></i>
+              <span class="text-xs po-mono" style="color:#8b93a3;">PerfOverlay.exe</span>
+              <div class="ml-auto flex items-center gap-4">
+                <svg class="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none" style="color:#5c6377;"><path d="M0 5H10" stroke="currentColor" stroke-width="1"/></svg>
+                <svg class="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none" style="color:#5c6377;"><rect x="0.5" y="0.5" width="9" height="9" stroke="currentColor" stroke-width="1"/></svg>
+                <svg class="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none" style="color:#5c6377;"><path d="M0 0L10 10M10 0L0 10" stroke="currentColor" stroke-width="1"/></svg>
+              </div>
             </div>
             <div class="py-2">
               <div class="po-stat-row">
@@ -378,7 +380,7 @@
           <h2 class="text-3xl md:text-4xl font-bold text-[#0a0a0a] dark:text-[#fafafa]">Screenshots</h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div class="rounded-xl overflow-hidden border border-[#e5e5e5] dark:border-[#222222]">
             <img src="./assets/overlay-pics/vertical-layout-sparklines.png" alt="PerfOverlay vertical layout with history sparklines" class="w-full" />
           </div>
