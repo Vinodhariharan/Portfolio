@@ -36,6 +36,12 @@ const STATIC_URLS = `
     <changefreq>monthly</changefreq>
   </url>
   <url>
+    <loc>${SITE}/perfoverlay.html</loc>
+    <lastmod>2026-08-16</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>${SITE}/privacy.html</loc>
     <lastmod>2026-06-01</lastmod>
     <priority>0.3</priority>

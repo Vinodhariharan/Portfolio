@@ -241,9 +241,14 @@
   <!-- ── Navigation (hidden over the hero, slides in on scroll past it) ── -->
   <nav id="trNav" class="site-nav tr-nav tr-nav-hidden fixed top-0 w-full z-50 nav-bg backdrop-blur-sm border-b border-[#e5e5e5] dark:border-[#222222] transition-colors duration-300">
     <div class="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
-      <a href="/" class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] tracking-tight" style="font-family:'Glacial Indifference',sans-serif;">vh</a>
+      <div class="flex items-center gap-4">
+        <a href="/" class="flex items-center gap-1.5 text-sm text-[#737373] hover:text-[#00b8d4] transition-colors pr-4 border-r border-[#e5e5e5] dark:border-[#222222]" style="text-decoration:none;">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Portfolio</span>
+        </a>
+        <a href="/" class="text-xl font-bold text-[#0a0a0a] dark:text-[#fafafa] tracking-tight" style="font-family:'Glacial Indifference',sans-serif;">vh</a>
+      </div>
       <div class="hidden md:flex items-center gap-8">
-        <a href="/" class="nav-link">Home</a>
         <a href="blog.html" class="nav-link">Blog</a>
         <a href="tech-rovers.html" class="text-sm font-medium text-[#2563eb]" style="text-decoration:none;">Tech Rovers</a>
         <button id="darkModeToggle" class="p-2 rounded-full text-[#737373] hover:text-[#0a0a0a] dark:hover:text-[#fafafa] transition-colors" aria-label="Toggle dark mode">
