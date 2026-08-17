@@ -1184,7 +1184,7 @@
       try {
         const { data: posts } = await supabaseClient
           .from('posts')
-          .select('title, slug, excerpt, content, created_at')
+          .select('title, slug, excerpt, content, cover_image, created_at')
           .eq('is_published', true)
           .order('created_at', { ascending: false })
           .limit(3);
@@ -1198,6 +1198,11 @@
         grid.innerHTML = posts.map(p => `
           <a href="/post/${p.slug}"
              class="card flex flex-col gap-3 hover:border-[#2563eb] transition-all duration-200 hover:-translate-y-1 hover:shadow-md cursor-pointer no-underline group">
+            ${p.cover_image
+              ? `<div class="w-full h-36 rounded-lg overflow-hidden bg-[#f5f5f5] dark:bg-[#111111] -mx-0">
+                   <img src="${p.cover_image}" alt="${p.title}" class="w-full h-full object-cover" loading="lazy" />
+                 </div>`
+              : ''}
             <div class="flex items-center justify-between">
               <span class="text-xs text-[#737373]">${formatDate(p.created_at)}</span>
               <span class="text-xs text-[#737373]">${readTime(p.content)}</span>
